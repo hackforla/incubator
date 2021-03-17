@@ -26,6 +26,8 @@ module "db" {
   source  = "terraform-aws-modules/rds/aws"
   version = "~> 2.20.0"
 
+  create_db_instance = var.create_db_instance
+
   identifier = "${local.envname}-database"
 
   allow_major_version_upgrade = var.db_allow_major_engine_version_upgrade

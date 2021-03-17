@@ -47,6 +47,11 @@ variable "tags" {
 // --------------------------
 // Database Variables
 // --------------------------
+variable "create_db_instance" {
+  type    = bool
+  default = false
+}
+
 variable "db_username" {
   type        = string
   description = "The name of the default postgres user created by RDS when the instance is booted"
@@ -60,6 +65,7 @@ variable "db_password" {
 variable "db_port" {
   type        = number
   description = "database port"
+  default     = 5432
 }
 
 variable "db_instance_class" {
