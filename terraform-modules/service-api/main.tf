@@ -4,12 +4,12 @@ resource "aws_ecs_task_definition" "task" {
   container_definitions = templatefile(
     "${path.module}/templates/container-definition.json",
     {
-    container_memory   = var.container_memory == 0 ? 128 : var.container_memory
-    container_cpu      = var.container_cpu
-    container_port     = var.container_port
-    container_name     = local.container_name
-    image              = var.container_image
-    container_env_vars = jsonencode(var.container_env_vars)
+      container_memory   = var.container_memory == 0 ? 128 : var.container_memory
+      container_cpu      = var.container_cpu
+      container_port     = var.container_port
+      container_name     = local.container_name
+      image              = var.container_image
+      container_env_vars = jsonencode(var.container_env_vars)
     }
   )
 
@@ -27,7 +27,7 @@ resource "aws_ecs_service" "svc" {
   desired_count   = var.desired_count
 
   service_registries {
-    registry_arn = aws_service_discovery_service.sd_service.arn
+    registry_arn   = aws_service_discovery_service.sd_service.arn
     container_name = local.container_name
     container_port = var.container_port
   }
@@ -48,9 +48,9 @@ resource "aws_lb_target_group" "this" {
   vpc_id               = var.vpc_id
   deregistration_delay = 90
   health_check {
-    path = var.health_check_path
-    interval = 15
-    healthy_threshold = 3
+    path                = var.health_check_path
+    interval            = 15
+    healthy_threshold   = 3
     unhealthy_threshold = 2
   }
 }

@@ -1,6 +1,6 @@
 data "template_file" "container-definition" {
   template = file("./templates/container-definition.json")
-  vars     = {
+  vars = {
     container_name   = local.container_name
     container_cpu    = var.container_cpu
     container_memory = var.container_memory == 0 ? 85 : var.container_memory

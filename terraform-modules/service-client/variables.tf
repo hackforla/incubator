@@ -26,7 +26,7 @@ variable "environment" {
 }
 
 variable "application_type" {
-  type = string
+  type        = string
   description = "defines what type of application is running, fullstack, client, backend, etc. will be used for cloudwatch logs"
 }
 variable "host_names" {

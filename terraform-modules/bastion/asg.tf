@@ -1,19 +1,19 @@
 locals {
   asg_tags = [
     for k, v in merge(var.tags, { Name = "bastion-${local.envname}" }) : {
-      "key" = k
-      "value" = v
+      "key"                 = k
+      "value"               = v
       "propagate_at_launch" = true
     }
   ]
 }
 resource "aws_launch_configuration" "bastion" {
-  name       = "${local.envname}-bastion"
-  image_id          = data.aws_ami.ami.id
-  instance_type     = var.bastion_instance_type
-  user_data         = local.template_file_init
+  name                 = "${local.envname}-bastion"
+  image_id             = data.aws_ami.ami.id
+  instance_type        = var.bastion_instance_type
+  user_data            = local.template_file_init
   iam_instance_profile = aws_iam_instance_profile.bastion_profile.name
-  
+
   security_groups = [aws_security_group.bastion.id]
 
   associate_public_ip_address = true

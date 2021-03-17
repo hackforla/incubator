@@ -1,6 +1,6 @@
 resource "aws_service_discovery_service" "sd_service" {
-  name = "redis"
-  description = "redis for caching sessions, etc."
+  name         = "redis"
+  description  = "redis for caching sessions, etc."
   namespace_id = var.private_dns_id
 
   dns_config {

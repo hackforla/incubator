@@ -8,22 +8,22 @@ locals {
 // --------------------------
 // Global/General Variables
 // --------------------------
-variable account_id {
+variable "account_id" {
   type        = number
   description = "AWS Account ID"
 }
 
-variable project_name {
+variable "project_name" {
   type        = string
   description = "The overall name of the project using this infrastructure; used to group related resources by"
 }
 
-variable region {
+variable "region" {
   type    = string
   default = "us-east-2"
 }
 
-variable environment {
+variable "environment" {
   type = string
 }
 
@@ -32,25 +32,25 @@ variable "vpc_id" {
   description = "VPC ID"
 }
 
-variable tags {
+variable "tags" {
   default = { terraform_managed = "true" }
-  type    = map
+  type    = map(any)
 }
 
 // --------------------------
 // ECS/Fargat Variables
 // --------------------------
-variable container_cpu {
+variable "container_cpu" {
   type    = number
   default = 256
 }
 
-variable container_memory {
+variable "container_memory" {
   type    = number
   default = 0
 }
 
-variable container_port {
+variable "container_port" {
   type    = number
   default = 0
 }
@@ -59,15 +59,15 @@ variable "cluster_id" {
   type = string
 }
 
-variable cluster_name {
+variable "cluster_name" {
   type = string
 }
 
-variable container_image {
+variable "container_image" {
   type = string
 }
 
-variable desired_count {
+variable "desired_count" {
   default = 1
   type    = number
 }
@@ -76,7 +76,7 @@ variable "container_env_vars" {
   type = list(map(string))
 }
 
-variable public_subnet_ids {
+variable "public_subnet_ids" {
   description = "VPC Public Subnets for where to place Fargate tasks"
   type        = list(string)
 }

@@ -24,9 +24,9 @@ resource "aws_ecs_task_definition" "task" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definition.json",
     {
-      envapp = local.envname
-      region = var.region
-      application_type = var.application_type
+      envapp             = local.envname
+      region             = var.region
+      application_type   = var.application_type
       host_port          = local.host_port
       container_memory   = local.container_memory
       container_cpu      = var.container_cpu
@@ -46,6 +46,6 @@ resource "aws_ecs_task_definition" "task" {
 
 // Create group for streaming application logs
 resource "aws_cloudwatch_log_group" "cwlogs" {
-  name = "ecs/${local.envname}"
+  name              = "ecs/${local.envname}"
   retention_in_days = 14
 }

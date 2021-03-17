@@ -36,15 +36,15 @@ resource "aws_iam_policy" "policy" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
-        {
-            Sid = "",
-            Effect = "Allow",
-            Action = [
-                "route53:ListHostedZones",
-                "route53:ChangeResourceRecordSets"
-            ],
-            Resource = "*"
-        }
+      {
+        Sid    = "",
+        Effect = "Allow",
+        Action = [
+          "route53:ListHostedZones",
+          "route53:ChangeResourceRecordSets"
+        ],
+        Resource = "*"
+      }
     ]
   })
 }

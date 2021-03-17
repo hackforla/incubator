@@ -1,5 +1,5 @@
 resource "aws_service_discovery_service" "sd_service" {
-  name = local.envname
+  name         = local.envname
   namespace_id = var.private_dns_id
 
   dns_config {

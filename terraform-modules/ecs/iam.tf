@@ -1,5 +1,5 @@
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "${local.envname}-ecs-task-role"
+  name        = "${local.envname}-ecs-task-role"
   description = "Allow ECS tasks to access AWS resources"
 
   assume_role_policy = jsonencode({

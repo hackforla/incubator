@@ -19,7 +19,7 @@ resource "aws_ecs_service" "fargate" {
   }
 
   depends_on = [aws_lb_target_group.this, aws_lb_listener_rule.static]
-  
+
   lifecycle {
     ignore_changes = [task_definition, desired_count]
   }
