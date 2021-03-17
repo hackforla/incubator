@@ -13,6 +13,8 @@ locals {
 
   # Extract the variables we need for easy access
   aws_region   = local.account_vars.locals.aws_region
+  s3_terragrunt_bucket   = local.account_vars.locals.s3_terragrunt_bucket
+  dynamodb_terraform_lock = local.account_vars.locals.dynamodb_terraform_lock
 }
 
 # Generate an AWS provider block
@@ -32,10 +34,10 @@ remote_state {
   backend = "s3"
   config  = {
     encrypt        = true
-    bucket         = "codeforcalifornia"
+    bucket         = local.s3_terragrunt_bucket
     key            = "terragrunt-states/incubator/${path_relative_to_include()}/terraform.tfstate"
-    region         = "us-west-1"
-    dynamodb_table = "terraform-locks"
+    region         = local.aws_region
+    dynamodb_table = local.dynamodb_terraform_lock
   }
   generate = {
     path      = "backend.tf"

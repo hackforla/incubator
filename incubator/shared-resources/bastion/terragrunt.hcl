@@ -14,14 +14,16 @@ locals {
   tags = local.environment_vars.locals.tags
   domain_name = local.environment_vars.locals.domain_name
   bastion_hostname = local.environment_vars.locals.bastion_hostname
-  key_name = local.environment_vars.locals.key_name
+  cron_key_update_schedule = local.environment_vars.locals.cron_key_update_schedule
+  github_file              = local.environment_vars.locals.github_file
   
   aws_region               = local.account_vars.locals.aws_region
   aws_account_id           = local.account_vars.locals.aws_account_id
   namespace                = local.account_vars.locals.namespace
   resource_name            = local.account_vars.locals.resource_name
-  cron_key_update_schedule = local.environment_vars.locals.cron_key_update_schedule
-  github_file              = local.environment_vars.locals.github_file
+  key_name = local.account_vars.locals.key_name
+
+
 }
 # Include all settings from the root terragrunt.hcl file
 include {
