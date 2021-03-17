@@ -30,7 +30,7 @@ dependency "network" {
   config_path = "../network"
   // skip_outputs = true
   mock_outputs = {
-  vpc_id = "",
+    vpc_id = "",
   }
 }
 

@@ -22,5 +22,5 @@ include {
 # These are the variables we have to pass in to use the module specified in the terragrunt configuration above
 inputs = {
   domain_name = local.domain_name
-  tags = local.tags 
+  tags        = local.tags
 }

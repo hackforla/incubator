@@ -12,7 +12,7 @@ locals {
   # Extract out common variables for reuse
   tags        = local.environment_vars.locals.tags
   domain_name = local.environment_vars.locals.domain_name
-  host_names = local.environment_vars.locals.host_names
+  host_names  = local.environment_vars.locals.host_names
 }
 # Include all settings from the root terragrunt.hcl file
 include {
@@ -26,7 +26,7 @@ dependency "alb" {
   config_path = "../alb"
   // skip_outputs = true
   mock_outputs = {
-  lb_dns_name = ""
+    lb_dns_name = ""
   }
 }
 
@@ -34,8 +34,8 @@ dependency "alb" {
 inputs = {
   // Input from Variables
   domain_name = local.domain_name
-  host_names = local.host_names
-  tags = local.tags
+  host_names  = local.host_names
+  tags        = local.tags
 
   // Input from other Modules
   alb_external_dns = dependency.alb.outputs.lb_dns_name

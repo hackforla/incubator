@@ -19,7 +19,7 @@ locals {
   aws_account_id = local.account_vars.locals.aws_account_id
   namespace      = local.account_vars.locals.namespace
   resource_name  = local.account_vars.locals.resource_name
-  key_name = local.account_vars.locals.key_name
+  key_name       = local.account_vars.locals.key_name
 }
 # Include all settings from the root terragrunt.hcl file
 include {
@@ -33,16 +33,16 @@ dependency "network" {
   config_path = "../network"
   // skip_outputs = true
   mock_outputs = {
-  vpc_id            = "",
-  vpc_cidr          = "",
-  public_subnet_ids = [],
+    vpc_id            = "",
+    vpc_cidr          = "",
+    public_subnet_ids = [],
   }
 }
 dependency "alb" {
   config_path = "../alb"
   // skip_outputs = true
   mock_outputs = {
-  security_group_id = "",
+    security_group_id = "",
   }
 }
 
@@ -57,7 +57,7 @@ inputs = {
   // Input from Variables
   ecs_ec2_instance_count = local.ecs_ec2_instance_count
   ecs_ec2_instance_type  = local.ecs_ec2_instance_type
-  key_name = local.key_name
+  key_name               = local.key_name
   environment            = local.env
   resource_name          = local.resource_name
   tags                   = local.tags

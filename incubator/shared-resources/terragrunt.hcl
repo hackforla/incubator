@@ -6,14 +6,14 @@
 
 locals {
   # Automatically load account-level variables
-  account_vars = read_terragrunt_config(find_in_parent_folders("account.hcl")) 
+  account_vars = read_terragrunt_config(find_in_parent_folders("account.hcl"))
 
   # Automatically load environment-level variables
   environment_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))
 
   # Extract the variables we need for easy access
-  aws_region   = local.account_vars.locals.aws_region
-  s3_terragrunt_bucket   = local.account_vars.locals.s3_terragrunt_bucket
+  aws_region              = local.account_vars.locals.aws_region
+  s3_terragrunt_bucket    = local.account_vars.locals.s3_terragrunt_bucket
   dynamodb_terraform_lock = local.account_vars.locals.dynamodb_terraform_lock
 }
 
@@ -32,7 +32,7 @@ EOF
 # Configure Terragrunt to automatically store tfstate files in an S3 bucket
 remote_state {
   backend = "s3"
-  config  = {
+  config = {
     encrypt        = true
     bucket         = local.s3_terragrunt_bucket
     key            = "terragrunt-states/incubator/${path_relative_to_include()}/terraform.tfstate"

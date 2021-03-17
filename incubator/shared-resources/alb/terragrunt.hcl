@@ -10,9 +10,9 @@ locals {
   account_vars     = read_terragrunt_config(find_in_parent_folders("account.hcl"))
 
   # Extract out common variables for reuse
-  default_alb_url  = local.environment_vars.locals.default_alb_url
-  env  = local.environment_vars.locals.environment
-  tags = local.environment_vars.locals.tags
+  default_alb_url = local.environment_vars.locals.default_alb_url
+  env             = local.environment_vars.locals.environment
+  tags            = local.environment_vars.locals.tags
 
   aws_region     = local.account_vars.locals.aws_region
   aws_account_id = local.account_vars.locals.aws_account_id
@@ -30,15 +30,15 @@ dependency "network" {
   config_path = "../network"
   // skip_outputs = true
   mock_outputs = {
-  vpc_id            = "",
-  public_subnet_ids = ""
+    vpc_id            = "",
+    public_subnet_ids = ""
   }
 }
 dependency "acm" {
   config_path = "../acm"
   // skip_outputs = true
   mock_outputs = {
-  acm_certificate_arn = ""
+    acm_certificate_arn = ""
   }
 }
 
@@ -50,10 +50,10 @@ inputs = {
   acm_certificate_arn = dependency.acm.outputs.acm_certificate_arn
 
   // Input from Variables
-  account_id    = local.aws_account_id
-  region        = local.aws_region
-  environment   = local.env
-  resource_name = local.resource_name
+  account_id      = local.aws_account_id
+  region          = local.aws_region
+  environment     = local.env
+  resource_name   = local.resource_name
   default_alb_url = local.default_alb_url
 
   tags = local.tags
