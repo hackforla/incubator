@@ -1,0 +1,16 @@
+[
+  {
+    "name": "${container_name}",
+    "image": "redislabs/rejson:latest",
+    "cpu": ${container_cpu},
+    "memoryReservation": ${container_memory},
+    "portMappings": [
+        {
+            "containerPort": 6379,
+            "hostPort": 6379,
+            "protocol": "tcp"
+        }
+    ],
+    "essential": true
+  }
+]
