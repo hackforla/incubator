@@ -8,6 +8,7 @@ locals {
   # Automatically load environment-level variables
   environment_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))
   account_vars     = read_terragrunt_config(find_in_parent_folders("account.hcl"))
+  rds_vars         = read_terragrunt_config(find_in_parent_folders("rds.hcl"))
 
   # Extract out common variables for reuse
   env = local.environment_vars.locals.environment
@@ -16,6 +17,9 @@ locals {
   namespace     = local.account_vars.locals.namespace
   resource_name = local.account_vars.locals.resource_name
 
+  create_db_instance = local.rds_vars.locals.create_db_instance
+  db_username        = local.rds_vars.locals.db_username
+  db_password        = local.rds_vars.locals.db_password
 }
 # Include all settings from the root terragrunt.hcl file
 include {
@@ -31,8 +35,8 @@ dependency "network" {
   mock_outputs = {
     vpc_id               = "",
     vpc_cidr             = "",
-    private_subnet_ids   = "",
-    private_subnet_cidrs = ""
+    private_subnet_ids   = [""],
+    private_subnet_cidrs = [""]
   }
 }
 
@@ -42,11 +46,10 @@ inputs = {
   stage         = local.env
   region        = local.aws_region
 
-  // Set Environment Variables eg; -> export DB_USERNAME="postgres" DB_NAME="default-db" DB_PASSWORD="supersecurepw" DB_PORT=5432
-  db_username = get_env("DB_USERNAME")
-  db_name     = get_env("DB_NAME")
-  db_password = get_env("DB_PASSWORD")
-  db_port     = get_env("DB_PORT")
+  // Requires REPO_ROOT/incubator/rds.hcl
+  create_db_instance = local.create_db_instance
+  db_username        = local.db_username
+  db_password        = local.db_password
 
   // Module Network variables
   vpc_id               = dependency.network.outputs.vpc_id
