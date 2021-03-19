@@ -31,7 +31,7 @@ dependency "network" {
   // skip_outputs = true
   mock_outputs = {
     vpc_id            = "",
-    public_subnet_ids = ""
+    public_subnet_ids = [""]
   }
 }
 dependency "acm" {
