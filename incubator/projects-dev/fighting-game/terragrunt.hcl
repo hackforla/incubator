@@ -11,6 +11,7 @@ locals {
   account_vars     = read_terragrunt_config(find_in_parent_folders("account.hcl"))
 
   # Extract out common variables for reuse
+  aws_region     = local.account_vars.locals.aws_region
   tags = local.environment_vars.locals.tags
 
   // Container
@@ -28,8 +29,6 @@ locals {
   project_name = local.project_vars.locals.project_name
   host_names   = local.project_vars.locals.host_names
 
-  aws_region     = local.account_vars.locals.aws_region
-  aws_account_id = local.account_vars.locals.aws_account_id
 }
 # Include all settings from the root terragrunt.hcl file
 include {
@@ -44,8 +43,8 @@ dependency "network" {
   // skip_outputs = true
   mock_outputs = {
     vpc_id            = "",
-    vpc_cidr          = "",
-    public_subnet_ids = [],
+    vpc_cidr          = "10.0.0.0/16",
+    public_subnet_ids = [""],
   }
 }
 dependency "alb" {
@@ -81,7 +80,6 @@ inputs = {
   task_execution_role_arn = dependency.ecs.outputs.task_execution_role_arn
 
   // Input from Variables
-  account_id = local.aws_account_id
   region     = local.aws_region
   tags       = local.tags
 

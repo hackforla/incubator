@@ -15,7 +15,6 @@ locals {
   tags            = local.environment_vars.locals.tags
 
   aws_region     = local.account_vars.locals.aws_region
-  aws_account_id = local.account_vars.locals.aws_account_id
   resource_name  = local.account_vars.locals.resource_name
 }
 # Include all settings from the root terragrunt.hcl file
@@ -50,7 +49,6 @@ inputs = {
   acm_certificate_arn = dependency.acm.outputs.acm_certificate_arn
 
   // Input from Variables
-  account_id      = local.aws_account_id
   region          = local.aws_region
   environment     = local.env
   resource_name   = local.resource_name

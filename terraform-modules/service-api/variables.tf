@@ -8,11 +8,6 @@ locals {
 // --------------------------
 // Global/General Variables
 // --------------------------
-variable "account_id" {
-  type        = number
-  description = "AWS Account ID"
-}
-
 variable "project_name" {
   type        = string
   description = "The overall name of the project using this infrastructure; used to group related resources by"

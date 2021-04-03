@@ -11,7 +11,6 @@ locals {
 
   # Extract out common variables for reuse
   aws_region     = local.account_vars.locals.aws_region
-  aws_account_id = local.account_vars.locals.aws_account_id
   namespace      = local.account_vars.locals.namespace
   resource_name  = local.account_vars.locals.resource_name
 
@@ -40,7 +39,6 @@ inputs = {
   vpc_id = dependency.network.outputs.vpc_id
 
   // Input from Variables
-  account_id    = local.aws_account_id
   region        = local.aws_region
   environment   = local.env
   resource_name = local.resource_name

@@ -74,14 +74,14 @@ variable "db_instance_class" {
 }
 variable "db_engine_version" {
   description = "the database major and minor version of postgres; default to 11.10"
-  default     = "11.10"
+  default     = "12.5"
 }
 variable "db_allow_major_engine_version_upgrade" {
   default = true
 }
 
 variable "db_major_version" {
-  default = "11"
+  default = "12"
 }
 
 
