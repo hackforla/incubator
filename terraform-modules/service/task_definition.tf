@@ -37,7 +37,7 @@ resource "aws_ecs_task_definition" "task" {
     }
   )
 
-  requires_compatibilities = ["EC2", "FARGATE"]
+  requires_compatibilities = [var.launch_type]
   network_mode             = local.task_network_mode
   execution_role_arn       = var.task_execution_role_arn
   memory                   = local.task_memory

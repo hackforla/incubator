@@ -31,14 +31,6 @@ resource "aws_security_group" "fargate" {
   vpc_id      = var.vpc_id
 
   ingress {
-    description     = "All ingress from ALB"
-    from_port       = 0
-    to_port         = 65535
-    protocol        = "tcp"
-    security_groups = [var.alb_security_group_id]
-  }
-
-  ingress {
     description = "All Internal traffic"
     from_port   = 0
     to_port     = 65535

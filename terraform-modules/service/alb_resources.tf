@@ -4,7 +4,7 @@ resource "aws_lb_target_group" "this" {
   port                 = 80
   protocol             = "HTTP"
   vpc_id               = var.vpc_id
-  deregistration_delay = 90
+  deregistration_delay = 5
   stickiness {
     type = "lb_cookie"
   }
