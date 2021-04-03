@@ -10,19 +10,17 @@ locals {
   account_vars     = read_terragrunt_config(find_in_parent_folders("account.hcl"))
 
   # Extract out common variables for reuse
+  aws_region     = local.account_vars.locals.aws_region
+  namespace      = local.account_vars.locals.namespace
+  resource_name  = local.account_vars.locals.resource_name
+
+  key_name       = local.account_vars.locals.key_name
   env                      = local.environment_vars.locals.environment
   tags                     = local.environment_vars.locals.tags
   domain_name              = local.environment_vars.locals.domain_name
   bastion_hostname         = local.environment_vars.locals.bastion_hostname
   cron_key_update_schedule = local.environment_vars.locals.cron_key_update_schedule
   github_file              = local.environment_vars.locals.github_file
-
-  aws_region     = local.account_vars.locals.aws_region
-  aws_account_id = local.account_vars.locals.aws_account_id
-  namespace      = local.account_vars.locals.namespace
-  resource_name  = local.account_vars.locals.resource_name
-  key_name       = local.account_vars.locals.key_name
-
 
 }
 # Include all settings from the root terragrunt.hcl file
@@ -49,7 +47,6 @@ inputs = {
   public_subnet_ids = dependency.network.outputs.public_subnet_ids
 
   // Input from variables
-  account_id       = local.aws_account_id
   region           = local.aws_region
   resource_name    = local.resource_name
   domain_name      = local.domain_name

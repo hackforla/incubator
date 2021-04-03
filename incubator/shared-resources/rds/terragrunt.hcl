@@ -34,7 +34,7 @@ dependency "network" {
   // skip_outputs = true
   mock_outputs = {
     vpc_id               = "",
-    vpc_cidr             = "",
+    vpc_cidr             = "10.0.0.0/16",
     private_subnet_ids   = [""],
     private_subnet_cidrs = [""]
   }

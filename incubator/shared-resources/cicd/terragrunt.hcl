@@ -9,7 +9,6 @@ locals {
   environment_vars = read_terragrunt_config(find_in_parent_folders("env.hcl"))
   account_vars     = read_terragrunt_config(find_in_parent_folders("account.hcl"))
 
-  account_id = local.account_vars.locals.aws_account_id
   tags       = local.environment_vars.locals.tags
 }
 # Include all settings from the root terragrunt.hcl file
@@ -29,7 +28,6 @@ dependency "ecs" {
 }
 
 inputs = {
-  account_id = local.account_id
   tags       = local.tags
 
   execution_role_arn = dependency.ecs.outputs.task_execution_role_arn

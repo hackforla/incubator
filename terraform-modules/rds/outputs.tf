@@ -1,15 +1,15 @@
 output "db_address" {
   description = "The aws provided URL of the database"
-  value       = module.db.this_db_instance_address
+  value       = element(concat(aws_db_instance.this.*.address, [""]), 0)
 }
 
 output "db_instance_hosted_zone_id" {
-  value = module.db.this_db_instance_hosted_zone_id
+  value = element(concat(aws_db_instance.this.*.hosted_zone_id, [""]), 0)
 }
 
 output "db_instance_endpoint" {
   description = "The db adress and port for this RDS instance"
-  value       = module.db.this_db_instance_endpoint
+  value       = element(concat(aws_db_instance.this.*.endpoint, [""]), 0)
 }
 
 output "db_security_group_id" {

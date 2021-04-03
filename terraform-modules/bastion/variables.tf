@@ -5,10 +5,6 @@ locals {
 // --------------------------
 // Global/General Variables
 // --------------------------
-variable "account_id" {
-  description = "AWS Account ID"
-}
-
 variable "resource_name" {
   type        = string
   description = "The overall name of the shared resources"

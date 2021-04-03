@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 resource "aws_iam_user" "gha_user" {
   name = "github-action-incubator"
 
@@ -23,8 +25,8 @@ resource "aws_iam_user_policy" "gha_policy" {
                 "iam:PassRole"
             ],
             "Resource": [
-                "arn:aws:iam::${var.account_id}:role/ecsServiceRole",
-                "arn:aws:iam::${var.account_id}:role/ecsTaskExecutionRole",
+                "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/ecsServiceRole",
+                "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/ecsTaskExecutionRole",
                 "${var.execution_role_arn}"
             ]
         },
