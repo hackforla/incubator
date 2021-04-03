@@ -1,5 +1,5 @@
 locals {
-  environment     = "test"
+  environment     = "prod"
   domain_name     = "foodoasis.net"
   default_alb_url = "www.hackforla.org"
 
