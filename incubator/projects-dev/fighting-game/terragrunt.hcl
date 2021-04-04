@@ -14,8 +14,9 @@ locals {
   aws_region     = local.account_vars.locals.aws_region
   tags = local.environment_vars.locals.tags
 
-  // Container
+  // Project Vars
   env                = local.project_vars.locals.environment
+  path_patterns = local.project_vars.locals.path_patterns
   application_type   = local.project_vars.locals.application_type
   launch_type        = local.project_vars.locals.launch_type
   container_image    = local.project_vars.locals.container_image
@@ -86,6 +87,7 @@ inputs = {
   environment  = local.env
   project_name = local.project_name
   host_names   = local.host_names
+  path_patterns = local.path_patterns
 
   // Container Variables
   application_type   = local.application_type

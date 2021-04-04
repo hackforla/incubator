@@ -21,6 +21,7 @@ resource "aws_lb_target_group" "this" {
 }
 
 resource "aws_lb_listener_rule" "static" {
+  // count = length(var.https_listener_rules)
   listener_arn = var.alb_https_listener_arn
 
   action {
@@ -31,6 +32,19 @@ resource "aws_lb_listener_rule" "static" {
   condition {
     host_header {
       values = var.host_names
+    }
+  }
+
+  # Path Pattern condition
+  dynamic "condition" {
+    for_each = [
+      for path in var.path_patterns : path
+    ]
+
+    content {
+      path_pattern {
+        values = var.path_patterns
+      }
     }
   }
 
