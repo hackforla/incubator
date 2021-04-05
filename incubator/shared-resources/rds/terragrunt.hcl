@@ -18,6 +18,8 @@ locals {
   resource_name = local.account_vars.locals.resource_name
 
   create_db_instance = local.rds_vars.locals.create_db_instance
+  db_public_access   = local.rds_vars.locals.db_public_access
+  db_snapshot_migration   = local.rds_vars.locals.db_snapshot_migration
   db_username        = local.rds_vars.locals.db_username
   db_password        = local.rds_vars.locals.db_password
 }
@@ -35,8 +37,10 @@ dependency "network" {
   mock_outputs = {
     vpc_id               = "",
     vpc_cidr             = "10.0.0.0/16",
+    public_subnet_ids    = [""],
+    public_subnet_cidrs  = [""],
     private_subnet_ids   = [""],
-    private_subnet_cidrs = [""]
+    private_subnet_cidrs = [""]    
   }
 }
 
@@ -48,12 +52,16 @@ inputs = {
 
   // Requires REPO_ROOT/incubator/rds.hcl
   create_db_instance = local.create_db_instance
+  db_public_access     = local.db_public_access
+  db_snapshot_migration = local.db_snapshot_migration
   db_username        = local.db_username
   db_password        = local.db_password
 
   // Module Network variables
   vpc_id               = dependency.network.outputs.vpc_id
   vpc_cidr             = dependency.network.outputs.vpc_cidr
-  private_subnet_ids   = dependency.network.outputs.private_subnet_ids
-  private_subnet_cidrs = dependency.network.outputs.private_subnet_cidrs
+  public_subnet_ids    = dependency.network.outputs.public_subnet_ids
+  public_subnet_cidrs  = dependency.network.outputs.public_subnet_cidrs
+  private_subnet_ids   = dependency.network.outputs.public_subnet_ids
+  private_subnet_cidrs = dependency.network.outputs.public_subnet_cidrs
 }

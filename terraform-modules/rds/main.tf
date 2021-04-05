@@ -1,3 +1,6 @@
+locals {
+  db_subnet_ids = var.db_public_access ? var.public_subnet_ids : var.private_subnet_ids
+}
 resource "aws_db_instance" "this" {
   count = var.create_db_instance ? 1 : 0
 
@@ -12,10 +15,11 @@ resource "aws_db_instance" "this" {
   password                            = var.db_password
   port                                = var.db_port
 
+  publicly_accessible    = var.db_public_access
   vpc_security_group_ids = [aws_security_group.db.id]
   db_subnet_group_name   = aws_db_subnet_group.this.name
-  parameter_group_name   = "postgres${var.db_major_version}"
-  option_group_name      = var.db_major_version
+  // parameter_group_name   = "postgres${var.db_major_version}"
+  // option_group_name      = var.db_major_version
 
   allow_major_version_upgrade = true
   auto_minor_version_upgrade  = true
@@ -43,7 +47,7 @@ resource "aws_db_instance" "this" {
 
 resource "aws_db_subnet_group" "this" {
   name        = local.envname
-  subnet_ids  = var.private_subnet_ids
+  subnet_ids  = local.db_subnet_ids
 
   tags = merge(
     var.tags,

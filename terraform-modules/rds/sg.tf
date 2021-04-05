@@ -14,7 +14,7 @@ resource "aws_security_group" "db" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr]
+    cidr_blocks = [var.db_public_access ? "0.0.0.0/0" : var.vpc_cidr]
   }
 
   egress {

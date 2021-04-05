@@ -30,12 +30,22 @@ variable "region" {
 }
 
 variable "private_subnet_cidrs" {
-  description = "private subnet cidrs from where to place the RDS instance"
+  description = "vpc private subnets cidrs"
   type        = list(string)
 }
 
 variable "private_subnet_ids" {
-  description = "private subnet ids from where to place the RDS instance"
+  description = "vpc private subnet ids"
+  type        = list(string)
+}
+
+variable "public_subnet_cidrs" {
+  description = "vpc public subnets cidrs"
+  type        = list(string)
+}
+
+variable "public_subnet_ids" {
+  description = "vpc public subnet ids"
   type        = list(string)
 }
 
@@ -50,6 +60,12 @@ variable "tags" {
 variable "create_db_instance" {
   type    = bool
   default = false
+}
+
+variable "db_public_access" {
+  description = "Bool to control if instance is publicly accessible"
+  type        = bool
+  default     = false
 }
 
 variable "db_username" {
@@ -69,19 +85,19 @@ variable "db_port" {
 }
 
 variable "db_instance_class" {
-  description = "The instance type of the db; defaults to db.t2.small"
+  description = "The instance type of the db"
   default     = "db.t3.small"
 }
 variable "db_engine_version" {
-  description = "the database major and minor version of postgres; default to 11.10"
-  default     = "12.5"
+  description = "the database major and minor version of postgres"
+  default     = "13.1"
 }
 variable "db_allow_major_engine_version_upgrade" {
   default = true
 }
 
 variable "db_major_version" {
-  default = "12"
+  default = "13"
 }
 
 
