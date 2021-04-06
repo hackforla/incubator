@@ -9,8 +9,10 @@ locals {
   # Conditional Intellegience for container compute resources
   # 0 CPU means unlimited cpu access
   # 0 memory is invalid, thus it defaults to 128mb
-  container_memory = var.launch_type == "FARGATE" ? var.container_memory : var.container_memory == 0 ? 128 : var.container_memory
-  task_cpu         = var.launch_type == "FARGATE" ?  var.container_cpu : var.container_cpu == 0 ? null : var.container_cpu
+  container_cpu = var.launch_type == "FARGATE" ? var.container_cpu : var.container_cpu == 0 ? 128 : var.container_cpu
+  container_memory = var.launch_type == "FARGATE" ? var.container_memory : var.container_memory == 0 ? 256 : var.container_memory
+  
+  task_cpu         = var.launch_type == "FARGATE" ? var.container_cpu : var.container_cpu == 0 ? null : var.container_cpu
   task_memory      = var.launch_type == "FARGATE" ? var.container_memory : var.container_memory == 0 ? 128 : var.container_memory
 
   task_network_mode = var.launch_type == "FARGATE" ? "awsvpc" : "bridge"
