@@ -15,10 +15,10 @@ locals {
   ecs_ec2_instance_count = local.environment_vars.locals.ecs_ec2_instance_count
   ecs_ec2_instance_type  = local.environment_vars.locals.ecs_ec2_instance_type
 
-  aws_region     = local.account_vars.locals.aws_region
-  namespace      = local.account_vars.locals.namespace
-  resource_name  = local.account_vars.locals.resource_name
-  key_name       = local.account_vars.locals.key_name
+  aws_region    = local.account_vars.locals.aws_region
+  namespace     = local.account_vars.locals.namespace
+  resource_name = local.account_vars.locals.resource_name
+  key_name      = local.account_vars.locals.key_name
 }
 # Include all settings from the root terragrunt.hcl file
 include {

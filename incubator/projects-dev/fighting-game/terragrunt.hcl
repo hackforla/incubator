@@ -11,12 +11,12 @@ locals {
   account_vars     = read_terragrunt_config(find_in_parent_folders("account.hcl"))
 
   # Extract out common variables for reuse
-  aws_region     = local.account_vars.locals.aws_region
-  tags = local.environment_vars.locals.tags
+  aws_region = local.account_vars.locals.aws_region
+  tags       = local.environment_vars.locals.tags
 
   // Project Vars
   env                = local.project_vars.locals.environment
-  path_patterns = local.project_vars.locals.path_patterns
+  path_patterns      = local.project_vars.locals.path_patterns
   application_type   = local.project_vars.locals.application_type
   launch_type        = local.project_vars.locals.launch_type
   container_image    = local.project_vars.locals.container_image
@@ -81,12 +81,12 @@ inputs = {
   task_execution_role_arn = dependency.ecs.outputs.task_execution_role_arn
 
   // Input from Variables
-  region     = local.aws_region
-  tags       = local.tags
+  region = local.aws_region
+  tags   = local.tags
 
-  environment  = local.env
-  project_name = local.project_name
-  host_names   = local.host_names
+  environment   = local.env
+  project_name  = local.project_name
+  host_names    = local.host_names
   path_patterns = local.path_patterns
 
   // Container Variables

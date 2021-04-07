@@ -14,8 +14,8 @@ locals {
   env             = local.environment_vars.locals.environment
   tags            = local.environment_vars.locals.tags
 
-  aws_region     = local.account_vars.locals.aws_region
-  resource_name  = local.account_vars.locals.resource_name
+  aws_region    = local.account_vars.locals.aws_region
+  resource_name = local.account_vars.locals.resource_name
 }
 # Include all settings from the root terragrunt.hcl file
 include {

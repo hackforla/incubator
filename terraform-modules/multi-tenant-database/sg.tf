@@ -1,6 +1,6 @@
-resource "aws_security_group" "db" {
-  name        = "${local.envname}-database"
-  description = "Ingress and egress for ${local.envname} RDS"
+resource "aws_security_group" "this" {
+  name        = "${local.envname}-db-lambda"
+  description = "Ingress and egress for ${local.envname} lambda function"
   vpc_id      = var.vpc_id
   tags = merge(
     var.tags,
@@ -11,10 +11,10 @@ resource "aws_security_group" "db" {
 
   ingress {
     description = "db ingress from vpc"
-    from_port   = 5432
-    to_port     = 5432
+    from_port   = 0
+    to_port     = 65535
     protocol    = "tcp"
-    cidr_blocks = [var.db_public_access ? "0.0.0.0/0" : var.vpc_cidr]
+    cidr_blocks = [var.vpc_cidr]
   }
 
   egress {

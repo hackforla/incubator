@@ -71,7 +71,7 @@ variable "https_listener_rules" {
 }
 
 variable "path_patterns" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 

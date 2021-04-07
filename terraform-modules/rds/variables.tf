@@ -24,6 +24,7 @@ variable "environment" {
   type        = string
   description = "a short name describing the lifecyle or stage of development that this is running for; ex: 'dev', 'qa', 'prod', 'test'"
 }
+
 variable "region" {
   type        = string
   description = "the aws region code where this is deployed; ex: 'us-west-2', 'us-east-1', 'us-east-2'"

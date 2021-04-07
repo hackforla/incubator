@@ -11,9 +11,9 @@ resource "aws_db_instance" "this" {
   instance_class    = var.db_instance_class
   allocated_storage = 100
 
-  username                            = var.db_username
-  password                            = var.db_password
-  port                                = var.db_port
+  username = var.db_username
+  password = var.db_password
+  port     = var.db_port
 
   publicly_accessible    = var.db_public_access
   vpc_security_group_ids = [aws_security_group.db.id]
@@ -46,8 +46,8 @@ resource "aws_db_instance" "this" {
 }
 
 resource "aws_db_subnet_group" "this" {
-  name        = local.envname
-  subnet_ids  = local.db_subnet_ids
+  name       = local.envname
+  subnet_ids = local.db_subnet_ids
 
   tags = merge(
     var.tags,
