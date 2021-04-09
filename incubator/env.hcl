@@ -3,6 +3,11 @@ locals {
   domain_name     = "foodoasis.net"
   default_alb_url = "www.hackforla.org"
 
+  // Amazon Certificate Manager
+  // Hardcoding pre-created certificate to avoid reaching limit https://github.com/aws/aws-cdk/issues/5889
+  // If empty, new certificate will be created; be careful
+  wildcard_cert_arn = "arn:aws:acm:us-west-2:470363915259:certificate/f4739074-6695-4939-9d3b-b45c89f52eb9"
+
   // Route 53 Records - That will point to the ALB
   host_names = ["fight.foodoasis.net"]
 
@@ -11,7 +16,7 @@ locals {
   ecs_ec2_instance_type  = "t3.small"
 
   // Bastion
-  bastion_hostname         = "bastion2.foodoasis.net"
+  bastion_hostname         = "bastion.foodoasis.net"
   cron_key_update_schedule = "5,0,*,* * * * *"
   github_file = {
     github_repo_owner = "hackforla",

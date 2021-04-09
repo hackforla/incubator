@@ -12,6 +12,7 @@ locals {
   # Extract out common variables for reuse
   tags        = local.environment_vars.locals.tags
   domain_name = local.environment_vars.locals.domain_name
+  wildcard_cert_arn        = local.environment_vars.locals.wildcard_cert_arn
 }
 # Include all settings from the root terragrunt.hcl file
 include {
@@ -22,4 +23,5 @@ include {
 inputs = {
   domain_name = local.domain_name
   tags        = local.tags
+  wildcard_cert_arn = local.wildcard_cert_arn
 }

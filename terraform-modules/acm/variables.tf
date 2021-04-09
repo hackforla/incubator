@@ -11,3 +11,9 @@ variable "tags" {
   default = { terraform_managed = "true" }
   type    = map(any)
 }
+
+variable "wildcard_cert_arn" {
+  default = ""
+  type = string
+  description = "use pre-existing wildcard cert or create new cert if empty"
+}

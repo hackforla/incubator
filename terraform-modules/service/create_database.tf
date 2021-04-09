@@ -1,15 +1,26 @@
-// data "aws_lambda_invocation" "example" {
-//   count = var.data ? 1 : 0
-//   function_name = aws_lambda_function.test_lambda[count.index].function_name
+data "aws_lambda_invocation" "this" {
+  count = lookup(var.postgres_database, "database_username", "") != "" ? 1 : 0
+  function_name = var.lambda_function
 
-//   input = <<JSON
-// {
-//   "db_host": "incubator-prod-database.ckkyjlg5wpvd.us-west-1.rds.amazonaws.com",
-//   "db_password": "asioasjf"
-// }
-// JSON
-// }
+  input = jsonencode({
+    db_host = var.db_instance_endpoint
+    db_password = var.root_db_password
+  })
+}
 
-// output "result_entry" {
-//   value = jsondecode(data.aws_lambda_invocation.example.result)
-// }
+output "result_entry" {
+  value = element(concat(data.aws_lambda_invocation.this.*.result, [""]), 0)
+}
+
+// jsonencode({
+//     db_host = var.db_instance_endpoint
+//     db_password = var.root_db_password
+//   })
+
+
+// <<JSON
+//   {
+//     "db_host": "incubator-prod-database.ckkyjlg5wpvd.us-west-1.rds.amazonaws.com",
+//     "db_password": "asioasjf"
+//   }
+//   JSON

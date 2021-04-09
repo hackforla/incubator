@@ -130,3 +130,24 @@ variable "container_port" {
 variable "container_env_vars" {
   type = map(string)
 }
+
+variable "postgres_database" {
+  type = map(string)
+  default = {}
+  description = "non-empty map will invoke lambda function to create database and users for application"
+}
+
+variable "lambda_function" {
+  type = string
+  description = "name of the multi-db lambda function"
+}
+
+variable "db_instance_endpoint" {
+  type = string
+  description = "multi-tenant database endpoint, include host and port"
+}
+
+variable "root_db_password" {
+  type = string
+  description = "root/postgres user to create new db and users"
+}

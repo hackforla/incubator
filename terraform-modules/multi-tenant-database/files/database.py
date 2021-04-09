@@ -10,8 +10,8 @@ def lambda_handler(event, context):
 
 
   root_db_user = "postgres"
-  root_db_password = ""
-  db_host = "incubator-prod-database.ckkyjlg5wpvd.us-west-1.rds.amazonaws.com:5432"
+  root_db_password = "asdfhaisudyfaskn"
+  db_host = "incubator-prod-database.cp6qodgwcarq.us-west-2.rds.amazonaws.com:5432"
   database_url = f"postgresql://{root_db_user}:{root_db_password}@{db_host}/"
 
   engine = create_engine(database_url+"postgres", isolation_level="AUTOCOMMIT")
