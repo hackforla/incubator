@@ -147,7 +147,12 @@ variable "db_instance_endpoint" {
   description = "multi-tenant database endpoint, include host and port"
 }
 
+variable "root_db_username" {
+  type = string
+  description = "root database user"
+}
+
 variable "root_db_password" {
   type = string
-  description = "root/postgres user to create new db and users"
+  description = "root database password"
 }

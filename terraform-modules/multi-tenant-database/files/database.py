@@ -2,16 +2,16 @@ from sqlalchemy import create_engine
 from sqlalchemy import exc
 
 def lambda_handler(event, context):
-  new_db = "new_prod"
-  db_owner = "new_prod_owner"
-  db_user = "new_prod_appuser"
-  new_password = "lol"
+  new_db = event["new_db"]
+  db_owner = event["new_db_user"]
+  db_user = event["new_db_user"]
+  new_password = event["new_db_password"]
   new_schema = f"{new_db}_schema"
 
 
-  root_db_user = "postgres"
-  root_db_password = "asdfhaisudyfaskn"
-  db_host = "incubator-prod-database.cp6qodgwcarq.us-west-2.rds.amazonaws.com:5432"
+  root_db_user = event["root_db_username"]
+  root_db_password = event["root_db_password"]
+  db_host = event["db_host"]
   database_url = f"postgresql://{root_db_user}:{root_db_password}@{db_host}/"
 
   engine = create_engine(database_url+"postgres", isolation_level="AUTOCOMMIT")

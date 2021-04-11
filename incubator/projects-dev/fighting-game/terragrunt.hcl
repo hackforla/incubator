@@ -16,6 +16,7 @@ locals {
   tags       = local.environment_vars.locals.tags
 
   // RDS
+  root_db_username           = local.rds_vars.locals.db_username
   root_db_password           = local.rds_vars.locals.db_password
 
   // Project Vars
@@ -103,6 +104,7 @@ inputs = {
   // Input from Variables
   region = local.aws_region
   tags   = local.tags
+  root_db_username = local.root_db_username
   root_db_password = local.root_db_password
 
   environment   = local.env
