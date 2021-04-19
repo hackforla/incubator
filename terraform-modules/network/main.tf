@@ -26,5 +26,5 @@ module "vpc" {
 
   tags = local.tags
 
-  vpc_tags = merge({ Name = "${local.envname}-vpc" }, local.tags)
+  vpc_tags = merge({ Name = format("%s-vpc", local.envname) }, local.tags)
 }

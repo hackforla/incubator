@@ -7,7 +7,7 @@ output "cluster_id" {
 }
 
 output "ecs_asg_arn" {
-  value = module.asg.this_autoscaling_group_arn
+  value = module.asg.autoscaling_group_arn
 }
 
 output "asg_capacity_prov" {
@@ -16,4 +16,8 @@ output "asg_capacity_prov" {
 
 output "task_execution_role_arn" {
   value = aws_iam_role.ecs_task_execution_role.arn
+}
+
+output "default_ecs_service_role_arn" {
+  value = aws_iam_service_linked_role.ecs.arn
 }
