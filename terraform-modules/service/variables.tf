@@ -1,5 +1,5 @@
 locals {
-  envname                = "${var.project_name}-${var.environment}"
+  envname                = "${var.application}-${var.environment}"
   ecs_service_name       = "${local.envname}-service"
   task_definition_family = "${local.envname}-td"
   task_name              = "${local.envname}-task"
@@ -9,7 +9,7 @@ locals {
 // --------------------------
 // Global/General Variables
 // --------------------------
-variable "project_name" {
+variable "application" {
   description = "The overall name of the project using this infrastructure; used to group related resources by"
 }
 
@@ -137,22 +137,22 @@ variable "postgres_database" {
   description = "non-empty map will invoke lambda function to create database and users for application"
 }
 
-variable "lambda_function" {
-  type = string
-  description = "name of the multi-db lambda function"
-}
+// variable "lambda_function" {
+//   type = string
+//   description = "name of the multi-db lambda function"
+// }
 
-variable "db_instance_endpoint" {
-  type = string
-  description = "multi-tenant database endpoint, include host and port"
-}
+// variable "db_instance_endpoint" {
+//   type = string
+//   description = "multi-tenant database endpoint, include host and port"
+// }
 
-variable "root_db_username" {
-  type = string
-  description = "root database user"
-}
+// variable "root_db_username" {
+//   type = string
+//   description = "root database user"
+// }
 
-variable "root_db_password" {
-  type = string
-  description = "root database password"
-}
+// variable "root_db_password" {
+//   type = string
+//   description = "root database password"
+// }

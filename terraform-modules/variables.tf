@@ -1,19 +1,19 @@
 // --------------------------
 // Global/General Variables
 // --------------------------
-variable "account_id" {
-  type        = string
-  description = "AWS Account ID"
-}
+// variable "account_id" {
+//   type        = string
+//   description = "AWS Account ID"
+// }
 
 variable "region" {
   type = string
-  default = "us-west-1"
+  default = "us-west-2"
 }
 
-variable "project_name" {
+variable "application" {
   type        = string
-  description = "The overall name of the project using this infrastructure; used to group related resources by"
+  description = "The overall name of the project using this infrastructure"
   default = "cpr"
 }
 
@@ -30,16 +30,19 @@ variable "tags" {
 variable "domain_name" {
   type        = string
   description = "The domain name where the application will be deployed, must already live in AWS"
+  default = "test.com"
 }
 
 variable "host_names" {
   description = "The URL where the application will be hosted, must be a subdomain of the domain_name"
   type        = list(string)
+  default = []
 }
 
 variable "key_name" {
   type        = string
   description = "Pre-created SSH Key to use for ECS EC2 Instance"
+  default = ""
 }
 
 variable "bastion_hostname" {
@@ -60,6 +63,7 @@ variable "vpc_cidr" {
 variable "default_alb_url" {
   type        = string
   description = "Default URL to forward the user if there is no ALB route rules that match"
+  default = "www.maderenovation.com"
 }
 
 // --------------------------
@@ -76,7 +80,7 @@ variable "ecs_ec2_instance_count" {
 variable "create_db_instance" {
   type        = string
   description = "Flag to create DB Instace"
-  default = "false"
+  default = "true"
 }
 
 variable "db_username" {
@@ -115,6 +119,11 @@ variable "db_snapshot_migration" {
   default     = ""
 }
 
+variable "db_public_access" {
+  type = bool
+  description = "enable database public access or not"
+  default = true
+}
 // --------------------------
 // Bastion Module Variables
 // --------------------------

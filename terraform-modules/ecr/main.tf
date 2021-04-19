@@ -2,10 +2,10 @@
 // General Variables
 // --------------------------
 locals {
-  envname = "${var.project_name}-${var.environment}"
+  envname = "${var.application}-${var.environment}"
 }
 
-variable "project_name" {
+variable "application" {
   type        = string
   description = "The overall name of the project using this infrastructure; used to group related resources by"
 }
@@ -14,11 +14,17 @@ variable "environment" {
   type = string
 }
 
+variable "repos" {
+  type = list(string)
+}
+
 // --------------------------
 // Elastic Container Repository
 // --------------------------
 resource "aws_ecr_repository" "this" {
-  name                 = local.envname
+  for_each = toset(var.repos)
+
+  name                 = "${local.envname}-${each.value}"
   image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {

@@ -3,7 +3,7 @@ resource "aws_lb" "alb" {
   load_balancer_type = "application"
   subnets            = var.public_subnet_ids
   security_groups    = [aws_security_group.alb.id]
-  tags               = merge({ Name = var.resource_name }, var.tags)
+  tags               = merge({ Name = var.application }, var.tags)
 }
 
 resource "aws_security_group" "alb" {

@@ -1,14 +1,13 @@
 locals {
-  envname = "${var.resource_name}-${var.environment}"
+  envname = "${var.application}-${var.environment}"
 }
 
 variable "region" {
   type = string
 }
 
-variable "resource_name" {
+variable "application" {
   type        = string
-  description = "The overall name of the shared resources"
 }
 
 variable "environment" {
