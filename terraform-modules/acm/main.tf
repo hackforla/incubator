@@ -13,6 +13,6 @@ resource "aws_acm_certificate" "cert" {
 # Find a certificate that is issued
 data "aws_acm_certificate" "issued" {
   count = var.wildcard_cert_arn == "" ? 0 : 1
-  domain   = "*.foodoasis.net"
+  domain   = "*.${var.domain_name}"
   statuses = ["ISSUED"]
 }
