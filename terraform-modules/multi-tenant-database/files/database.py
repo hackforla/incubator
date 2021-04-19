@@ -3,8 +3,8 @@ from sqlalchemy import exc
 
 def lambda_handler(event, context):
   new_db = event["new_db"]
-  db_owner = event["new_db_user"]
-  db_user = event["new_db_user"]
+  db_owner = f"{event['new_db_user']}_root"
+  db_user = f"{event['new_db_user']}_app"
   new_password = event["new_db_password"]
   new_schema = f"{new_db}_schema"
 

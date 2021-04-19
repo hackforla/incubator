@@ -10,9 +10,8 @@ locals {
   account_vars     = read_terragrunt_config(find_in_parent_folders("account.hcl"))
 
   # Extract out common variables for reuse
-  tags        = local.environment_vars.locals.tags
-  domain_name = local.environment_vars.locals.domain_name
-  wildcard_cert_arn        = local.environment_vars.locals.wildcard_cert_arn
+  tags         = local.environment_vars.locals.tags
+  domain_names = local.environment_vars.locals.domain_names
 }
 # Include all settings from the root terragrunt.hcl file
 include {
@@ -21,7 +20,6 @@ include {
 
 # These are the variables we have to pass in to use the module specified in the terragrunt configuration above
 inputs = {
-  domain_name = local.domain_name
-  tags        = local.tags
-  wildcard_cert_arn = local.wildcard_cert_arn
+  domain_names = local.domain_names
+  tags         = local.tags
 }

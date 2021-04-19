@@ -1,5 +1,7 @@
-output "acm_certificate_arn" {
-  value = var.wildcard_cert_arn != "" ? var.wildcard_cert_arn : element(concat(aws_acm_certificate.cert.*.arn, [""]), 0)
-}
+output "acm_certificate_arns" {
+  value = [
+    for cert in data.aws_acm_certificate.issued : cert.arn
+  ]
 
-// : element(concat(data.aws_acm_certificate.issued.*.arn, [""]), 0)
+  // value = zipmap(values(aws_secretsmanager_secret.application-secret)[*]["arn"]))
+}

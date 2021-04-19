@@ -15,9 +15,8 @@ locals {
   resource_name = local.account_vars.locals.resource_name
 
   key_name                 = local.account_vars.locals.key_name
-  env                      = local.environment_vars.locals.environment
+  environment                      = local.environment_vars.locals.environment
   tags                     = local.environment_vars.locals.tags
-  domain_name              = local.environment_vars.locals.domain_name
   bastion_hostname         = local.environment_vars.locals.bastion_hostname
   cron_key_update_schedule = local.environment_vars.locals.cron_key_update_schedule
   github_file              = local.environment_vars.locals.github_file
@@ -49,10 +48,9 @@ inputs = {
   // Input from variables
   region           = local.aws_region
   resource_name    = local.resource_name
-  domain_name      = local.domain_name
+  environment = local.environment
   bastion_hostname = local.bastion_hostname
 
-  bastion_name          = "bastion-${local.resource_name}-${local.env}"
   keys_update_frequency = local.cron_key_update_schedule
   github_file           = local.github_file
   key_name              = local.key_name

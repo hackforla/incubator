@@ -24,6 +24,7 @@ dependency "ecs" {
   // skip_outputs = true
   mock_outputs = {
     task_execution_role_arn = ""
+    default_ecs_service_role_arn = ""
   }
 }
 
@@ -31,4 +32,5 @@ inputs = {
   tags = local.tags
 
   execution_role_arn = dependency.ecs.outputs.task_execution_role_arn
+  default_ecs_service_role_arn = dependency.ecs.outputs.default_ecs_service_role_arn
 }

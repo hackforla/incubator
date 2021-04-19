@@ -8,9 +8,9 @@ resource "aws_lambda_function" "create_db" {
   runtime       = "python3.8"
 
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
-  
+
   layers = [aws_lambda_layer_version.python-sqlalchemy.arn]
-  
+
   vpc_config {
     subnet_ids         = local.db_subnet_ids
     security_group_ids = [aws_security_group.this.id]

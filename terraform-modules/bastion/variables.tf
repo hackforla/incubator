@@ -14,11 +14,6 @@ variable "environment" {
   type = string
 }
 
-variable "domain_name" {
-  type        = string
-  description = "The domain name where the application will be deployed, must already live in AWS"
-}
-
 variable "vpc_id" {
   description = "VPC ID"
 }

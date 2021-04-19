@@ -37,7 +37,7 @@ dependency "acm" {
   config_path = "../acm"
   // skip_outputs = true
   mock_outputs = {
-    acm_certificate_arn = ""
+    acm_certificate_arns = [""]
   }
 }
 
@@ -46,7 +46,7 @@ inputs = {
   // Input from other Modules
   vpc_id              = dependency.network.outputs.vpc_id
   public_subnet_ids   = dependency.network.outputs.public_subnet_ids
-  acm_certificate_arn = dependency.acm.outputs.acm_certificate_arn
+  acm_certificate_arns = dependency.acm.outputs.acm_certificate_arns
 
   // Input from Variables
   region          = local.aws_region

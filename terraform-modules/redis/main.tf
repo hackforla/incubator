@@ -58,5 +58,5 @@ resource "aws_security_group" "redis_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  tags = merge({ Name = "${var.resource_name}-${var.environment}-redis" }, var.tags)
+  tags = merge({ Name = format("%s-redis", "${var.resource_name}-${var.environment}") }, var.tags)
 }

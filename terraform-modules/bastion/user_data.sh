@@ -71,10 +71,12 @@ sed -i 's/sudo.*(ALL:ALL) ALL/sudo ALL=(ALL) NOPASSWD:ALL/' /etc/sudoers
 
 
 # Create New Record for Bastion
+ROOT_DOMAIN_NAME = awk -F/ '{n=split($3, a, "."); printf("%s.%s", a[n-1], a[n])}' <<< "${bastion_hostname}"
+
 snap install jq
 snap install aws-cli --classic
 hosted_zone_id=$(aws route53 list-hosted-zones \
-| jq --arg domain "${domain_name}." '.HostedZones[] | select(.Name==$domain) | .Id' \
+| jq --arg domain "$ROOT_DOMAIN_NAME." '.HostedZones[] | select(.Name==$domain) | .Id' \
 | cut -d'/' -f3 | sed 's/.$//')
 
 bastion_public_ip=$(curl http://checkip.amazonaws.com)
@@ -88,14 +90,16 @@ tee "/tmp/new_record.json" <<EOF
                                     "Name": "${bastion_hostname}",
                                     "Type": "A",
                                     "TTL": 300,
-                                 "ResourceRecords": [{ "Value": "$bastion_public_ip"}]
+                                "ResourceRecords": [{ "Value": "$bastion_public_ip"}]
 }}]
 }
 EOF
 
-aws route53 change-resource-record-sets \
---hosted-zone-id $hosted_zone_id \
---change-batch file:///tmp/new_record.json
+if [[ $ROOT_DOMAIN_NAME != "" ]]; then
+  aws route53 change-resource-record-sets \
+  --hosted-zone-id $hosted_zone_id \
+  --change-batch file:///tmp/new_record.json
+fi
 
 # Append addition user-data script
 ${additional_user_data_script}

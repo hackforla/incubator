@@ -16,10 +16,12 @@ resource "aws_ecs_capacity_provider" "prov1" {
   name = "prov1"
 
   auto_scaling_group_provider {
-    auto_scaling_group_arn = module.asg.this_autoscaling_group_arn
+    auto_scaling_group_arn = module.asg.autoscaling_group_arn
   }
 
   tags = var.tags
+
+  depends_on = [aws_iam_service_linked_role.ecs]
 }
 
 #----- ECS  Resources--------
@@ -41,22 +43,24 @@ data "aws_ami" "amazon_linux_ecs" {
 
 module "asg" {
   source  = "terraform-aws-modules/autoscaling/aws"
-  version = "~> 3.0"
+  version = "~> 4.0"
 
   name = local.envname
 
   # Launch configuration
-  lc_name = local.envname
+  lt_name   = local.envname
+  create_lt = true
+  use_lt    = true
 
-  image_id             = data.aws_ami.amazon_linux_ecs.id
-  key_name             = var.key_name
-  instance_type        = var.ecs_ec2_instance_type
-  security_groups      = [aws_security_group.ecs_instance.id]
-  iam_instance_profile = "ecsInstanceRole"
-  user_data            = data.template_file.user_data.rendered
+  image_id                 = data.aws_ami.amazon_linux_ecs.id
+  key_name                 = var.key_name
+  instance_type            = var.ecs_ec2_instance_type
+  security_groups          = [aws_security_group.ecs_instance.id]
+  iam_instance_profile_arn = aws_iam_instance_profile.ecs-instance.arn
+  user_data                = data.template_file.user_data.rendered
 
   # Auto scaling group
-  asg_name                  = local.envname
+  // asg_name                  = local.envname
   vpc_zone_identifier       = var.public_subnet_ids
   health_check_type         = "EC2"
   min_size                  = 0
