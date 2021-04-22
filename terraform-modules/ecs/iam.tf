@@ -25,7 +25,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task" {
 }
 
 resource "aws_iam_instance_profile" "ecs-instance" {
-  name = "test_profile"
+  name = "${local.envname}-profile"
   role = aws_iam_role.ecs-instance-role.name
 }
 
