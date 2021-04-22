@@ -11,7 +11,7 @@ resource "aws_security_group" "alb" {
   description = "load balancer SG for ingress to ${local.envname} containers"
   vpc_id      = var.vpc_id
 
-  tags = merge({ Name = "${local.envname}-alb" }, var.tags)
+  tags = merge({ Name = format("%s-alb", local.envname) }, var.tags)
 
   ingress {
     description = "HTTP from world"
@@ -59,7 +59,7 @@ resource "aws_lb_listener" "ssl" {
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
-  certificate_arn   = var.acm_certificate_arn
+  certificate_arn   = var.acm_certificate_arns[0]
 
   default_action {
     type = "redirect"
@@ -73,4 +73,11 @@ resource "aws_lb_listener" "ssl" {
       status_code = "HTTP_301"
     }
   }
+}
+
+resource "aws_lb_listener_certificate" "example" {
+  for_each = toset(slice(var.acm_certificate_arns, 1, length(var.acm_certificate_arns) ))
+
+  certificate_arn = each.value
+  listener_arn    = aws_lb_listener.ssl.arn
 }

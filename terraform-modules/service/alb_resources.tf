@@ -9,6 +9,7 @@ resource "aws_lb_target_group" "this" {
     type = "lb_cookie"
   }
   health_check {
+    path                = var.health_check_path
     interval            = 15
     healthy_threshold   = 3
     unhealthy_threshold = 2
@@ -38,7 +39,7 @@ resource "aws_lb_listener_rule" "static" {
   # Path Pattern condition
   dynamic "condition" {
     for_each = [
-      for path in var.path_patterns : path
+      for path in var.path_patterns: path
     ]
 
     content {

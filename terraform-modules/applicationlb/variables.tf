@@ -37,9 +37,9 @@ variable "public_subnet_ids" {
   description = "Public Subnets for which the ALB will be associated with"
 }
 
-variable "acm_certificate_arn" {
-  type        = string
-  description = "Certificate to use for HTTPS listener"
+variable "acm_certificate_arns" {
+  type        = list(string)
+  description = "Certificates to use for HTTPS listener"
 }
 
 variable "default_alb_url" {
