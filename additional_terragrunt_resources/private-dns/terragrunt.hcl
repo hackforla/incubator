@@ -10,9 +10,9 @@ locals {
   account_vars     = read_terragrunt_config(find_in_parent_folders("account.hcl"))
 
   # Extract out common variables for reuse
-  aws_region     = local.account_vars.locals.aws_region
-  namespace      = local.account_vars.locals.namespace
-  resource_name  = local.account_vars.locals.resource_name
+  aws_region    = local.account_vars.locals.aws_region
+  namespace     = local.account_vars.locals.namespace
+  resource_name = local.account_vars.locals.resource_name
 
   env  = local.environment_vars.locals.environment
   tags = local.environment_vars.locals.tags

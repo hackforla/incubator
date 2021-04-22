@@ -15,7 +15,7 @@ locals {
   resource_name = local.account_vars.locals.resource_name
 
   key_name                 = local.account_vars.locals.key_name
-  environment                      = local.environment_vars.locals.environment
+  environment              = local.environment_vars.locals.environment
   tags                     = local.environment_vars.locals.tags
   bastion_hostname         = local.environment_vars.locals.bastion_hostname
   cron_key_update_schedule = local.environment_vars.locals.cron_key_update_schedule
@@ -48,7 +48,7 @@ inputs = {
   // Input from variables
   region           = local.aws_region
   resource_name    = local.resource_name
-  environment = local.environment
+  environment      = local.environment
   bastion_hostname = local.bastion_hostname
 
   keys_update_frequency = local.cron_key_update_schedule

@@ -44,8 +44,8 @@ dependency "acm" {
 # These are the variables we have to pass in to use the module specified in the terragrunt configuration above
 inputs = {
   // Input from other Modules
-  vpc_id              = dependency.network.outputs.vpc_id
-  public_subnet_ids   = dependency.network.outputs.public_subnet_ids
+  vpc_id               = dependency.network.outputs.vpc_id
+  public_subnet_ids    = dependency.network.outputs.public_subnet_ids
   acm_certificate_arns = dependency.acm.outputs.acm_certificate_arns
 
   // Input from Variables

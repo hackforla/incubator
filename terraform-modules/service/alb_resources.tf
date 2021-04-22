@@ -39,7 +39,7 @@ resource "aws_lb_listener_rule" "static" {
   # Path Pattern condition
   dynamic "condition" {
     for_each = [
-      for path in var.path_patterns: path
+      for path in var.path_patterns : path
     ]
 
     content {

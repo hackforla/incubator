@@ -23,7 +23,7 @@ dependency "ecs" {
   config_path = "../ecs"
   // skip_outputs = true
   mock_outputs = {
-    task_execution_role_arn = ""
+    task_execution_role_arn      = ""
     default_ecs_service_role_arn = ""
   }
 }
@@ -31,6 +31,6 @@ dependency "ecs" {
 inputs = {
   tags = local.tags
 
-  execution_role_arn = dependency.ecs.outputs.task_execution_role_arn
+  execution_role_arn           = dependency.ecs.outputs.task_execution_role_arn
   default_ecs_service_role_arn = dependency.ecs.outputs.default_ecs_service_role_arn
 }

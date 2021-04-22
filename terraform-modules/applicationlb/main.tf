@@ -76,7 +76,7 @@ resource "aws_lb_listener" "ssl" {
 }
 
 resource "aws_lb_listener_certificate" "example" {
-  for_each = toset(slice(var.acm_certificate_arns, 1, length(var.acm_certificate_arns) ))
+  for_each = toset(slice(var.acm_certificate_arns, 1, length(var.acm_certificate_arns)))
 
   certificate_arn = each.value
   listener_arn    = aws_lb_listener.ssl.arn

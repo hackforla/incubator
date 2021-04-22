@@ -34,8 +34,8 @@ locals {
   health_check_path  = local.project_vars.locals.health_check_path
 
   aws_managed_dns = local.project_vars.locals.aws_managed_dns
-  project_name = local.project_vars.locals.project_name
-  host_names   = local.project_vars.locals.host_names
+  project_name    = local.project_vars.locals.project_name
+  host_names      = local.project_vars.locals.host_names
 }
 # Include all settings from the root terragrunt.hcl file
 include {
@@ -75,7 +75,7 @@ dependency "alb" {
     security_group_id      = "",
     alb_target_group_arn   = "",
     alb_https_listener_arn = "",
-    lb_dns_name = ""
+    lb_dns_name            = ""
   }
 }
 dependency "ecs" {
@@ -115,7 +115,7 @@ inputs = {
   postgres_database = local.postgres_database
   host_names        = local.host_names
   path_patterns     = local.path_patterns
-  aws_managed_dns = local.aws_managed_dns
+  aws_managed_dns   = local.aws_managed_dns
 
   // Container Variables
   application_type   = local.application_type

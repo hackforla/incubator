@@ -18,8 +18,6 @@ resource "aws_db_instance" "this" {
   publicly_accessible    = var.db_public_access
   vpc_security_group_ids = [aws_security_group.db.id]
   db_subnet_group_name   = aws_db_subnet_group.this.name
-  // parameter_group_name   = "postgres${var.db_major_version}"
-  // option_group_name      = var.db_major_version
 
   allow_major_version_upgrade = true
   auto_minor_version_upgrade  = true
