@@ -1,0 +1,25 @@
+[
+  {
+    "name": "${container_name}",
+    "image": "${image}",
+    "cpu": ${container_cpu},
+    "memoryReservation": ${container_memory},
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": ${host_port},
+        "protocol": "tcp"
+      }
+    ],
+    "essential": true,
+    "environment": ${container_env_vars},
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "ecs/${envapp}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "${application_type}"
+      }
+    }
+  }
+]
