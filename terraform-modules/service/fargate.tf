@@ -1,6 +1,6 @@
 resource "aws_ecs_service" "fargate" {
   count           = var.launch_type == "FARGATE" ? 1 : 0
-  name            = local.envname
+  name            = local.envappname
   cluster         = var.cluster_id
   task_definition = aws_ecs_task_definition.task.arn
   launch_type     = var.launch_type
@@ -13,7 +13,7 @@ resource "aws_ecs_service" "fargate" {
   }
 
   load_balancer {
-    container_name   = local.container_name
+    container_name   = local.envappname
     container_port   = var.container_port
     target_group_arn = aws_lb_target_group.this.arn
   }
@@ -26,7 +26,7 @@ resource "aws_ecs_service" "fargate" {
 }
 
 resource "aws_security_group" "fargate" {
-  name        = "ecs_fargate_${local.envname}"
+  name        = "ecs_fargate_${local.envappname}"
   description = "Allow TLS inbound traffic"
   vpc_id      = var.vpc_id
 
@@ -45,5 +45,5 @@ resource "aws_security_group" "fargate" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = { Name = "ecs_container_instance_${local.envname}" }
+  tags = { Name = "ecs_container_instance_${local.envappname}" }
 }

@@ -20,24 +20,38 @@ locals {
   target_type       = var.launch_type == "FARGATE" ? "ip" : "instance"
 }
 
-resource "aws_ecs_task_definition" "task" {
-  family = local.task_definition_family
+module "application_container_def" {
+  source            = "cloudposse/ecs-container-definition/aws"
+  version           = "0.56.0"
 
-  container_definitions = templatefile(
-    "${path.module}/templates/task-definition.json",
+  container_name    = local.envappname
+  container_image   = var.container_image
+  container_cpu               = var.container_cpu
+  container_memory_reservation = local.container_memory
+  port_mappings = [
     {
-      envapp             = local.envname
-      region             = var.region
-      application_type   = var.application_type
-      host_port          = local.host_port
-      container_memory   = local.container_memory
-      container_cpu      = var.container_cpu
-      container_port     = var.container_port
-      container_name     = local.container_name
-      image              = var.container_image
-      container_env_vars = jsonencode(local.env_vars)
+      containerPort = var.container_port
+      hostPort      = local.host_port
+      protocol      = "tcp"
     }
-  )
+  ]
+  map_environment = var.container_env_vars
+  log_configuration = {
+    logDriver = "awslogs"
+    options = {
+      awslogs-group         = format("ecs/%s", local.envname)
+      awslogs-region        = var.region
+      awslogs-stream-prefix = var.application_type
+    }
+  }
+}
+
+resource "aws_ecs_task_definition" "task" {
+  family = local.envappname
+
+  container_definitions = jsonencode([
+    module.application_container_def.json_map_object
+  ])
 
   requires_compatibilities = [var.launch_type]
   network_mode             = local.task_network_mode

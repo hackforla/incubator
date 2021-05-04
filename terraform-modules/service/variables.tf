@@ -1,9 +1,6 @@
 locals {
   envname                = "${var.project_name}-${var.environment}"
-  ecs_service_name       = "${local.envname}-service"
-  task_definition_family = "${local.envname}-td"
-  task_name              = "${local.envname}-task"
-  container_name         = "${local.envname}-container"
+  envappname             = "${var.project_name}-${var.application_type}-${var.environment}"
 }
 
 // --------------------------
@@ -25,6 +22,7 @@ variable "application_type" {
   type        = string
   description = "defines what type of application is running, fullstack, client, backend, etc. will be used for cloudwatch logs"
 }
+
 variable "host_names" {
   type = list(string)
 }
