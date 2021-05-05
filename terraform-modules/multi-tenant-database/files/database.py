@@ -2,11 +2,11 @@ from sqlalchemy import create_engine
 from sqlalchemy import exc
 
 def lambda_handler(event, context):
-  new_db = event["new_db"]
-  db_owner = f"{event['new_db_user']}_root"
-  db_user = f"{event['new_db_user']}_app"
+  environment  = event["environment"]
+  new_db       = f"{event['new_db']}_{environment}"
+  db_owner     = f"{event['new_db_user']}_{environment}"
   new_password = event["new_db_password"]
-  new_schema = f"{new_db}_schema"
+  new_schema   = f"{new_db}_schema"
 
 
   root_db_user = event["root_db_username"]
@@ -49,41 +49,6 @@ def lambda_handler(event, context):
     engine.execute(sql_new_schema)
   except exc.SQLAlchemyError:
     pass
-
-
-  sql_create_db_user = f"""
-  -- Create an db_user that will only have DML privileges on apps
-  CREATE USER {db_user} WITH PASSWORD '{new_password}';
-  -- Set the search_path for the api_user to be apps
-  ALTER ROLE {db_user} SET search_path TO {new_db};
-  """
-  try: # Catch exception if user already exists
-    engine.execute(sql_create_db_user)
-  except exc.SQLAlchemyError:
-    pass
-
-
-  # Connect to new DB as new DB owner
-  new_db_conn = f"postgresql://{db_owner}:{new_password}@{db_host}/"
-  engine = create_engine(database_url+f"{new_db}", isolation_level="AUTOCOMMIT")
-  sql_grant_db_user = f"""
-  -- Grant privileges for user to list objects
-  GRANT USAGE ON SCHEMA apps TO api_user;
-
-  -- Grant privileges for user to existing tables and sequences
-  GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA {new_db} TO {db_user};
-  GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA disclosures TO {db_user};
-
-  -- Grant privileges for user on all future tables and sequences in apps by default
-  ALTER DEFAULT PRIVILEGES IN SCHEMA {new_db} GRANT ALL PRIVILEGES ON TABLES TO {db_user};
-  ALTER DEFAULT PRIVILEGES IN SCHEMA disclosures GRANT ALL PRIVILEGES ON SEQUENCES TO {db_user};
-  """
-  try: # Catch exception if user already exists
-    engine.execute(sql_grant_db_user)
-  except exc.SQLAlchemyError:
-    pass
-
-
 
   # Revoke access to disallow changes from other users
   sql_revoke = f"""

@@ -36,7 +36,7 @@ remote_state {
   config = {
     encrypt        = true
     bucket         = local.s3_terragrunt_bucket
-    key            = "terragrunt-states/incubator/projects-dev/${path_relative_to_include()}/terraform.tfstate"
+    key            = "terragrunt-states/incubator/projects-prod/${path_relative_to_include()}/terraform.tfstate"
     region         = local.s3_terragrunt_region
     dynamodb_table = local.dynamodb_terraform_lock
   }
