@@ -1,3 +1,4 @@
+# Default ECS Task Role for ECR and Cloudwatch Logs
 resource "aws_iam_role" "ecs_task_execution_role" {
   name        = "${local.envname}-ecs-task-role"
   description = "Allow ECS tasks to access AWS resources"
@@ -24,8 +25,9 @@ resource "aws_iam_role_policy_attachment" "ecs_task" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+# IAM Role for ECS EC2 Instance
 resource "aws_iam_instance_profile" "ecs-instance" {
-  name = "test_profile"
+  name = "${local.envname}-profile"
   role = aws_iam_role.ecs-instance-role.name
 }
 

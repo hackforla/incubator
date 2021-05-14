@@ -1,9 +1,9 @@
 name: Turn on/off Bastion Server
-on: 
+on:
   workflow_dispatch:
     inputs:
       state:
-        description: 'Turn bastion on/off'     
+        description: 'Turn bastion on/off'
         required: true
         default: 'enable'
 

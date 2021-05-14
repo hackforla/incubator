@@ -55,6 +55,7 @@ resource "aws_ecs_task_definition" "task" {
 
   requires_compatibilities = [var.launch_type]
   network_mode             = local.task_network_mode
+  task_role_arn       = var.task_execution_role_arn
   execution_role_arn       = var.task_execution_role_arn
   memory                   = local.task_memory
   cpu                      = local.task_cpu
