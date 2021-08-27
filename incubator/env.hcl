@@ -6,7 +6,7 @@ locals {
 
   // Amazon Certificate Manager
   // Hardcoding pre-created certificate to avoid reaching limit https://github.com/aws/aws-cdk/issues/5889
-  domain_names = ["ballotnav.org", "civictechindex.org"]
+  domain_names = ["ballotnav.org", "civictechindex.org", "vrms.io"]
 
   // Route 53 Records - That will point to the ALB
   // host_names = ["fight.foodoasis.net"]
