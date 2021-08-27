@@ -39,10 +39,19 @@ module "application_container_def" {
   log_configuration = {
     logDriver = "awslogs"
     options = {
-      awslogs-group         = format("ecs/%s", local.envname)
+      awslogs-group         = format("ecs/%s", local.envappname)
       awslogs-region        = var.region
       awslogs-stream-prefix = var.application_type
     }
+  }
+  linux_parameters = {
+      initProcessEnabled = true
+      capabilities = null
+      devices = null
+      maxSwap = null
+      sharedMemorySize = null
+      swappiness = null
+      tmpfs = null
   }
 }
 
@@ -63,6 +72,6 @@ resource "aws_ecs_task_definition" "task" {
 
 // Create group for streaming application logs
 resource "aws_cloudwatch_log_group" "cwlogs" {
-  name              = "ecs/${local.envname}"
+  name              = "ecs/${local.envappname}"
   retention_in_days = 14
 }
