@@ -1,4 +1,4 @@
-# Setting up the environment
+# Installation Instructions
 Deploying with the Incubator requires:
 
 ## 1. Installing AWS CLI version 2
@@ -78,4 +78,3 @@ terragrunt --version
 terragrunt version v0.32.1
 ```
 
-## 5. Obtaining the RDS Database Credentials for the `rds.hcl` file from LastPass.
