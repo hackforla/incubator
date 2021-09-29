@@ -2,7 +2,7 @@
 For the incubator environment, one should have their aws credentials, terraform, and terragrunt setup. 
 
 ## 1.) Clone the repo
-Clone the incubator repo from here https://github.com/hackforla/incubator using your preferred method. 
+Clone the incubator repo from here https://github.com/hackforla/incubator using preferred method. 
 ```sh
 git clone https://github.com/hackforla/incubator
 ```
