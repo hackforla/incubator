@@ -21,6 +21,7 @@ Named profiles will setup different profiles for AWS to distinguish credentials.
 ```sh
 aws configure --profile hfla-example
 
+//response
 AWS Access Key ID [None]: <insert access key id>
 AWS Secret Access Key [None]: <insert secret accesskey>
 Default Region Name [None]: us-west-2
