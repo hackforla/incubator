@@ -25,7 +25,7 @@ aws configure --profile hfla-example
 AWS Access Key ID [None]: <insert access key id>
 AWS Secret Access Key [None]: <insert secret accesskey>
 Default Region Name [None]: us-west-2
-Default output format [None]: None
+Default output format [None]: <press Enter for a default output>
 ```
 
 Afterwards, verify with `aws sts --profile hfla-example get-caller-identity`
