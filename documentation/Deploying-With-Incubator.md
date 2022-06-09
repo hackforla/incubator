@@ -2,7 +2,7 @@
 
 ## Setup Incubator Project Directories
 
-Under `/incubtaor`, select the corresponding environment to deploy to. For example, to deploy a Django application into Hack For LA's AWS account within a `dev` environment, one should create a
+Under `/incubator`, select the corresponding environment to deploy to. For example, to deploy a Django application into Hack For LA's AWS account within a `dev` environment, one should create a
 `incubator/project-dev/django-application-example` directory for the codebase. 
 
 ## Configure `project.hcl`
