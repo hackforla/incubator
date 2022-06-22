@@ -1,7 +1,7 @@
 ## Requirements
 
 1. AWS access/credentials
-    - It's reccommeneded to have Administrator access to ensure proper permisions
+    - It's recommended to have Administrator access to ensure proper permissions
     - [Documentation](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)
 
 2. Binaries
