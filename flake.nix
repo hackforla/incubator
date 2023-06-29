@@ -1,7 +1,7 @@
 {
   description = "Incubator dev-shell";
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/22.11";
+    nixpkgs.url = "github:nixos/nixpkgs/23.05";
     flake-utils.url = "github:numtide/flake-utils";
   };
   outputs = { self, nixpkgs, flake-utils, fenix }:
@@ -13,8 +13,10 @@
   in {
     devShells.default = pkgs.mkShell {
       buildInputs = with pkgs; [
+        awscli2
         terraform
         terragrunt
+        tfautomv
       ];
     };
   });
