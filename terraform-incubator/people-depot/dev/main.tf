@@ -22,3 +22,8 @@ module "dev" {
 
   root_db_password = var.root_db_password
 }
+
+moved {
+  from = module.ecr.aws_ecr_repository.this
+  to   = module.dev.module.people_depot.module.ecr.aws_ecr_repository.this
+}

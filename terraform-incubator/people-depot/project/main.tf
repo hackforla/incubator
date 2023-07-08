@@ -45,15 +45,15 @@ module "people_depot" {
 
 
   # problematic
-  alb_external_dns        = "incubator-prod-lb-569274394.us-west-2.elb.amazonaws.com"
-  cluster_id              = "arn:aws:ecs:us-west-2:035866691871:cluster/incubator-prod"
-  task_execution_role_arn = "arn:aws:iam::035866691871:role/incubator-prod-ecs-task-role"
-  alb_security_group_id   = "sg-07dd18f4255a5a5aa"
-  container_image         = "035866691871.dkr.ecr.us-west-2.amazonaws.com/people-depot-backend-dev:latest"
-  alb_https_listener_arn  = "arn:aws:elasticloadbalancing:us-west-2:035866691871:listener/app/incubator-prod-lb/7451adf77133ef36/390a225766a4daf3"
-  db_instance_endpoint    = "incubator-prod-database.cewewwrvdqjn.us-west-2.rds.amazonaws.com:5432"
-  vpc_id                  = "vpc-0bec93a4d80243845"
-  public_subnet_ids       = ["subnet-03202f3bf9a24c1a5", "subnet-08c26edd1afc2b9d7"]
-
+  #  alb_external_dns        = "incubator-prod-lb-569274394.us-west-2.elb.amazonaws.com"
+  #  cluster_id              = "arn:aws:ecs:us-west-2:035866691871:cluster/incubator-prod"
+  #  task_execution_role_arn = "arn:aws:iam::035866691871:role/incubator-prod-ecs-task-role"
+  #  alb_security_group_id   = "sg-07dd18f4255a5a5aa"
+  #  container_image         = "035866691871.dkr.ecr.us-west-2.amazonaws.com/people-depot-backend-dev:latest"
+  #  alb_https_listener_arn  = "arn:aws:elasticloadbalancing:us-west-2:035866691871:listener/app/incubator-prod-lb/7451adf77133ef36/390a225766a4daf3"
+  #  db_instance_endpoint    = "incubator-prod-database.cewewwrvdqjn.us-west-2.rds.amazonaws.com:5432"
+  #  vpc_id                  = "vpc-0bec93a4d80243845"
+  #  public_subnet_ids       = ["subnet-03202f3bf9a24c1a5", "subnet-08c26edd1afc2b9d7"]
+  #
   root_db_password = var.root_db_password
 }
