@@ -17,10 +17,15 @@ variable "root_db_password" {
   description = "root database password"
 }
 
+variable "app_db_password" {
+  type = string
+}
+
 module "dev" {
   source = "../project"
 
   root_db_password = var.root_db_password
+  app_db_password  = var.app_db_password
 }
 
 moved {

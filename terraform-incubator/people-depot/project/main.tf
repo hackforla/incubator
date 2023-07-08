@@ -3,6 +3,10 @@ variable "root_db_password" {
   description = "root database password"
 }
 
+variable "app_db_password" {
+  type = string
+}
+
 module "people_depot" {
   source = "../../../terraform-modules/service"
 
@@ -18,7 +22,7 @@ module "people_depot" {
     SECRET_KEY           = "foo"
     SQL_DATABASE         = "people_depot_dev"
     SQL_ENGINE           = "django.db.backends.postgresql"
-    SQL_PASSWORD         = "people_depot"
+    SQL_PASSWORD         = var.app_db_password
     SQL_PORT             = 5432
     SQL_USER             = "people_depot"
   }
