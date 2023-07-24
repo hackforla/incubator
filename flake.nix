@@ -18,6 +18,7 @@
         terragrunt
         tfautomv
       ];
+      GIT_TEMPLATE_DIR="";
     };
   });
 }
