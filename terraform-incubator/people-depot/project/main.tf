@@ -1,16 +1,3 @@
-variable "root_db_password" {
-  type        = string
-  description = "root database password"
-}
-
-variable "app_db_password" {
-  type = string
-}
-
-variable "container_image" {
-  type = string
-}
-
 data "terraform_remote_state" "shared" {
   backend = "s3"
 
@@ -75,4 +62,17 @@ module "people_depot" {
   public_subnet_ids       = data.terraform_remote_state.shared.outputs.public_subnet_ids
 
   root_db_password = var.root_db_password
+}
+
+variable "root_db_password" {
+  type        = string
+  description = "root database password"
+}
+
+variable "app_db_password" {
+  type = string
+}
+
+variable "container_image" {
+  type = string
 }

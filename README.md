@@ -36,6 +36,11 @@ This repository contains all the necessary modules needed to create the followin
     - DynamoDB Table for storing lock files (recommended default: terraform-locks)
     - see examples folder for how to properly set
 
+## Further Documentation
+
+See the `docs/` directory,
+specifically https://github.com/hackforla/incubator/docs/terraform.md
+
 ## Example
 
 See examples folder
