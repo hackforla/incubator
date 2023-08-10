@@ -38,8 +38,8 @@ This repository contains all the necessary modules needed to create the followin
 
 ## Further Documentation
 
-See the `docs/` directory,
-specifically https://github.com/hackforla/incubator/docs/terraform.md
+See the `documentation/` directory,
+specifically documentation/terraform.md
 
 ## Example
 
