@@ -27,8 +27,8 @@ resource "aws_lambda_function" "create_db" {
 
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  source_dir  = "files"
-  output_path = "lambda.zip"
+  source_dir  = "${path.module}/files"
+  output_path = "${path.module}/lambda.zip"
 }
 
 resource "aws_lambda_layer_version" "python-sqlalchemy" {

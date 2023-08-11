@@ -2,6 +2,12 @@
 resource "aws_ecs_cluster" "cluster" {
   name = local.envname
 
+  tags = var.tags
+}
+
+resource "aws_ecs_cluster_capacity_providers" "cluster" {
+  cluster_name = aws_ecs_cluster.cluster.name
+
   capacity_providers = ["FARGATE", aws_ecs_capacity_provider.this.name]
 
   default_capacity_provider_strategy {
@@ -9,7 +15,6 @@ resource "aws_ecs_cluster" "cluster" {
     weight            = 100
   }
 
-  tags = var.tags
 }
 
 resource "aws_ecs_capacity_provider" "this" {

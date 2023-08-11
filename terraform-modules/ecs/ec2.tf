@@ -8,8 +8,8 @@ locals {
     start ecs
   EOF
 }
-output "userdata" {value=local.user_data}
-output "userdata64" {value=base64encode(local.user_data)}
+output "userdata" { value = local.user_data }
+output "userdata64" { value = base64encode(local.user_data) }
 
 # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html
 data "aws_ssm_parameter" "ec2-ecs-ami" {
@@ -18,14 +18,14 @@ data "aws_ssm_parameter" "ec2-ecs-ami" {
 
 module "asg" {
   source  = "terraform-aws-modules/autoscaling/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name = local.envname
 
   # Launch configuration
-  lt_name   = local.envname
-  create_lt = true
-  use_lt    = true
+  launch_template        = local.envname
+  create_launch_template = true
+  #use_lt                 = true
 
   image_id                 = data.aws_ssm_parameter.ec2-ecs-ami.value
   key_name                 = var.key_name
@@ -44,18 +44,10 @@ module "asg" {
   desired_capacity          = var.ecs_ec2_instance_count
   wait_for_capacity_timeout = 0
 
-  tags = [
-    {
-      key                 = "Environment"
-      value               = var.environment
-      propagate_at_launch = true
-    },
-    {
-      key                 = "Cluster"
-      value               = local.envname
-      propagate_at_launch = true
-    },
-  ]
+  tags = {
+    "Environment" = var.environment
+    "Cluster"     = local.envname
+  }
 }
 
 resource "aws_security_group" "ecs_instance" {
