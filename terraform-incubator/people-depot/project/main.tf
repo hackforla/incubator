@@ -16,7 +16,8 @@ module "people_depot" {
   container_cpu   = 256
   aws_managed_dns = false
   container_env_vars = {
-    SQL_HOST          = "incubator-prod-database.cewewwrvdqjn.us-west-2.rds.amazonaws.com"
+    SQL_PASSWORD      = var.app_db_password
+    SQL_HOST          = data.terraform_remote_state.shared.outputs.db_address
     COGNITO_USER_POOL = "us-west-2_Fn4rkZpuB"
 
     COGNITO_AWS_REGION   = "us-west-2"
@@ -25,7 +26,6 @@ module "people_depot" {
     SECRET_KEY           = "foo"
     SQL_DATABASE         = "people_depot_dev"
     SQL_ENGINE           = "django.db.backends.postgresql"
-    SQL_PASSWORD         = var.app_db_password
     SQL_PORT             = 5432
     SQL_USER             = "people_depot"
   }
@@ -37,7 +37,7 @@ module "people_depot" {
   postgres_database = {}
   region            = "us-west-2"
   health_check_path = "/"
-  environment       = "dev"
+  environment       = var.environment
   application_type  = "backend"
   launch_type       = "FARGATE"
   container_port    = 8000
@@ -74,5 +74,9 @@ variable "app_db_password" {
 }
 
 variable "container_image" {
+  type = string
+}
+
+variable "environment" {
   type = string
 }

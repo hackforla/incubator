@@ -41,6 +41,9 @@ output "cluster_id" {
 output "task_execution_role_arn" {
   value = data.terraform_remote_state.shared["ecs"].outputs.task_execution_role_arn
 }
+output "db_address" {
+  value = data.terraform_remote_state.shared["rds"].outputs.db_address
+}
 output "db_instance_endpoint" {
   value = data.terraform_remote_state.shared["rds"].outputs.db_instance_endpoint
 }
