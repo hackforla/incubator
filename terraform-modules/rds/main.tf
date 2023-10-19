@@ -1,6 +1,7 @@
 locals {
   db_subnet_ids = var.db_public_access ? var.public_subnet_ids : var.private_subnet_ids
 }
+
 resource "aws_db_instance" "this" {
   count = var.create_db_instance ? 1 : 0
 

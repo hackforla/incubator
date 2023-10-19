@@ -21,12 +21,12 @@ locals {
 }
 
 module "application_container_def" {
-  source            = "cloudposse/ecs-container-definition/aws"
-  version           = "0.56.0"
+  source  = "cloudposse/ecs-container-definition/aws"
+  version = "0.56.0"
 
-  container_name    = local.envappname
-  container_image   = var.container_image
-  container_cpu               = var.container_cpu
+  container_name               = local.envappname
+  container_image              = var.container_image
+  container_cpu                = var.container_cpu
   container_memory_reservation = local.container_memory
   port_mappings = [
     {
@@ -45,13 +45,13 @@ module "application_container_def" {
     }
   }
   linux_parameters = {
-      initProcessEnabled = true
-      capabilities = null
-      devices = null
-      maxSwap = null
-      sharedMemorySize = null
-      swappiness = null
-      tmpfs = null
+    initProcessEnabled = true
+    capabilities       = null
+    devices            = null
+    maxSwap            = null
+    sharedMemorySize   = null
+    swappiness         = null
+    tmpfs              = null
   }
 }
 
@@ -64,7 +64,7 @@ resource "aws_ecs_task_definition" "task" {
 
   requires_compatibilities = [var.launch_type]
   network_mode             = local.task_network_mode
-  task_role_arn       = var.task_execution_role_arn
+  task_role_arn            = var.task_execution_role_arn
   execution_role_arn       = var.task_execution_role_arn
   memory                   = local.task_memory
   cpu                      = local.task_cpu

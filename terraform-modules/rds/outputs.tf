@@ -1,3 +1,8 @@
+output "db_identifier" {
+  description = "The AWS provided identifier"
+  value       = aws_db_instance.this[0].identifier
+}
+
 output "db_address" {
   description = "The aws provided URL of the database"
   value       = element(concat(aws_db_instance.this.*.address, [""]), 0)
