@@ -1,6 +1,7 @@
 data "terraform_remote_state" "shared" {
   backend = "s3"
 
+  # TODO: Ops: Identify obsolete config values - are we keeping the name statefile names with `terragrunt`?
   config = {
     bucket         = "hlfa-incubator-terragrunt"
     dynamodb_table = "terraform-locks"

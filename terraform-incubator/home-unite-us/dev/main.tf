@@ -1,8 +1,10 @@
 terraform {
+  # TODO: Ops: Identify obsolete config values - are we keeping the name statefile names with `terragrunt`?
   backend "s3" {
     bucket         = "hlfa-incubator-terragrunt"
     dynamodb_table = "terraform-locks"
     encrypt        = true
+    # TODO: Ops: Identify obsolete config values - are we keeping the name statefile names with `terragrunt`?
     key            = "terragrunt-states/incubator/projects-dev/home-unite-us/terraform.tfstate"
     region         = "us-west-2"
   }
