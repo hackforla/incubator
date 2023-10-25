@@ -26,10 +26,5 @@ module "dev" {
 
   root_db_password = var.root_db_password
   app_db_password  = var.app_db_password
-  container_image  = "035866691871.dkr.ecr.us-west-2.amazonaws.com/people-depot-backend-dev:latest"
-}
-
-moved {
-  from = module.ecr.aws_ecr_repository.this
-  to   = module.dev.module.people_depot.module.ecr.aws_ecr_repository.this
+  container_image  = "<TODO>"
 }
