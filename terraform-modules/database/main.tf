@@ -20,7 +20,7 @@ data "aws_db_instance" "shared" {
 // the value to be updated. We get most of the benefit of a
 // Secret Manager entry, and save 0.40 USD/mo
 resource "aws_ssm_parameter" "rds_dbowner_password" {
-  name  = "rds_password_${var.postgres_database.db_name}_${var.environment}"
+  name  = "rds_password_${var.db_name}_${var.environment}"
   type  = "String"
   value = data.aws_secretsmanager_random_password.db_password_init.random_password
   lifecycle {
@@ -29,14 +29,14 @@ resource "aws_ssm_parameter" "rds_dbowner_password" {
 }
 
 resource "postgresql_role" "db_owner" {
-  count    = var.postgres_database.username != "" ? 1 : 0
-  name     = "${var.postgres_database.username}_${var.environment}"
+  count    = var.username != "" ? 1 : 0
+  name     = "${var.username}_${var.environment}"
   login    = true
   password = aws_ssm_parameter.rds_dbowner_password.value
 }
 
 resource "postgresql_database" "db" {
-  count = var.postgres_database.db_name != "" ? 1 : 0
-  name  = "${var.postgres_database.db_name}_${var.environment}"
+  count = var.db_name != "" ? 1 : 0
+  name  = "${var.db_name}_${var.environment}"
   owner = postgresql_role.db_owner[0].name
 }

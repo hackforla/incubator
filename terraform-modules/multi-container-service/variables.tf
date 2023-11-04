@@ -63,7 +63,6 @@ variable "containers" {
     cpu               = optional(number, 0)
     memory            = optional(number, 0)
     port              = optional(number, 80)
-    db_access         = optional(bool, false)
     subdomains        = optional(list(string), [])
     path_patterns     = optional(list(string), [])
     health_check_path = optional(string, "/")
@@ -71,16 +70,4 @@ variable "containers" {
   }))
 
   description = "Per container service configuration. Note that subdomains are used (e.g. 'www' not 'www.example.com')"
-}
-
-variable "postgres_database" {
-  type = object({
-    db_name  = string
-    username = string
-  })
-  default = {
-    db_name  = ""
-    username = ""
-  }
-  description = "non-empty map will create a database and users for application"
 }

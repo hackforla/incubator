@@ -19,12 +19,55 @@ data "aws_route53_zone" "this" {
   zone_id = var.zone_id
 }
 
+
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name        = "${local.envname}-ecs-task-role"
+  description = "Allow ECS tasks to access AWS resources"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      },
+    ]
+  })
+
+  inline_policy {
+    name = "ecs-executor-policy"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Action   = "ssm:GetParameters"
+          Effect   = "Allow"
+          Resource = [aws_ssm_parameter.rds_dbowner_password.arn]
+        }
+      ]
+    })
+  }
+
+  tags = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+
 module "ecs-task" {
   for_each = var.containers
 
   source               = "../ecs-task"
   shared_configuration = var.shared_configuration
 
+  task_role_arn             = aws_iam_role.ecs_task_execution_role.arn
   fargate_security_group_id = aws_security_group.fargate.id
   project_name              = var.project_name
   environment               = var.environment
@@ -37,17 +80,11 @@ module "ecs-task" {
   container_cpu    = each.value.cpu
   container_memory = each.value.memory
 
-  host_names        = [for s in each.value.subdomains : "${s}.${data.aws_route53_zone.this.name}"]
-  path_patterns     = each.value.path_patterns
-  health_check_path = each.value.health_check_path
-  container_port    = each.value.port
-  container_env_vars = each.value.db_access ? merge({
-    SQL_USER     = postgresql_role.db_owner[0].name
-    SQL_DATABASE = postgresql_database.db[0].name
-    SQL_HOST     = data.aws_db_instance.shared.address
-    SQL_PORT     = 5432
-  }, each.value.env_vars) : each.value.env_vars
-  container_secrets = each.value.db_access ? {
-    SQL_PASSWORD = aws_ssm_parameter.rds_dbowner_password.arn
-  } : {}
+  host_names         = [for s in each.value.subdomains : "${s}.${data.aws_route53_zone.this.name}"]
+  path_patterns      = each.value.path_patterns
+  health_check_path  = each.value.health_check_path
+  log_group          = aws_cloudwatch_log_group.cwlogs.name
+  container_port     = each.value.port
+  container_env_vars = each.value.env_vars
+  container_secrets  = each.value.secrets
 }

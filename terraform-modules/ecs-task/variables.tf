@@ -1,12 +1,11 @@
 variable "shared_configuration" {
   description = "Configuration object from shared resources"
   type = object({
-    alb_https_listener_arn  = string
-    cluster_id              = string
-    cluster_name            = string
-    task_execution_role_arn = string
-    vpc_id                  = string
-    public_subnet_ids       = set(string)
+    alb_https_listener_arn = string
+    cluster_id             = string
+    cluster_name           = string
+    vpc_id                 = string
+    public_subnet_ids      = set(string)
   })
 }
 
@@ -31,6 +30,10 @@ variable "launch_type" {
 variable "application_type" {
   type        = string
   description = "defines what type of application is running, fullstack, client, backend, etc. will be used for cloudwatch logs"
+}
+
+variable "task_role_arn" {
+  type = string
 }
 
 variable "fargate_security_group_id" {
@@ -80,5 +83,9 @@ variable "path_patterns" {
 }
 
 variable "health_check_path" {
+  type = string
+}
+
+variable "log_group" {
   type = string
 }

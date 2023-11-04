@@ -38,7 +38,7 @@ module "application_container_def" {
   log_configuration = {
     logDriver = "awslogs"
     options = {
-      awslogs-group         = format("ecs/%s", local.envappname) // XXX
+      awslogs-group         = var.log_group
       awslogs-region        = var.region
       awslogs-stream-prefix = var.application_type
     }
@@ -63,8 +63,8 @@ resource "aws_ecs_task_definition" "task" {
 
   requires_compatibilities = [var.launch_type]
   network_mode             = local.task_network_mode
-  task_role_arn            = var.shared_configuration.task_execution_role_arn
-  execution_role_arn       = var.shared_configuration.task_execution_role_arn
+  task_role_arn            = var.task_role_arn
+  execution_role_arn       = var.task_role_arn
   memory                   = local.task_memory
   cpu                      = local.task_cpu
 }

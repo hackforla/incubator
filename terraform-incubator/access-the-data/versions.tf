@@ -40,19 +40,3 @@ provider "postgresql" {
   username  = "postgres"
   superuser = false
 }
-
-// Create an Apex DNS record that aliases to the LB
-data "aws_lb" "lb" {
-  arn = local.shared_configuration.alb_arn
-}
-resource "aws_route53_record" "apex" {
-  zone_id = local.zone_id
-  name    = aws_route53_zone.this.name
-  type    = "A"
-
-  alias {
-    name                   = data.aws_lb.lb.dns_name
-    zone_id                = data.aws_lb.lb.zone_id
-    evaluate_target_health = true
-  }
-}
