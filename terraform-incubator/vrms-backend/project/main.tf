@@ -19,20 +19,20 @@ module "vrms-backend" {
     BACKEND_PORT          = 4000
     CUSTOM_REQUEST_HEADER = "nAb3kY-S%qE#4!d"
     DATABASE_URL          = var.database_url
-    GMAIL_CLIENT_ID       = "839934869475-lul9tkasi47a6h5cv7fa4kb9v1h84jp6.apps.googleusercontent.com"
+    GMAIL_CLIENT_ID       = var.gmail_client_id
     GMAIL_EMAIL           = "vrms.signup@gmail.com"
-    GMAIL_REFRESH_TOKEN   = "1//040kWEcEwkx-JCgYIARAAGAQSNwF-L9IrNctLO4dnlTy0Mi30RraN5JyZti4xzMNMfeEvkzgkoUYpVRUUyJbE3a1x0IUfxDNfwL8"
-    GMAIL_SECRET_ID       = "eYZaaMwQWMBZ4rHY613HO15r"
-    MAILHOG_PASSWORD      = "password"
+    GMAIL_REFRESH_TOKEN   = var.gmail_refresh_token
+    GMAIL_SECRET_ID       = var.gmail_secret_id
+    MAILHOG_PASSWORD      = var.mailhog_password
     MAILHOG_PORT          = 1025
     MAILHOG_USER          = "user"
     REACT_APP_PROXY       = "http://localhost:4000"
-    SLACK_BOT_TOKEN       = "xoxb-1302534787829-1302590110453-YaWx40V2aJLNX4SHc1VbccuH"
+    SLACK_BOT_TOKEN       = var.slack_bot_token
     SLACK_CHANNEL_ID      = "D018H4TM94P"
-    SLACK_CLIENT_ID       = "1302534787829.1327799404688"
-    SLACK_CLIENT_SECRET   = "75692834e0d83655b5a06014cbc2a911"
-    SLACK_OAUTH_TOKEN     = "xoxp-1302534787829-1327746472832-1316638804417-7b7da90bec9c6b45beaa2d83ce3ed881"
-    SLACK_SIGNING_SECRET  = "92ef694145d1282cd9461453b0af45f5"
+    SLACK_CLIENT_ID       = var.slack_client_id
+    SLACK_CLIENT_SECRET   = var.slack_client_secret
+    SLACK_OAUTH_TOKEN     = var.slack_oauth_token
+    SLACK_SIGNING_SECRET  = var.slack_signing_secret
     SLACK_TEAM_ID         = "T018WFQP5QD"
   }
   vpc_cidr          = "10.10.0.0/16"
@@ -53,7 +53,7 @@ module "vrms-backend" {
   cluster_name      = "incubator-prod"
   path_patterns     = ["/api/*"]
   tags = {
-    last_changed      = "Mon 2023-Oct-23 13:52:00"
+    last_changed      = "Sat 2023-Nov-11 11:10:00"
     terraform_managed = "true"
   }
 
