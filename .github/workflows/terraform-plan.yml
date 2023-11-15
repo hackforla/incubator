@@ -21,4 +21,4 @@ jobs:
       - name: terraform plan
         uses: dflook/terraform-plan@v1
         with:
-          path: terraform-incubator/vrms-client/dev 
+          path: terraform-incubator/people-depot/dev 
