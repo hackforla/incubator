@@ -1,3 +1,7 @@
+variable "scope-name" {
+  type = string
+}
+
 variable "secret-names" {
   type = list(string)
 }
@@ -8,7 +12,7 @@ variable "length" {
 }
 
 data "aws_secretsmanager_random_password" "them" {
-  for_each        = var.secret_names
+  for_each        = toset(var.secret-names)
   password_length = var.length
 }
 
@@ -17,8 +21,8 @@ data "aws_secretsmanager_random_password" "them" {
 // the value to be updated. We get most of the benefit of a
 // Secret Manager entry, and save 0.40 USD/mo
 resource "aws_ssm_parameter" "these" {
-  for_each = var.secret_names
-  name     = each.value
+  for_each = toset(var.secret-names)
+  name     = "${var.scope-name}-${each.value}"
   type     = "SecureString"
   value    = data.aws_secretsmanager_random_password.them[each.value].random_password
   lifecycle {

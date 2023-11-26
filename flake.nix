@@ -17,6 +17,7 @@
         terraform
         terragrunt
         tfautomv
+        ssm-session-manager-plugin
       ];
       GIT_TEMPLATE_DIR="";
     };

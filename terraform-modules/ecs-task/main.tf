@@ -126,7 +126,7 @@ resource "aws_ecs_service" "ec2" {
   count                  = var.launch_type == "FARGATE" ? 0 : 1
   name                   = local.envappname
   cluster                = var.shared_configuration.cluster_id
-  enable_execute_command = true
+  enable_execute_command = true // XXX should be false except for dev/QA
   task_definition        = aws_ecs_task_definition.task.arn
   launch_type            = var.launch_type
   desired_count          = var.desired_count
@@ -138,6 +138,10 @@ resource "aws_ecs_service" "ec2" {
       container_port   = var.container_port
       target_group_arn = aws_lb_target_group.this[0].arn
     }
+  }
+
+  service_registries {
+    registry_arn = service_registry.arn
   }
 
   depends_on = [aws_lb_listener_rule.static] // XXX put into module refs
@@ -169,6 +173,10 @@ resource "aws_ecs_service" "fargate" {
       container_port   = var.container_port
       target_group_arn = aws_lb_target_group.this[0].arn
     }
+  }
+
+  service_registries {
+    registry_arn = service_registry.arn
   }
 
   depends_on = [aws_lb_listener_rule.static]

@@ -27,15 +27,16 @@ module "database" {
 
   source = "../../terraform-modules/database"
 
-  environment = each.value.environment
-  db_name     = each.value.db_name
-  username    = "ckan"
+  shared_configuration = local.shared_configuration
+  environment          = each.value.environment
+  db_name              = each.value.db_name
+  username             = "ckan"
 }
 
 module "secrets" {
   for_each     = local.envs
   source       = "../../terraform-modules/cheap-secrets"
-  scope-name   = "ckan-${each.value}"
+  scope-name   = "ckan-${each.key}"
   secret-names = ["csrf", "admin-password"]
 }
 
@@ -65,15 +66,15 @@ module "access-the-data" {
       path_patterns = ["/*"]
       env_vars = merge({
         DATABASE      = "postgres"
-        POSTGRES_HOST = module.database.host
-        POSTGRES_PORT = module.database.port
+        POSTGRES_HOST = module.database[each.key].host
+        POSTGRES_PORT = module.database[each.key].port
 
         // SQLALCHEMY has been set up in the container =
         // we don't know the PG password, so we can't build the URLs
 
         # Taken verbatim from .env
-        CKAN_DB      = module.database.database
-        CKAN_DB_USER = module.database.user
+        CKAN_DB      = module.database[each.key].database
+        CKAN_DB_USER = module.database[each.key].user
         CKAN_VERSION = "2.10.0"
         CKAN_SITE_ID = "default"
 
@@ -103,9 +104,9 @@ module "access-the-data" {
         CKAN__FAVICON               = "favicon.png"
       }, lookup(each.value.container_env, "ckan", {}))
       secrets = {
-        CKAN_DB_PASSWORD               = module.databse.password_arn
-        CKAN___BEAKER__SESSION__SECRET = module.secrets["ckan-${each.value}"].arn["csrf"]
-        CKAN_SYSADMIN_PASSWORD         = module.secrets["ckan-${each.value}"].arn["admin-password"]
+        CKAN_DB_PASSWORD               = module.database[each.key].password_arn
+        CKAN___BEAKER__SESSION__SECRET = module.secrets[each.key].arn["csrf"]
+        CKAN_SYSADMIN_PASSWORD         = module.secrets[each.key].arn["admin-password"]
       }
     }
 

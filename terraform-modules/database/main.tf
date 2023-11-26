@@ -8,7 +8,8 @@ terraform {
 }
 
 data "aws_secretsmanager_random_password" "db_password_init" {
-  password_length = 48
+  password_length     = 48
+  exclude_punctuation = true
 }
 
 data "aws_db_instance" "shared" {
@@ -20,8 +21,8 @@ data "aws_db_instance" "shared" {
 // the value to be updated. We get most of the benefit of a
 // Secret Manager entry, and save 0.40 USD/mo
 resource "aws_ssm_parameter" "rds_dbowner_password" {
-  name  = "rds_password_${var.db_name}_${var.environment}"
-  type  = "String"
+  name  = "app_rds_password_${var.db_name}_${var.environment}"
+  type  = "SecureString"
   value = data.aws_secretsmanager_random_password.db_password_init.random_password
   lifecycle {
     ignore_changes = [value]

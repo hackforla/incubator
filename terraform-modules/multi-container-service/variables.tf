@@ -1,6 +1,7 @@
 locals {
-  envname    = "${var.project_name}-${var.environment}"
-  envappname = "${var.project_name}-${var.application_type}-${var.environment}"
+  envname          = "${var.project_name}-${var.environment}"
+  envappname       = "${var.project_name}-${var.application_type}-${var.environment}"
+  discovery_domain = "${local.envname}.local"
 }
 
 # c.f. terraform-incubator shared_configuration/all
@@ -67,6 +68,7 @@ variable "containers" {
     path_patterns     = optional(list(string), [])
     health_check_path = optional(string, "/")
     env_vars          = optional(map(any), {})
+    secrets           = optional(map(any), {})
   }))
 
   description = "Per container service configuration. Note that subdomains are used (e.g. 'www' not 'www.example.com')"

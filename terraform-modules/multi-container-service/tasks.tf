@@ -46,7 +46,7 @@ resource "aws_iam_role" "ecs_task_execution_role" {
         {
           Action   = "ssm:GetParameters"
           Effect   = "Allow"
-          Resource = [aws_ssm_parameter.rds_dbowner_password.arn]
+          Resource = flatten([for k, v in var.containers : values(v.secrets)])
         }
       ]
     })
@@ -64,6 +64,12 @@ resource "aws_iam_role_policy_attachment" "ecs_task" {
 module "ecs-task" {
   for_each = var.containers
 
+  service_registry_arn = aws_service_discovery_service.internal.arn
+  // TODO  In ecs-task module:
+  //
+  // service_registries {
+  //   registry_arn = service_registry.arn
+  // }
   source               = "../ecs-task"
   shared_configuration = var.shared_configuration
 
@@ -80,11 +86,13 @@ module "ecs-task" {
   container_cpu    = each.value.cpu
   container_memory = each.value.memory
 
-  host_names         = [for s in each.value.subdomains : "${s}.${data.aws_route53_zone.this.name}"]
-  path_patterns      = each.value.path_patterns
-  health_check_path  = each.value.health_check_path
-  log_group          = aws_cloudwatch_log_group.cwlogs.name
-  container_port     = each.value.port
-  container_env_vars = each.value.env_vars
-  container_secrets  = each.value.secrets
+  host_names        = [for s in each.value.subdomains : "${s}.${data.aws_route53_zone.this.name}"]
+  path_patterns     = each.value.path_patterns
+  health_check_path = each.value.health_check_path
+  log_group         = aws_cloudwatch_log_group.cwlogs.name
+  container_port    = each.value.port
+  container_env_vars = merge(each.value.env_vars, {
+    SERVICE_DISCOVERY_DOMAIN = local.discovery_domain
+  })
+  container_secrets = each.value.secrets
 }
