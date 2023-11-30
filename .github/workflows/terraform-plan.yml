@@ -22,7 +22,7 @@ jobs:
         uses: tj-actions/changed-files@v40
         with:
           files: |
-            'terraform-incubator/**.tf'
+             **.md
           json: true
           quotepath: false
           escape_json: false
