@@ -32,12 +32,15 @@ jobs:
               - 'terraform-incubator/**'
           list-files: json
       - name: List all changed files
-        run: echo '${{ steps.changed-files.outputs.changes }}'
+        run: echo '${{ steps.changed-files.outputs.project-change_files }}'
   plan-all:
     runs-on: ubuntu-latest
     name: Create terraform plan
     needs: [changed-files]
     if: ${{ needs.changed-files.outputs.module-change == 'true' }}
+    strategy:
+      matrix:
+
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{secrets.INCUBATOR_AWS_ACCESS_KEY_ID}}
