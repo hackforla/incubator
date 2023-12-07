@@ -32,7 +32,7 @@ jobs:
               - 'terraform-incubator/**'
           list-files: json
       - name: List all changed files
-        run: echo '${{ steps.changed-files.outputs }}'
+        run: echo '${{ steps.changed-files.outputs.changes }}'
   plan-all:
     runs-on: ubuntu-latest
     name: Create terraform plan
