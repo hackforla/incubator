@@ -38,9 +38,9 @@ jobs:
     name: Create terraform plan
     needs: [changed-files]
     if: ${{ needs.changed-files.outputs.module-change == 'true' }}
-    strategy:
-      matrix:
-
+    # strategy:
+    #   matrix:
+    #     directories: ${{ fromJSON(needs.changed-files.outputs.module-change_files) }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{secrets.INCUBATOR_AWS_ACCESS_KEY_ID}}
