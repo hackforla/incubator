@@ -10,6 +10,11 @@ variable "shared_configuration" {
   })
 }
 
+variable "github_at_apex" {
+  type    = bool
+  default = false
+}
+
 output "zone_id" {
   value = aws_route53_zone.this.zone_id
 }
@@ -24,6 +29,7 @@ data "aws_lb" "lb" {
 }
 
 resource "aws_route53_record" "apex" {
+  count   = var.github_at_apex ? 0 : 1
   zone_id = aws_route53_zone.this.zone_id
   name    = aws_route53_zone.this.name
   type    = "A"
@@ -33,6 +39,37 @@ resource "aws_route53_record" "apex" {
     zone_id                = data.aws_lb.lb.zone_id
     evaluate_target_health = true
   }
+}
+
+// Per https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site#configuring-an-apex-domain
+resource "aws_route53_record" "apex-gh" {
+  count   = var.github_at_apex ? 1 : 0
+  zone_id = aws_route53_zone.this.zone_id
+  name    = aws_route53_zone.this.name
+  type    = "A"
+  ttl     = 3600
+
+  records = [
+    "185.199.108.153",
+    "185.199.109.153",
+    "185.199.110.153",
+    "185.199.111.153",
+  ]
+}
+
+resource "aws_route53_record" "apex-gh-ipv6" {
+  count   = var.github_at_apex ? 1 : 0
+  zone_id = aws_route53_zone.this.zone_id
+  name    = aws_route53_zone.this.name
+  type    = "AAAA"
+  ttl     = 3600
+
+  records = [
+    "2606:50c0:8000::153",
+    "2606:50c0:8001::153",
+    "2606:50c0:8002::153",
+    "2606:50c0:8003::153",
+  ]
 }
 
 

@@ -20,9 +20,20 @@ variable "db_name" {
   type = string
 }
 
-variable "username" {
+variable "owner_name" {
   type = string
 }
+
+variable "user_name" {
+  type    = string
+  default = ""
+}
+
+variable "viewer_name" {
+  type    = string
+  default = ""
+}
+
 
 output "host" {
   value = data.aws_db_instance.shared.address
@@ -33,13 +44,29 @@ output "port" {
 }
 
 output "database" {
-  value = postgresql_database.db[0].name
+  value = postgresql_database.db.name
+}
+
+output "owner" {
+  value = postgresql_role.db_owner.name
 }
 
 output "user" {
-  value = postgresql_role.db_owner[0].name
+  value = length(postgresql_role.db_user) > 0 ? postgresql_role.db_user[0].name : "UNSET"
 }
 
-output "password_arn" {
+output "viewer" {
+  value = length(postgresql_role.db_viewer) > 0 ? postgresql_role.db_viewer[0].name : "UNSET"
+}
+
+output "owner_password_arn" {
   value = aws_ssm_parameter.rds_dbowner_password.arn
+}
+
+output "user_password_arn" {
+  value = aws_ssm_parameter.rds_dbuser_password.arn
+}
+
+output "viewer_password_arn" {
+  value = aws_ssm_parameter.rds_dbviewer_password.arn
 }

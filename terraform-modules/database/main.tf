@@ -29,15 +29,61 @@ resource "aws_ssm_parameter" "rds_dbowner_password" {
   }
 }
 
+resource "aws_ssm_parameter" "rds_dbuser_password" {
+  name  = "app_rds_rw_password_${var.db_name}_${var.environment}"
+  type  = "SecureString"
+  value = data.aws_secretsmanager_random_password.db_password_init.random_password
+  lifecycle {
+    ignore_changes = [value]
+  }
+}
+
+resource "aws_ssm_parameter" "rds_dbviewer_password" {
+  name  = "app_rds_ro_password_${var.db_name}_${var.environment}"
+  type  = "SecureString"
+  value = data.aws_secretsmanager_random_password.db_password_init.random_password
+  lifecycle {
+    ignore_changes = [value]
+  }
+}
+
 resource "postgresql_role" "db_owner" {
-  count    = var.username != "" ? 1 : 0
-  name     = "${var.username}_${var.environment}"
+  name     = "${var.owner_name}_${var.environment}"
   login    = true
   password = aws_ssm_parameter.rds_dbowner_password.value
 }
 
 resource "postgresql_database" "db" {
-  count = var.db_name != "" ? 1 : 0
   name  = "${var.db_name}_${var.environment}"
-  owner = postgresql_role.db_owner[0].name
+  owner = postgresql_role.db_owner.name
+}
+
+resource "postgresql_role" "db_user" {
+  count    = var.user_name != "" ? 1 : 0
+  name     = "${var.user_name}_${var.environment}"
+  login    = true
+  password = aws_ssm_parameter.rds_dbuser_password.value
+}
+
+resource "postgresql_grant" "user" {
+  count       = var.user_name != "" ? 1 : 0
+  database    = postgresql_database.db.name
+  role        = postgresql_role.db_user[0].name
+  object_type = "table"
+  privileges  = ["SELECT", "INSERT", "UPDATE", "DELETE"]
+}
+
+resource "postgresql_role" "db_viewer" {
+  count    = var.viewer_name != "" ? 1 : 0
+  name     = "${var.viewer_name}_${var.environment}"
+  login    = true
+  password = aws_ssm_parameter.rds_dbviewer_password.value
+}
+
+resource "postgresql_grant" "viewer" {
+  count       = var.user_name != "" ? 1 : 0
+  database    = postgresql_database.db.name
+  role        = postgresql_role.db_viewer[0].name
+  object_type = "table"
+  privileges  = ["SELECT"]
 }

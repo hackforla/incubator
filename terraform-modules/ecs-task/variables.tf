@@ -89,3 +89,7 @@ variable "health_check_path" {
 variable "log_group" {
   type = string
 }
+
+variable "service_discovery_dns_namespace_id" {
+  type = string
+}

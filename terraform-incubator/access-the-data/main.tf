@@ -6,7 +6,6 @@ locals {
   envs = {
     dev = {
       environment = "dev"
-      db_name     = "access-the-data-dev"
       host_names  = ["dev"]
       container_env = {
         CKAN_SITE_URL = "https://dev.accessthedata.org"
@@ -19,6 +18,7 @@ module "zone" {
   source = "../../terraform-modules/project-zone"
 
   zone_name            = "accessthedata.org"
+  github_at_apex       = true
   shared_configuration = local.shared_configuration
 }
 
@@ -29,8 +29,20 @@ module "database" {
 
   shared_configuration = local.shared_configuration
   environment          = each.value.environment
-  db_name              = each.value.db_name
-  username             = "ckan"
+  db_name              = "accessthedata"
+  owner_name           = "ckan"
+}
+
+module "datastore_database" {
+  for_each = local.envs
+
+  source = "../../terraform-modules/database"
+
+  shared_configuration = local.shared_configuration
+  environment          = each.value.environment
+  db_name              = "accessthedata_datastore"
+  owner_name           = "ckands"
+  viewer_name          = "ckands_ro"
 }
 
 module "secrets" {
@@ -73,10 +85,13 @@ module "access-the-data" {
         // we don't know the PG password, so we can't build the URLs
 
         # Taken verbatim from .env
-        CKAN_DB      = module.database[each.key].database
-        CKAN_DB_USER = module.database[each.key].user
-        CKAN_VERSION = "2.10.0"
-        CKAN_SITE_ID = "default"
+        CKAN_DB                  = module.database[each.key].database
+        CKAN_DB_USER             = module.database[each.key].owner
+        CKAN_DATASTORE_DB        = module.datastore_database[each.key].database
+        CKAN_DATASTORE_DB_RWUSER = module.datastore_database[each.key].owner
+        CKAN_DATASTORE_DB_ROUSER = module.datastore_database[each.key].viewer
+        CKAN_VERSION             = "2.10.0"
+        CKAN_SITE_ID             = "default"
 
         CKAN_PORT      = "5000"
         CKAN_PORT_HOST = "5000"
@@ -104,7 +119,9 @@ module "access-the-data" {
         CKAN__FAVICON               = "favicon.png"
       }, lookup(each.value.container_env, "ckan", {}))
       secrets = {
-        CKAN_DB_PASSWORD               = module.database[each.key].password_arn
+        CKAN_DB_PASSWORD               = module.database[each.key].owner_password_arn
+        CKAN_DATASTORE_DB_RWPASSWORD   = module.datastore_database[each.key].owner_password_arn
+        CKAN_DATASTORE_DB_ROPASSWORD   = module.datastore_database[each.key].viewer_password_arn
         CKAN___BEAKER__SESSION__SECRET = module.secrets[each.key].arn["csrf"]
         CKAN_SYSADMIN_PASSWORD         = module.secrets[each.key].arn["admin-password"]
       }
@@ -118,8 +135,8 @@ module "access-the-data" {
 
     solr = {
       tag    = "latest"
-      cpu    = 256
-      memory = 512
+      cpu    = 512
+      memory = 4096
     }
 
     redis = {

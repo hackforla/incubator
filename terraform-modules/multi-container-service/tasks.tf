@@ -64,12 +64,8 @@ resource "aws_iam_role_policy_attachment" "ecs_task" {
 module "ecs-task" {
   for_each = var.containers
 
-  service_registry_arn = aws_service_discovery_service.internal.arn
-  // TODO  In ecs-task module:
-  //
-  // service_registries {
-  //   registry_arn = service_registry.arn
-  // }
+  service_discovery_dns_namespace_id = aws_service_discovery_private_dns_namespace.internal.id
+
   source               = "../ecs-task"
   shared_configuration = var.shared_configuration
 

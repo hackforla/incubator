@@ -122,6 +122,27 @@ resource "aws_lb_listener_rule" "static" {
     }
   }
 }
+
+
+resource "aws_service_discovery_service" "internal" {
+  name = var.application_type
+
+  dns_config {
+    namespace_id = var.service_discovery_dns_namespace_id
+
+    dns_records {
+      ttl  = 10
+      type = "A"
+    }
+
+    routing_policy = "MULTIVALUE"
+  }
+
+  health_check_custom_config {
+    failure_threshold = 3
+  }
+}
+
 resource "aws_ecs_service" "ec2" {
   count                  = var.launch_type == "FARGATE" ? 0 : 1
   name                   = local.envappname
@@ -141,7 +162,7 @@ resource "aws_ecs_service" "ec2" {
   }
 
   service_registries {
-    registry_arn = service_registry.arn
+    registry_arn = aws_service_discovery_service.internal.arn
   }
 
   depends_on = [aws_lb_listener_rule.static] // XXX put into module refs
@@ -176,7 +197,7 @@ resource "aws_ecs_service" "fargate" {
   }
 
   service_registries {
-    registry_arn = service_registry.arn
+    registry_arn = aws_service_discovery_service.internal.arn
   }
 
   depends_on = [aws_lb_listener_rule.static]
