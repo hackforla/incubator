@@ -26,7 +26,7 @@ module "dev" {
 
   root_db_password = var.root_db_password
   app_db_password  = var.app_db_password
-  container_image  = "035866691871.dkr.ecr.us-west-2.amazonaws.com/people-depot-backend-dev:latest"
+  container_image  = "035866691871.dkr.ecr.us-west-2.amazonaws.com/people-depot-backend-dev:new"
 }
 
 moved {

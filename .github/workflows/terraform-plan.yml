@@ -27,9 +27,9 @@ jobs:
             module-change:
               - 'terraform-modules/**'
             project-change:
-              - 'terraform-incubator/*/project/*'
+              - 'terraform-incubator/*/project/*.tf'
             environment-change:
-              - 'terraform-incubator/*/!(project)'
+              - 'terraform-incubator/*/!(project)/*.tf'
           list-files: json
       - name: List all changed files
         run: echo '${{ steps.changed-files.outputs.project-change_files }}'
