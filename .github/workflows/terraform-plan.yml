@@ -27,9 +27,9 @@ jobs:
             module-change:
               - 'terraform-modules/**'
             project-change:
-              - 'terraform-incubator/**/project/**'
+              - 'terraform-incubator/*/project/*'
             environment-change:
-              - 'terraform-incubator/**'
+              - 'terraform-incubator/*/!(project)'
           list-files: json
       - name: List all changed files
         run: echo '${{ steps.changed-files.outputs.project-change_files }}'
@@ -40,7 +40,7 @@ jobs:
     if: ${{ needs.changed-files.outputs.module-change == 'true' }}
     # strategy:
     #   matrix:
-    #     directories: ${{ fromJSON(needs.changed-files.outputs.module-change_files) }}
+    #     directories: ${{  }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{secrets.INCUBATOR_AWS_ACCESS_KEY_ID}}
