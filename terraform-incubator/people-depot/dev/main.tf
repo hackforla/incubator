@@ -15,10 +15,12 @@ provider "aws" {
 variable "root_db_password" {
   type        = string
   description = "root database password"
+  default = "password"
 }
 
 variable "app_db_password" {
   type = string
+  default = "password"
 }
 
 module "dev" {
