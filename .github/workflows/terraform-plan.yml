@@ -35,7 +35,7 @@ jobs:
         run: echo '${{ steps.changed-files.outputs.module-change_files }}'; echo '${{ steps.changed-files.outputs.project-change_files }}'; echo '${{ steps.changed-files.outputs.environment-change_files }}'
   plan-all:
     runs-on: ubuntu-latest
-    name: Create terraform plan
+    name: Terraform plan - all directories
     needs: [changed-files]
     if: ${{ needs.changed-files.outputs.module-change == 'true' }}
     strategy:
@@ -55,7 +55,7 @@ jobs:
           path: ${{ matrix.directory }}
   plan-project:
     runs-on: ubuntu-latest
-    name: Create terraform plan
+    name: CTerraform plan - Project changes
     needs: [changed-files]
     if: ${{ needs.changed-files.outputs.project-change == 'true' }} & ${{ needs.changed-files.outputs.module-change == 'false' }}
     env:
@@ -72,7 +72,7 @@ jobs:
           path: terraform-incubator/people-depot/dev
   plan-environment:
     runs-on: ubuntu-latest
-    name: Create terraform plan
+    name: Terraform plan - Env changes
     needs: [changed-files]
     if: ${{ needs.changed-files.outputs.environment-change == 'true' }} & ${{ needs.changed-files.outputs.module-change == 'false' }} & ${{ needs.changed-files.outputs.project-change == 'false' }}
     env:
