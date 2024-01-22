@@ -22,7 +22,7 @@ module "people_depot" {
     COGNITO_AWS_REGION   = "us-west-2"
     DATABASE             = "postgres"
     DJANGO_ALLOWED_HOSTS = "localhost 127.0.0.1 [::1]"
-    SECRET_KEY           = "bar"
+    SECRET_KEY           = "foo"
     SQL_DATABASE         = "people_depot_dev"
     SQL_ENGINE           = "django.db.backends.postgresql"
     SQL_PASSWORD         = var.app_db_password
