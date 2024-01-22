@@ -55,9 +55,9 @@ jobs:
           path: ${{ matrix.directory }}
   plan-project:
     runs-on: ubuntu-latest
-    name: CTerraform plan - Project changes
+    name: Terraform plan - Project changes
     needs: [changed-files]
-    if: ${{ needs.changed-files.outputs.project-change == 'true' }} & ${{ needs.changed-files.outputs.module-change == 'false' }}
+    if: (${{ needs.changed-files.outputs.project-change == 'true' }} && ${{ needs.changed-files.outputs.module-change == 'false' }})
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{secrets.INCUBATOR_AWS_ACCESS_KEY_ID}}
@@ -74,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Terraform plan - Env changes
     needs: [changed-files]
-    if: ${{ needs.changed-files.outputs.environment-change == 'true' }} & ${{ needs.changed-files.outputs.module-change == 'false' }} & ${{ needs.changed-files.outputs.project-change == 'false' }}
+    if: (${{ needs.changed-files.outputs.environment-change == 'true' }} && ${{ needs.changed-files.outputs.module-change == 'false' }} && ${{ needs.changed-files.outputs.project-change == 'false' }})
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{secrets.INCUBATOR_AWS_ACCESS_KEY_ID}}
