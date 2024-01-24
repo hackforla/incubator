@@ -16,7 +16,7 @@ module "people_depot" {
   container_cpu   = 256
   aws_managed_dns = false
   container_env_vars = {
-    SQL_HOST          = "incubator-prod-database.cewewwrvdqjn.us-west-2.rds.amazonaws.com"
+    SQL_HOST          = data.terraform_remote_state.shared.outputs.db_instance_endpoint
     COGNITO_USER_POOL = "us-west-2_Fn4rkZpuB"
 
     COGNITO_AWS_REGION   = "us-west-2"
