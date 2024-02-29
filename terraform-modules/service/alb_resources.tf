@@ -48,6 +48,4 @@ resource "aws_lb_listener_rule" "static" {
       }
     }
   }
-
-  depends_on = [aws_lb_target_group.this]
 }

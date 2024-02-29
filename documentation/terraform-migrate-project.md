@@ -84,7 +84,9 @@ incubator
 This is the listing from a workstation set up to deploy `people-depot-backend`
 with Terragrunt,
 which is why we see a `project.hcl` here.
-To start this process, you'll need the `project.hcl` for the project you're trying to migrate.
+To start this process, you'll need the `project.hcl` for the project you're trying to migrate. 
+
+DISCLAIMER: For some projects that file is hard (impossible?) to locate. You can actually still do the migration without it by reading the Terraform state directly which we'll show later in the documentation but it's **much** easier to do with the `project.hcl` file so reach out to the relevant slack channels to find it.
 
 Inside that file
 (`incubator/projects-dev/people-depot-backend/project.hcl`)
@@ -309,6 +311,23 @@ what value was assigned for a particular module,
 that's the process to the hunt it down in Terragrunt.
 This is one of the reasons we're moving away from it.
 
+If your project does not have a `project.hcl` file or you haven't been able to locate it, you can still get these values by looking at the Terraform state for those resources and pulling them directly.
+Run `terraform show > state.txt` from the directory that you've created for the project and environment within terraform-incubator (i.e. terraform-incubator/people-depot/dev). In order for that command to actually pull the state down, you will need to have configured the provider and backend blocks within the `main.tf` file as described [here](#per-environment-configs):
+```terraform
+terraform {
+  backend "s3" {
+    bucket         = "hlfa-incubator-terragrunt"
+    dynamodb_table = "terraform-locks"
+    encrypt        = true
+    key            = "terragrunt-states/incubator/projects-{ENV}/{PROJECT}/terraform.tfstate"
+    region         = "us-west-2"
+  }
+}
+provider "aws" {
+  region = "us-west-2"
+}
+```
+You will need to locate the state file and fill in the correct `key`. Usually it's straightforward and you can just fill in the `ENV` and `PROJECT` but you can also check the location in S3 yourself in this bucket - s3://hlfa-incubator-terragrunt/terragrunt-states/incubator/. Once you get this confiugred properly and pointing at the right state, run `terraform init` and then `terraform show > state.txt` which should populate the text file with the resources that are currently stored in that state. From there, you can back into the values you need from the `project.hcl` by looking at the resource configuration in the state.
 
 getting back to our `project/main.tf` -
 we'll skip a bunch of values we can collect this way,

@@ -10,43 +10,50 @@ data "terraform_remote_state" "shared" {
   }
 }
 
-module "people_depot" {
+module "vrms-backend" {
   source = "../../../terraform-modules/service"
 
   container_cpu   = 256
-  aws_managed_dns = false
+  aws_managed_dns = true
   container_env_vars = {
-    SQL_HOST          = data.terraform_remote_state.shared.outputs.db_instance_endpoint
-    COGNITO_USER_POOL = "us-west-2_Fn4rkZpuB"
-
-    COGNITO_AWS_REGION   = "us-west-2"
-    DATABASE             = "postgres"
-    DJANGO_ALLOWED_HOSTS = "localhost 127.0.0.1 [::1]"
-    SECRET_KEY           = "foo"
-    SQL_DATABASE         = "people_depot_dev"
-    SQL_ENGINE           = "django.db.backends.postgresql"
-    SQL_PASSWORD         = var.app_db_password
-    SQL_PORT             = 5432
-    SQL_USER             = "people_depot"
+    BACKEND_PORT          = 4000
+    CUSTOM_REQUEST_HEADER = "nAb3kY-S%qE#4!d"
+    DATABASE_URL          = var.database_url
+    GMAIL_CLIENT_ID       = var.gmail_client_id
+    GMAIL_EMAIL           = "vrms.signup@gmail.com"
+    GMAIL_REFRESH_TOKEN   = var.gmail_refresh_token
+    GMAIL_SECRET_ID       = var.gmail_secret_id
+    MAILHOG_PASSWORD      = var.mailhog_password
+    MAILHOG_PORT          = 1025
+    MAILHOG_USER          = "user"
+    REACT_APP_PROXY       = "http://localhost:4000"
+    SLACK_BOT_TOKEN       = var.slack_bot_token
+    SLACK_CHANNEL_ID      = "D018H4TM94P"
+    SLACK_CLIENT_ID       = var.slack_client_id
+    SLACK_CLIENT_SECRET   = var.slack_client_secret
+    SLACK_OAUTH_TOKEN     = var.slack_oauth_token
+    SLACK_SIGNING_SECRET  = var.slack_signing_secret
+    SLACK_TEAM_ID         = "T018WFQP5QD"
   }
   vpc_cidr          = "10.10.0.0/16"
-  host_names        = ["people-depot-backend.com"]
-  root_db_username  = "postgres"
+  host_names        = var.host_names
+  root_db_username  = "postgres" // this is required even though postgres_database controls whether or not it's even used
+  root_db_password  = var.root_db_password
+  lambda_function   = "incubator_multi-tenant-db"
   container_memory  = 512
-  project_name      = "people-depot"
+  project_name      = "vrms"
   postgres_database = {}
   region            = "us-west-2"
-  health_check_path = "/"
-  environment       = "dev"
+  health_check_path = "/api/healthcheck"
+  environment       = var.environment
   application_type  = "backend"
   launch_type       = "FARGATE"
-  container_port    = 8000
-  lambda_function   = "incubator-prod_multi-tenant-db"
+  container_port    = 4000
   desired_count     = 1
   cluster_name      = "incubator-prod"
-  path_patterns     = ["/*"]
+  path_patterns     = ["/api/*"]
   tags = {
-    last_changed      = "Wed 2023-Jun-14 18:08:34"
+    last_changed      = "Sat 2023-Nov-11 11:10:00"
     terraform_managed = "true"
   }
 
@@ -60,19 +67,4 @@ module "people_depot" {
   db_instance_endpoint    = data.terraform_remote_state.shared.outputs.db_instance_endpoint
   vpc_id                  = data.terraform_remote_state.shared.outputs.vpc_id
   public_subnet_ids       = data.terraform_remote_state.shared.outputs.public_subnet_ids
-
-  root_db_password = var.root_db_password
-}
-
-variable "root_db_password" {
-  type        = string
-  description = "root database password"
-}
-
-variable "app_db_password" {
-  type = string
-}
-
-variable "container_image" {
-  type = string
 }
