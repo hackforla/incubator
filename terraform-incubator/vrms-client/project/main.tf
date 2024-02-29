@@ -41,7 +41,7 @@ module "vrms-client" {
   lambda_function    = "lambda"
   cluster_name       = "incubator-prod"
   tags = {
-    last_changed      = "Sat 2023-Nov-11 16:08:00"
+    last_changed      = "Wed 2024-Feb-28 20:02:00"
     terraform_managed = "true"
   }
 
