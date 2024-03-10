@@ -68,8 +68,8 @@ module "cognito" {
   source = "../../../terraform-modules/cognito"
 
   region         = "us-west-2"
-  user_pool_name = "my-awesome-app-user-pool"
-  client_name    = "my-awesome-app-client"
+  user_pool_name = "people-depot-user-pool"
+  client_name    = "people-depot-client"
 }
 
 
