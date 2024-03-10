@@ -64,6 +64,15 @@ module "people_depot" {
   root_db_password = var.root_db_password
 }
 
+module "cognito" {
+  source = "../../../terraform-modules/cognito"
+
+  region         = "us-west-2"
+  user_pool_name = "my-awesome-app-user-pool"
+  client_name    = "my-awesome-app-client"
+}
+
+
 variable "root_db_password" {
   type        = string
   description = "root database password"
