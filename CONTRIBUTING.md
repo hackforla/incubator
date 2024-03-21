@@ -1,5 +1,4 @@
 # **How to Contribute to Incubator**
-> ℹ️ **This page is under development**
 
 Below are guidelines for contributing to the incubator repository hosted on GitHub. These guidelines are primarily recommendations rather than strict rules. Use your discretion and feel free to suggest changes to this document by submitting a pull request.
 
