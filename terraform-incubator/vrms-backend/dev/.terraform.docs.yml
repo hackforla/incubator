@@ -6,7 +6,7 @@ footer-from: ""
 
 recursive:
   enabled: false
-  path: terraform-incubatorgit 
+  path: terraform-incubator 
 
 sections:
   hide: []
