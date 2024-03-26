@@ -15,7 +15,7 @@ sections:
 content: |-
   # ACM 
 
-  <Add description here>
+  Add description here
 
   {{ .Header }}
   {{ .Modules }}
