@@ -16,7 +16,7 @@ jobs:
         with:
           working-dir: terraform-modules,terraform-incubator
           recursive: true
-          recursive-path: .
+          recursive-path: "**/*.tf"
           output-file: README.md
           output-method: inject
           git-push: "true"
