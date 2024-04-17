@@ -1,9 +1,20 @@
 <!-- BEGIN_TF_DOCS -->
-# Database 
+## Requirements
 
-Add description.
+| Name | Version |
+|------|---------|
+| <a name="requirement_postgresql"></a> [postgresql](#requirement\_postgresql) | ~> 1.21.0 |
 
+## Providers
 
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_postgresql"></a> [postgresql](#provider\_postgresql) | ~> 1.21.0 |
+
+## Modules
+
+No modules.
 
 ## Resources
 
@@ -20,6 +31,7 @@ Add description.
 | [postgresql_role.db_viewer](https://registry.terraform.io/providers/cyrilgdn/postgresql/latest/docs/resources/role) | resource |
 | [aws_db_instance.shared](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/db_instance) | data source |
 | [aws_secretsmanager_random_password.db_password_init](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_random_password) | data source |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -30,6 +42,7 @@ Add description.
 | <a name="input_shared_configuration"></a> [shared\_configuration](#input\_shared\_configuration) | Configuration object from shared resources | <pre>object({<br>    alb_arn                 = string<br>    alb_https_listener_arn  = string<br>    cluster_id              = string<br>    cluster_name            = string<br>    task_execution_role_arn = string<br>    db_identifier           = string<br>    vpc_id                  = string<br>    public_subnet_ids       = set(string)<br>  })</pre> | n/a | yes |
 | <a name="input_user_name"></a> [user\_name](#input\_user\_name) | n/a | `string` | `""` | no |
 | <a name="input_viewer_name"></a> [viewer\_name](#input\_viewer\_name) | n/a | `string` | `""` | no |
+
 ## Outputs
 
 | Name | Description |
@@ -43,19 +56,4 @@ Add description.
 | <a name="output_user_password_arn"></a> [user\_password\_arn](#output\_user\_password\_arn) | n/a |
 | <a name="output_viewer"></a> [viewer](#output\_viewer) | n/a |
 | <a name="output_viewer_password_arn"></a> [viewer\_password\_arn](#output\_viewer\_password\_arn) | n/a |
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-| <a name="provider_postgresql"></a> [postgresql](#provider\_postgresql) | ~> 1.21.0 |
-## Requirements
-
-| Name | Version |
-|------|---------|
-| <a name="requirement_postgresql"></a> [postgresql](#requirement\_postgresql) | ~> 1.21.0 |
-
-To automatically update this documentation, install terraform-docs on your local machine run the following: 
-    cd <directory of README location to update>
-    terraform-docs -c .terraform.docs.yml . 
 <!-- END_TF_DOCS -->    

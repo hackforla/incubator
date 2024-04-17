@@ -1,9 +1,18 @@
 <!-- BEGIN_TF_DOCS -->
-# Redis 
+## Requirements
 
-Add description.
+No requirements.
 
+## Providers
 
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_template"></a> [template](#provider\_template) | n/a |
+
+## Modules
+
+No modules.
 
 ## Resources
 
@@ -14,6 +23,7 @@ Add description.
 | [aws_security_group.redis_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_service_discovery_service.sd_service](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/service_discovery_service) | resource |
 | [template_file.container-definition](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -31,20 +41,10 @@ Add description.
 | <a name="input_resource_name"></a> [resource\_name](#input\_resource\_name) | The overall name of the project using this infrastructure; used to group related resources by | `any` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | <pre>{<br>  "terraform_managed": "true"<br>}</pre> | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC ID | `any` | n/a | yes |
+
 ## Outputs
 
 | Name | Description |
 |------|-------------|
 | <a name="output_internal_dns_name"></a> [internal\_dns\_name](#output\_internal\_dns\_name) | n/a |
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-| <a name="provider_template"></a> [template](#provider\_template) | n/a |
-
-
-To automatically update this documentation, install terraform-docs on your local machine run the following: 
-    cd <directory of README location to update>
-    terraform-docs -c .terraform.docs.yml . 
 <!-- END_TF_DOCS -->    
