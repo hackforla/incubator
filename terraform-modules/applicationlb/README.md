@@ -1,9 +1,17 @@
 <!-- BEGIN_TF_DOCS -->
-# Applicationlb 
+## Requirements
 
-Add description here.
+No requirements.
 
+## Providers
 
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+
+## Modules
+
+No modules.
 
 ## Resources
 
@@ -14,6 +22,7 @@ Add description here.
 | [aws_lb_listener.ssl](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener) | resource |
 | [aws_lb_listener_certificate.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener_certificate) | resource |
 | [aws_security_group.alb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -26,6 +35,7 @@ Add description here.
 | <a name="input_resource_name"></a> [resource\_name](#input\_resource\_name) | The overall name of the shared resources | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | n/a | `map(any)` | <pre>{<br>  "terraform_managed": "true"<br>}</pre> | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC ID | `string` | n/a | yes |
+
 ## Outputs
 
 | Name | Description |
@@ -38,14 +48,4 @@ Add description here.
 | <a name="output_lb_dns_name"></a> [lb\_dns\_name](#output\_lb\_dns\_name) | n/a |
 | <a name="output_lb_zone_id"></a> [lb\_zone\_id](#output\_lb\_zone\_id) | n/a |
 | <a name="output_security_group_id"></a> [security\_group\_id](#output\_security\_group\_id) | n/a |
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-
-
-To automatically update this documentation, install terraform-docs on your local machine run the following: 
-    cd <directory of README location to update>
-    terraform-docs -c .terraform.docs.yml . 
 <!-- END_TF_DOCS -->    

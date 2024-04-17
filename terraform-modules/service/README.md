@@ -1,8 +1,13 @@
 <!-- BEGIN_TF_DOCS -->
-# Service 
+## Requirements
 
-Add description.
+No requirements.
 
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 
 ## Modules
 
@@ -10,6 +15,7 @@ Add description.
 |------|--------|---------|
 | <a name="module_application_container_def"></a> [application\_container\_def](#module\_application\_container\_def) | cloudposse/ecs-container-definition/aws | 0.56.0 |
 | <a name="module_ecr"></a> [ecr](#module\_ecr) | ../ecr | n/a |
+
 ## Resources
 
 | Name | Type |
@@ -27,6 +33,7 @@ Add description.
 | [aws_security_group.fargate](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_lambda_invocation.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/lambda_invocation) | data source |
 | [aws_route53_zone.selected](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -62,19 +69,10 @@ Add description.
 | <a name="input_task_execution_role_arn"></a> [task\_execution\_role\_arn](#input\_task\_execution\_role\_arn) | ECS task execution role with policy for accessing other AWS resources | `string` | n/a | yes |
 | <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | VPC cidr block | `string` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC ID | `any` | n/a | yes |
+
 ## Outputs
 
 | Name | Description |
 |------|-------------|
 | <a name="output_result_entry"></a> [result\_entry](#output\_result\_entry) | n/a |
-## Providers
-
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-
-
-To automatically update this documentation, install terraform-docs on your local machine run the following: 
-    cd <directory of README location to update>
-    terraform-docs -c .terraform.docs.yml . 
 <!-- END_TF_DOCS -->    

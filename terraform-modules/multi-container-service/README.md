@@ -1,14 +1,20 @@
 <!-- BEGIN_TF_DOCS -->
-# Multi-Container-Service 
+## Requirements
 
-Add description.
+No requirements.
 
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_ecs-task"></a> [ecs-task](#module\_ecs-task) | ../ecs-task | n/a |
+
 ## Resources
 
 | Name | Type |
@@ -22,6 +28,7 @@ Add description.
 | [aws_service_discovery_private_dns_namespace.internal](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/service_discovery_private_dns_namespace) | resource |
 | [aws_lb.lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/lb) | data source |
 | [aws_route53_zone.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -36,14 +43,7 @@ Add description.
 | <a name="input_vpc_cidr"></a> [vpc\_cidr](#input\_vpc\_cidr) | VPC cidr block | `string` | n/a | yes |
 | <a name="input_zone_id"></a> [zone\_id](#input\_zone\_id) | The root zone\_id for the service | `string` | n/a | yes |
 
-## Providers
+## Outputs
 
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-
-
-To automatically update this documentation, install terraform-docs on your local machine run the following: 
-    cd <directory of README location to update>
-    terraform-docs -c .terraform.docs.yml . 
+No outputs.
 <!-- END_TF_DOCS -->    

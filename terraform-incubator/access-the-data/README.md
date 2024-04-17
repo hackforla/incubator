@@ -1,8 +1,16 @@
 <!-- BEGIN_TF_DOCS -->
-# Groups
+## Requirements
 
-This module declares all of the resources necessary to create AWS IAM groups.
+| Name | Version |
+|------|---------|
+| <a name="requirement_postgresql"></a> [postgresql](#requirement\_postgresql) | ~> 1.21.0 |
 
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
 
 ## Modules
 
@@ -13,6 +21,7 @@ This module declares all of the resources necessary to create AWS IAM groups.
 | <a name="module_datastore_database"></a> [datastore\_database](#module\_datastore\_database) | ../../terraform-modules/database | n/a |
 | <a name="module_secrets"></a> [secrets](#module\_secrets) | ../../terraform-modules/cheap-secrets | n/a |
 | <a name="module_zone"></a> [zone](#module\_zone) | ../../terraform-modules/project-zone | n/a |
+
 ## Resources
 
 | Name | Type |
@@ -21,20 +30,11 @@ This module declares all of the resources necessary to create AWS IAM groups.
 | [aws_ssm_parameter.rds_credentials](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
 | [terraform_remote_state.shared](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 
+## Inputs
 
-## Providers
+No inputs.
 
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-| <a name="provider_terraform"></a> [terraform](#provider\_terraform) | n/a |
-## Requirements
+## Outputs
 
-| Name | Version |
-|------|---------|
-| <a name="requirement_postgresql"></a> [postgresql](#requirement\_postgresql) | ~> 1.21.0 |
-
-To automatically update this documentation, install terraform-docs on your local machine run the following: 
-    cd <directory of README location to update>
-    terraform-docs -c .terraform.docs.yml . 
+No outputs.
 <!-- END_TF_DOCS -->    
