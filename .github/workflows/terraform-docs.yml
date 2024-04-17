@@ -11,10 +11,19 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: Generate Terraform docs
+      - name: Generate Terraform docs terraform-modules
         uses: terraform-docs/gh-actions@v1.1.0
         with:
-          working-dir: terraform-modules,terraform-incubator
+          working-dir: terraform-modules
+          recursive: true
+          recursive-path: .
+          output-file: README.md
+          output-method: inject
+          git-push: "true"
+      - name: Generate Terraform docs terraform-incubator
+        uses: terraform-docs/gh-actions@v1.1.0
+        with:
+          working-dir: terraform-incubator
           recursive: true
           recursive-path: "**/*.tf"
           output-file: README.md
