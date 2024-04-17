@@ -1,0 +1,23 @@
+name: Generate terraform docs
+
+on:
+  pull_request:
+
+jobs:
+  terraform-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Generate Terraform docs
+        uses: terraform-docs/gh-actions@v1.1.0
+        with:
+          working-dir: terraform-modules,terraform-incubator
+          recursive: true
+          recursive-path: .
+          output-file: README.md
+          config-file: .terraform-docs.yml
+          output-method: inject
+          git-push: "true"
