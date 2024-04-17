@@ -2,6 +2,8 @@ name: Generate terraform docs
 
 on:
   pull_request:
+    paths:
+      - "**/*.tf"
 
 jobs:
   terraform-docs:
@@ -15,8 +17,6 @@ jobs:
         uses: terraform-docs/gh-actions@v1.1.0
         with:
           working-dir: terraform-modules
-          recursive: true
-          recursive-path: .
           output-file: README.md
           output-method: inject
           git-push: "true"
