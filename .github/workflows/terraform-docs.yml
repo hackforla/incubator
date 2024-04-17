@@ -18,6 +18,5 @@ jobs:
           recursive: true
           recursive-path: .
           output-file: README.md
-          config-file: .terraform-docs.yml
           output-method: inject
           git-push: "true"
