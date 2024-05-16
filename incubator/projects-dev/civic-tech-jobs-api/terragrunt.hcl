@@ -39,53 +39,6 @@ include {
   path = find_in_parent_folders()
 }
 
-dependencies {
-  paths = ["../../shared-resources/network", "../../shared-resources/alb", "../../shared-resources/ecs", "../../shared-resources/rds", "../../shared-resources/multi-db-lambda"]
-}
-dependency "network" {
-  config_path = "../../shared-resources/network"
-  // skip_outputs = true
-  mock_outputs = {
-    vpc_id            = "",
-    vpc_cidr          = "10.0.0.0/16",
-    public_subnet_ids = [""],
-  }
-}
-dependency "rds" {
-  config_path = "../../shared-resources/rds"
-  // skip_outputs = true
-  mock_outputs = {
-    db_instance_endpoint = "",
-  }
-}
-dependency "multi-db" {
-  config_path = "../../shared-resources/multi-db-lambda"
-  // skip_outputs = true
-  mock_outputs = {
-    lambda_function = "",
-  }
-}
-dependency "alb" {
-  config_path = "../../shared-resources/alb"
-  // skip_outputs = true
-  mock_outputs = {
-    security_group_id      = "",
-    alb_target_group_arn   = "",
-    alb_https_listener_arn = "",
-    lb_dns_name            = ""
-  }
-}
-dependency "ecs" {
-  config_path = "../../shared-resources/ecs"
-  // skip_outputs = true
-  mock_outputs = {
-    cluster_name            = "",
-    cluster_id              = "",
-    task_execution_role_arn = ""
-  }
-}
-
-
 # These are the variables we have to pass in to use the module specified in the terragrunt configuration above
 inputs = {
   // Input from other Modules
