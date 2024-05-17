@@ -1,7 +1,7 @@
 resource "aws_cognito_user_pool" "main" {
   name = var.user_pool_name
 
-  // Add additional configurations here
+  // Add additional configurations here based on project needs
 }
 
 resource "aws_cognito_user_pool_client" "main" {
