@@ -35,7 +35,9 @@ jobs:
       - name: Extract unique directories for module changes
         id: extract-dirs
         run: |
-          echo "::set-output name=module-change-dirs::$(echo '${{ steps.changed-files.outputs.module-change_files }}' | jq -r '[.[] | split("/")[:-1] | join("/")] | unique | .[]')"
+          module_dirs=$(echo '${{ steps.changed-files.outputs.module-change_files }}' | jq -r '[.[] | split("/")[:-1] | join("/")] | unique | .[]')
+          echo "Unique module directories: $module_dirs"
+          echo "::set-output name=module-change-dirs::$module_dirs"
 
   plan-all:
     runs-on: ubuntu-latest
