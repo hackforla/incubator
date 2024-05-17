@@ -41,10 +41,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Terraform plan - all directories
     needs: [changed-files]
-    if: ${{ fromJson(needs.changed-files.outputs.module-change_files).length > 0 }}
+    if: ${{ steps.changed-files.outputs.module-change_files != '[]' }}
     strategy:
       matrix:
-        directory: ${{ fromJson(needs.changed-files.outputs.module-change_files) }}
+        directory: ${{ fromJson(steps.changed-files.outputs.module-change_files) }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Terraform plan - Project changes
     needs: [changed-files]
-    if: ${{ fromJson(needs.changed-files.outputs.project-change_files).length > 0 && fromJson(needs.changed-files.outputs.module-change_files).length == 0 }}
+    if: ${{ steps.changed-files.outputs.project-change_files != '[]' && steps.changed-files.outputs.module-change_files == '[]' }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Terraform plan - Env changes
     needs: [changed-files]
-    if: ${{ fromJson(needs.changed-files.outputs.environment-change_files).length > 0 && fromJson(needs.changed-files.outputs.module-change_files).length == 0 && fromJson(needs.changed-files.outputs.project-change_files).length == 0 }}
+    if: ${{ steps.changed-files.outputs.environment-change_files != '[]' && steps.changed-files.outputs.module-change_files == '[]' && steps.changed-files.outputs.project-change_files == '[]' }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
