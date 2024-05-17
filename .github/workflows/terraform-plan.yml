@@ -40,7 +40,7 @@ jobs:
     if: ${{ needs.changed-files.outputs.module-change == 'true' }}
     strategy:
       matrix:
-        directory: ${{ needs.changed-files.outputs.environment-change }}
+        directory: ${{ needs.changed-files.outputs.module-change }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{secrets.INCUBATOR_AWS_ACCESS_KEY_ID}}
