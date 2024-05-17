@@ -12,8 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       module-change: ${{ steps.changed-files.outputs.module-change }}
+      module-change-files: ${{ steps.changed-files.outputs.module-change_files }}
       project-change: ${{ steps.changed-files.outputs.project-change }}
+      project-change-files: ${{ steps.changed-files.outputs.project-change_files }}
       environment-change: ${{ steps.changed-files.outputs.environment-change }}
+      environment-change-files: ${{ steps.changed-files.outputs.environment-change_files }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -41,10 +44,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Terraform plan - all directories
     needs: [changed-files]
-    if: ${{ steps.changed-files.outputs.module-change_files != '[]' }}
+    if: ${{ needs.changed-files.outputs.module-change == 'true' }}
     strategy:
       matrix:
-        directory: ${{ fromJson(steps.changed-files.outputs.module-change_files) }}
+        directory: ${{ fromJson(needs.changed-files.outputs.module-change-files) }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
@@ -61,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Terraform plan - Project changes
     needs: [changed-files]
-    if: ${{ steps.changed-files.outputs.project-change_files != '[]' && steps.changed-files.outputs.module-change_files == '[]' }}
+    if: ${{ needs.changed-files.outputs.project-change == 'true' && needs.changed-files.outputs.module-change == 'false' }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
@@ -78,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Terraform plan - Env changes
     needs: [changed-files]
-    if: ${{ steps.changed-files.outputs.environment-change_files != '[]' && steps.changed-files.outputs.module-change_files == '[]' && steps.changed-files.outputs.project-change_files == '[]' }}
+    if: ${{ needs.changed-files.outputs.environment-change == 'true' && needs.changed-files.outputs.module-change == 'false' && needs.changed-files.outputs.project-change == 'false' }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
