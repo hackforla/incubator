@@ -32,57 +32,60 @@ jobs:
               - 'terraform-incubator/*/!(project)/*.tf'
           list-files: json
       - name: List all changed files
-        run: echo '${{ steps.changed-files.outputs.module-change_files }}'; echo '${{ steps.changed-files.outputs.project-change_files }}'; echo '${{ steps.changed-files.outputs.environment-change_files }}'
+        run: |
+          echo "Module changes: ${{ steps.changed-files.outputs.module-change_files }}"
+          echo "Project changes: ${{ steps.changed-files.outputs.project-change_files }}"
+          echo "Environment changes: ${{ steps.changed-files.outputs.environment-change_files }}"
+
   plan-all:
     runs-on: ubuntu-latest
     name: Terraform plan - all directories
     needs: [changed-files]
-    if: ${{ needs.changed-files.outputs.module-change == 'true' }}
+    if: ${{ fromJson(needs.changed-files.outputs.module-change_files).length > 0 }}
     strategy:
       matrix:
-        directory: ${{ needs.changed-files.outputs.module-change }}
+        directory: ${{ fromJson(needs.changed-files.outputs.module-change_files) }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      AWS_ACCESS_KEY_ID: ${{secrets.INCUBATOR_AWS_ACCESS_KEY_ID}}
-      AWS_SECRET_ACCESS_KEY: ${{secrets.INCUBATOR_AWS_SECRET_ACCESS_KEY}}    
+      AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.INCUBATOR_AWS_SECRET_ACCESS_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: terraform plan
         uses: dflook/terraform-plan@v1
         with:
           path: ${{ matrix.directory }}
+
   plan-project:
     runs-on: ubuntu-latest
     name: Terraform plan - Project changes
     needs: [changed-files]
-    if: ${{ needs.changed-files.outputs.project-change == 'true' && needs.changed-files.outputs.module-change == 'false'}}
+    if: ${{ fromJson(needs.changed-files.outputs.project-change_files).length > 0 && fromJson(needs.changed-files.outputs.module-change_files).length == 0 }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      AWS_ACCESS_KEY_ID: ${{secrets.INCUBATOR_AWS_ACCESS_KEY_ID}}
-      AWS_SECRET_ACCESS_KEY: ${{secrets.INCUBATOR_AWS_SECRET_ACCESS_KEY}}    
+      AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.INCUBATOR_AWS_SECRET_ACCESS_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: terraform plan
         uses: dflook/terraform-plan@v1
         with:
           path: terraform-incubator/people-depot/dev
+
   plan-environment:
     runs-on: ubuntu-latest
     name: Terraform plan - Env changes
     needs: [changed-files]
-    if: ${{ needs.changed-files.outputs.environment-change == 'true' && needs.changed-files.outputs.module-change == 'false' && needs.changed-files.outputs.project-change == 'false' }}
+    if: ${{ fromJson(needs.changed-files.outputs.environment-change_files).length > 0 && fromJson(needs.changed-files.outputs.module-change_files).length == 0 && fromJson(needs.changed-files.outputs.project-change_files).length == 0 }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      AWS_ACCESS_KEY_ID: ${{secrets.INCUBATOR_AWS_ACCESS_KEY_ID}}
-      AWS_SECRET_ACCESS_KEY: ${{secrets.INCUBATOR_AWS_SECRET_ACCESS_KEY}}    
+      AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.INCUBATOR_AWS_SECRET_ACCESS_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: terraform plan
         uses: dflook/terraform-plan@v1
         with:
