@@ -12,11 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       module-change: ${{ steps.changed-files.outputs.module-change }}
-      module-change-files: ${{ steps.changed-files.outputs.module-change_files }}
+      module-change-dirs: ${{ steps.extract-dirs.outputs.module-change-dirs }}
       project-change: ${{ steps.changed-files.outputs.project-change }}
-      project-change-files: ${{ steps.changed-files.outputs.project-change_files }}
       environment-change: ${{ steps.changed-files.outputs.environment-change }}
-      environment-change-files: ${{ steps.changed-files.outputs.environment-change_files }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,11 +32,10 @@ jobs:
             environment-change:
               - 'terraform-incubator/*/!(project)/*.tf'
           list-files: json
-      - name: List all changed files
+      - name: Extract unique directories for module changes
+        id: extract-dirs
         run: |
-          echo "Module changes: ${{ steps.changed-files.outputs.module-change_files }}"
-          echo "Project changes: ${{ steps.changed-files.outputs.project-change_files }}"
-          echo "Environment changes: ${{ steps.changed-files.outputs.environment-change_files }}"
+          echo "::set-output name=module-change-dirs::$(echo '${{ steps.changed-files.outputs.module-change_files }}' | jq -r '[.[] | split("/")[:-1] | join("/")] | unique | .[]')"
 
   plan-all:
     runs-on: ubuntu-latest
@@ -47,7 +44,7 @@ jobs:
     if: ${{ needs.changed-files.outputs.module-change == 'true' }}
     strategy:
       matrix:
-        directory: ${{ fromJson(needs.changed-files.outputs.module-change-files) }}
+        directory: ${{ fromJson(needs.changed-files.outputs.module-change-dirs) }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
