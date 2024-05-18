@@ -48,6 +48,10 @@ jobs:
           echo "::set-output name=module_change::true"
           echo "Set module_change to true"
 
+      - name: Debug module change
+        if: ${{ steps.set-module-change.outputs.module_change == 'true' }}
+        run: echo "module_change is set to true"
+
       - name: Set project directory output
         id: set-project-directory
         if: ${{ fromJson(steps.changed-files.outputs.project-change_files).length > 0 }}
@@ -58,6 +62,10 @@ jobs:
           echo "::set-output name=has_project_change::true"
           echo "Set project directory to $directory and has_project_change to true"
 
+      - name: Debug project directory
+        if: ${{ steps.set-project-directory.outputs.has_project_change == 'true' }}
+        run: echo "has_project_change is set to true with directory ${{ steps.set-project-directory.outputs.directory }}"
+
       - name: Set environment directory output
         id: set-environment-directory
         if: ${{ fromJson(steps.changed-files.outputs.environment-change_files).length > 0 }}
@@ -67,6 +75,10 @@ jobs:
           echo "::set-output name=directory::$directory"
           echo "::set-output name=has_environment_change::true"
           echo "Set environment directory to $directory and has_environment_change to true"
+
+      - name: Debug environment directory
+        if: ${{ steps.set-environment-directory.outputs.has_environment_change == 'true' }}
+        run: echo "has_environment_change is set to true with directory ${{ steps.set-environment-directory.outputs.directory }}"
 
   debug:
     runs-on: ubuntu-latest
