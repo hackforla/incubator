@@ -14,6 +14,8 @@ jobs:
       module-change: ${{ steps.module-change.outputs.module_change }}
       project-directory: ${{ steps.project-directory.outputs.directory }}
       environment-directory: ${{ steps.environment-directory.outputs.directory }}
+      has-project-change: ${{ steps.project-directory.outputs.has_project_change }}
+      has-environment-change: ${{ steps.environment-directory.outputs.has_environment_change }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,9 +30,9 @@ jobs:
             module-change:
               - 'terraform-modules/**'
             project-change:
-              - 'terraform-incubator/*/project/*.tf'
+              - 'terraform-incubator/**/project/*.tf'
             environment-change:
-              - 'terraform-incubator/*/!(project)/*.tf'
+              - 'terraform-incubator/**/!(project)/*.tf'
           list-files: json
 
       - name: List all changed files
@@ -51,6 +53,7 @@ jobs:
           directory=$(dirname "${{ fromJson(steps.changed-files.outputs.project-change_files)[0] }}")
           echo "Extracted Directory: $directory"
           echo "::set-output name=directory::$directory"
+          echo "::set-output name=has_project_change::true"
 
       - name: Extract environment directory
         id: environment-directory
@@ -59,30 +62,13 @@ jobs:
           directory=$(dirname "${{ fromJson(steps.changed-files.outputs.environment-change_files)[0] }}")
           echo "Extracted Directory: $directory"
           echo "::set-output name=directory::$directory"
-
-  plan-project:
-    runs-on: ubuntu-latest
-    name: Terraform plan - Project changes
-    needs: [changed-files]
-    if: ${{ needs.changed-files.outputs.project-directory != '' && (needs.changed-files.outputs.environment-directory == '' || needs.changed-files.outputs.module-change != 'true') }}
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.INCUBATOR_AWS_SECRET_ACCESS_KEY }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: terraform plan
-        uses: dflook/terraform-plan@v1
-        with:
-          path: ${{ needs.changed-files.outputs.project-directory }}
+          echo "::set-output name=has_environment_change::true"
 
   plan-environment:
     runs-on: ubuntu-latest
     name: Terraform plan - Environment changes
     needs: [changed-files]
-    if: ${{ needs.changed-files.outputs.environment-directory != '' && (needs.changed-files.outputs.project-directory == '' || needs.changed-files.outputs.module-change == 'true') }}
+    if: ${{ needs.changed-files.outputs.has_environment_change == 'true' }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
@@ -96,11 +82,29 @@ jobs:
         with:
           path: ${{ needs.changed-files.outputs.environment-directory }}
 
+  plan-project:
+    runs-on: ubuntu-latest
+    name: Terraform plan - Project changes
+    needs: [changed-files]
+    if: ${{ needs.changed-files.outputs.has_project_change == 'true' && needs.changed-files.outputs.has_environment_change != 'true' }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.INCUBATOR_AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: terraform plan
+        uses: dflook/terraform-plan@v1
+        with:
+          path: ${{ needs.changed-files.outputs.project-directory }}
+
   skip-module:
     runs-on: ubuntu-latest
     name: Skip Terraform plan for module changes only
     needs: [changed-files]
-    if: ${{ needs.changed-files.outputs.module-change == 'true' && needs.changed-files.outputs.project-directory == '' && needs.changed-files.outputs.environment-directory == '' }}
+    if: ${{ needs.changed-files.outputs.module_change == 'true' && needs.changed-files.outputs.has_project_change != 'true' && needs.changed-files.outputs.has_environment_change != 'true' }}
     steps:
       - name: Skip module changes
         run: echo "Skipping Terraform plan for module changes only."
