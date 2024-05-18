@@ -31,14 +31,6 @@ module "dev" {
   container_image  = "035866691871.dkr.ecr.us-west-2.amazonaws.com/people-depot-backend-dev:latest"
 }
 
-module "cognito" {
-  source = "../../../terraform-modules/cognito"
-
-  region         = "us-west-2"
-  user_pool_name = "people-depot-user-pool"
-  client_name    = "people-depot-client"
-}
-
 moved {
   from = module.ecr.aws_ecr_repository.this
   to   = module.dev.module.people_depot.module.ecr.aws_ecr_repository.this
