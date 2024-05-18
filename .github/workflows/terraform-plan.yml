@@ -44,7 +44,9 @@ jobs:
       - name: Set module change output
         id: module-change
         if: ${{ fromJson(steps.changed-files.outputs.module-change_files).length > 0 }}
-        run: echo "::set-output name=module_change::true"
+        run: |
+          echo "::set-output name=module_change::true"
+          echo "Set module_change to true"
 
       - name: Extract project directory
         id: project-directory
@@ -54,6 +56,7 @@ jobs:
           echo "Extracted Directory: $directory"
           echo "::set-output name=directory::$directory"
           echo "::set-output name=has_project_change::true"
+          echo "Set project directory to $directory and has_project_change to true"
 
       - name: Extract environment directory
         id: environment-directory
@@ -63,6 +66,7 @@ jobs:
           echo "Extracted Directory: $directory"
           echo "::set-output name=directory::$directory"
           echo "::set-output name=has_environment_change::true"
+          echo "Set environment directory to $directory and has_environment_change to true"
 
   debug:
     runs-on: ubuntu-latest
