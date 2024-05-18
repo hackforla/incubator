@@ -98,6 +98,10 @@ jobs:
         uses: dflook/terraform-validate@v1
         with:
           path: ${{ needs.changed-files.outputs.module-directory }}
+
+      - name: Module validation failed
+        if: ${{ failure() && steps.validate.outputs.failure-reason == 'validate-failed' }}
+        run: echo "Module validation failed"
         
       - name: Terraform plan - Environment
         if: ${{ needs.changed-files.outputs.environment-directory != '' && (needs.changed-files.outputs.project-directory == '' || needs.changed-files.outputs.has-environment-changes == 'true') }}
