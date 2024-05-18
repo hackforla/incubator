@@ -11,7 +11,7 @@ jobs:
     name: Get changed terraform directories
     runs-on: ubuntu-latest
     outputs:
-      module-change: ${{ steps.changed-files.outputs.module-change }}
+      module-change: ${{ steps.module-directory.outputs.module-change }}
       project-directory: ${{ steps.project-directory.outputs.directory }}
       environment-directory: ${{ steps.environment-directory.outputs.directory }}
     steps:
@@ -81,6 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Terraform plan - All projects
     needs: [plan-modules]
+    if: ${{ needs.plan-modules.outputs.projects != '' }}
     strategy:
       matrix:
         directory: ${{ fromJson(needs.plan-modules.outputs.projects) }}
