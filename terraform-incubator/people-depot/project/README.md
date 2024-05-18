@@ -1,7 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
-# Groups
+# Project
 
-This module declares all of the resources necessary to create AWS IAM groups.
+This module declares all of the resources necessary to create Resources for People Depot.
 
 
 ## Modules
