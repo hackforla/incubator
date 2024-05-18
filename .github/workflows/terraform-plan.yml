@@ -14,6 +14,8 @@ jobs:
       module-directory: ${{ steps.module-directory.outputs.directory }}
       project-directory: ${{ steps.project-directory.outputs.directory }}
       environment-directory: ${{ steps.environment-directory.outputs.directory }}
+      has-environment-changes: ${{ steps.check-changes.outputs.has-environment-changes }}
+      has-project-changes: ${{ steps.check-changes.outputs.has-project-changes }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -63,6 +65,12 @@ jobs:
           echo "Extracted Directory: $directory"
           echo "::set-output name=directory::$directory"
 
+      - name: Check for conflicting changes
+        id: check-changes
+        run: |
+          echo "::set-output name=has-environment-changes::${{ steps.changed-files.outputs.environment-change_files != '[]' }}"
+          echo "::set-output name=has-project-changes::${{ steps.changed-files.outputs.project-change_files != '[]' }}"
+
   plan:
     runs-on: ubuntu-latest
     name: Terraform Plan
@@ -75,14 +83,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Fail on multiple plans
+        if: ${{ needs.changed-files.outputs.has-environment-changes == 'true' && needs.changed-files.outputs.has-project-changes == 'true' }}
+        run: |
+          echo "Multiple plans detected: Please make changes to environments and projects in separate pull requests."
+          exit 1
+
       - name: Terraform plan - Environment
-        if: ${{ needs.changed-files.outputs.environment-directory != '' }}
+        if: ${{ needs.changed-files.outputs.environment-directory != '' && (needs.changed-files.outputs.project-directory == '' || needs.changed-files.outputs.has-environment-changes == 'true') }}
         uses: dflook/terraform-plan@v1
         with:
           path: ${{ needs.changed-files.outputs.environment-directory }}
       
       - name: Terraform plan - Project
-        if: ${{ needs.changed-files.outputs.project-directory != '' }}
+        if: ${{ needs.changed-files.outputs.project-directory != '' && needs.changed-files.outputs.has-environment-changes != 'true' }}
         uses: dflook/terraform-plan@v1
         with:
           path: ${{ needs.changed-files.outputs.project-directory }}
