@@ -11,11 +11,11 @@ jobs:
     name: Get changed terraform directories
     runs-on: ubuntu-latest
     outputs:
-      module-change: ${{ steps.module-change.outputs.module_change }}
-      project-directory: ${{ steps.project-directory.outputs.directory }}
-      environment-directory: ${{ steps.environment-directory.outputs.directory }}
-      has-project-change: ${{ steps.project-directory.outputs.has_project_change }}
-      has-environment-change: ${{ steps.environment-directory.outputs.has_environment_change }}
+      module-change: ${{ steps.set-module-change.outputs.module_change }}
+      project-directory: ${{ steps.set-project-directory.outputs.directory }}
+      environment-directory: ${{ steps.set-environment-directory.outputs.directory }}
+      has-project-change: ${{ steps.set-project-directory.outputs.has_project_change }}
+      has-environment-change: ${{ steps.set-environment-directory.outputs.has_environment_change }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,14 +42,14 @@ jobs:
           echo 'environment-change: ${{ steps.changed-files.outputs.environment-change_files }}'
 
       - name: Set module change output
-        id: module-change
+        id: set-module-change
         if: ${{ fromJson(steps.changed-files.outputs.module-change_files).length > 0 }}
         run: |
           echo "::set-output name=module_change::true"
           echo "Set module_change to true"
 
-      - name: Extract project directory
-        id: project-directory
+      - name: Set project directory output
+        id: set-project-directory
         if: ${{ fromJson(steps.changed-files.outputs.project-change_files).length > 0 }}
         run: |
           directory=$(dirname "${{ fromJson(steps.changed-files.outputs.project-change_files)[0] }}")
@@ -58,8 +58,8 @@ jobs:
           echo "::set-output name=has_project_change::true"
           echo "Set project directory to $directory and has_project_change to true"
 
-      - name: Extract environment directory
-        id: environment-directory
+      - name: Set environment directory output
+        id: set-environment-directory
         if: ${{ fromJson(steps.changed-files.outputs.environment-change_files).length > 0 }}
         run: |
           directory=$(dirname "${{ fromJson(steps.changed-files.outputs.environment-change_files)[0] }}")
