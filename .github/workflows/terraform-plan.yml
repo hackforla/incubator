@@ -95,18 +95,10 @@ jobs:
 
       - name: Terraform validate - Modules
         if: ${{ needs.changed-files.outputs.module-directory != '' && needs.changed-files.outputs.environment-directory == '' && needs.changed-files.outputs.project-directory == '' }}
-        run: |
-          echo "Validating module changes..."
-          mkdir -p ./temp-validate
-          cat > ./temp-validate/main.tf <<EOF
-          module "test" {
-            source = "../${{ needs.changed-files.outputs.module-directory }}"
-          }
-          EOF
-          cd ./temp-validate
-          terraform init
-          terraform validate
-
+        uses: dflook/terraform-validate@v1
+        with:
+          path: ${{ needs.changed-files.outputs.module-directory }}
+        
       - name: Terraform plan - Environment
         if: ${{ needs.changed-files.outputs.environment-directory != '' && (needs.changed-files.outputs.project-directory == '' || needs.changed-files.outputs.has-environment-changes == 'true') }}
         uses: dflook/terraform-plan@v1
