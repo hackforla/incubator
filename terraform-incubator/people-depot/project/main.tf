@@ -67,12 +67,15 @@ module "people_depot" {
 variable "root_db_password" {
   type        = string
   description = "root database password"
+  default     = "password"
 }
 
 variable "app_db_password" {
   type = string
+  default = "password"
 }
 
 variable "container_image" {
   type = string
+  default = "nginx:latest"
 }
