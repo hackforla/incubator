@@ -64,6 +64,7 @@ module "people_depot" {
   root_db_password = var.root_db_password
 }
 
+
 variable "root_db_password" {
   type        = string
   description = "root database password"
