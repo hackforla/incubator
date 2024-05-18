@@ -11,9 +11,9 @@ jobs:
     name: Get changed terraform directories
     runs-on: ubuntu-latest
     outputs:
-      module-directory: ${{ steps.module-directory.outputs.directory }}
-      project-directory: ${{ steps.project-directory.outputs.directory }}
-      environment-directory: ${{ steps.environment-directory.outputs.directory }}
+      module-directory: ${{ steps.module-directory.outputs.directory || 'null' }}
+      project-directory: ${{ steps.project-directory.outputs.directory || 'null' }}
+      environment-directory: ${{ steps.environment-directory.outputs.directory || 'null' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -43,28 +43,31 @@ jobs:
         id: module-directory
         if: ${{ fromJson(steps.changed-files.outputs.module-change_files).length > 0 }}
         run: |
-          echo "Directory: $(dirname ${{ fromJson(steps.changed-files.outputs.module-change_files)[0] }})"
-          echo "::set-output name=directory::$(dirname ${{ fromJson(steps.changed-files.outputs.module-change_files)[0] }})"
+          directory=$(dirname "${{ fromJson(steps.changed-files.outputs.module-change_files)[0] }}")
+          echo "Directory: $directory"
+          echo "::set-output name=directory::$directory"
 
       - name: Extract project directory
         id: project-directory
         if: ${{ fromJson(steps.changed-files.outputs.project-change_files).length > 0 }}
         run: |
-          echo "Directory: $(dirname ${{ fromJson(steps.changed-files.outputs.project-change_files)[0] }})"
-          echo "::set-output name=directory::$(dirname ${{ fromJson(steps.changed-files.outputs.project-change_files)[0] }})"
+          directory=$(dirname "${{ fromJson(steps.changed-files.outputs.project-change_files)[0] }}")
+          echo "Directory: $directory"
+          echo "::set-output name=directory::$directory"
 
       - name: Extract environment directory
         id: environment-directory
         if: ${{ fromJson(steps.changed-files.outputs.environment-change_files).length > 0 }}
         run: |
-          echo "Directory: $(dirname ${{ fromJson(steps.changed-files.outputs.environment-change_files)[0] }})"
-          echo "::set-output name=directory::$(dirname ${{ fromJson(steps.changed-files.outputs.environment-change_files)[0] }})"
+          directory=$(dirname "${{ fromJson(steps.changed-files.outputs.environment-change_files)[0] }}")
+          echo "Directory: $directory"
+          echo "::set-output name=directory::$directory"
 
   plan-module:
     runs-on: ubuntu-latest
     name: Terraform plan - Module changes
     needs: [changed-files]
-    if: ${{ needs.changed-files.outputs.module-directory }}
+    if: ${{ needs.changed-files.outputs.module-directory != 'null' }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
@@ -82,7 +85,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Terraform plan - Project changes
     needs: [changed-files]
-    if: ${{ needs.changed-files.outputs.project-directory && !needs.changed-files.outputs.module-directory }}
+    if: ${{ needs.changed-files.outputs.project-directory != 'null' && needs.changed-files.outputs.module-directory == 'null' }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
@@ -100,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Terraform plan - Environment changes
     needs: [changed-files]
-    if: ${{ needs.changed-files.outputs.environment-directory && !needs.changed-files.outputs.module-directory && !needs.changed-files.outputs.project-directory }}
+    if: ${{ needs.changed-files.outputs.environment-directory != 'null' && needs.changed-files.outputs.module-directory == 'null' && needs.changed-files.outputs.project-directory == 'null' }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
