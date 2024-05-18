@@ -14,11 +14,15 @@ jobs:
       module-change: ${{ steps.changed-files.outputs.module-change }}
       project-change: ${{ steps.changed-files.outputs.project-change }}
       environment-change: ${{ steps.changed-files.outputs.environment-change }}
+      module-directory: ${{ steps.get-module-directory.outputs.directory }}
+      project-directory: ${{ steps.get-project-directory.outputs.directory }}
+      environment-directory: ${{ steps.get-environment-directory.outputs.directory }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Get changed files
         id: changed-files
         uses: dorny/paths-filter@v2
@@ -31,14 +35,39 @@ jobs:
             environment-change:
               - 'terraform-incubator/*/!(project)/*.tf'
           list-files: json
+
       - name: List all changed files
-        run: echo '${{ steps.changed-files.outputs.module-change_files }}'; echo '${{ steps.changed-files.outputs.project-change_files }}'; echo '${{ steps.changed-files.outputs.environment-change_files }}'
+        run: |
+          echo 'module-change: ${{ steps.changed-files.outputs.module-change_files }}'
+          echo 'project-change: ${{ steps.changed-files.outputs.project-change_files }}'
+          echo 'environment-change: ${{ steps.changed-files.outputs.environment-change_files }}'
+
+      - name: Extract module directory
+        id: get-module-directory
+        if: ${{ fromJson(steps.changed-files.outputs.module-change_files).length > 0 }}
+        run: |
+          echo "Directory: $(dirname ${{ fromJson(steps.changed-files.outputs.module-change_files)[0] }})"
+          echo "::set-output name=directory::$(dirname ${{ fromJson(steps.changed-files.outputs.module-change_files)[0] }})"
+
+      - name: Extract project directory
+        id: get-project-directory
+        if: ${{ fromJson(steps.changed-files.outputs.project-change_files).length > 0 }}
+        run: |
+          echo "Directory: $(dirname ${{ fromJson(steps.changed-files.outputs.project-change_files)[0] }})"
+          echo "::set-output name=directory::$(dirname ${{ fromJson(steps.changed-files.outputs.project-change_files)[0] }})"
+
+      - name: Extract environment directory
+        id: get-environment-directory
+        if: ${{ fromJson(steps.changed-files.outputs.environment-change_files).length > 0 }}
+        run: |
+          echo "Directory: $(dirname ${{ fromJson(steps.changed-files.outputs.environment-change_files)[0] }})"
+          echo "::set-output name=directory::$(dirname ${{ fromJson(steps.changed-files.outputs.environment-change_files)[0] }})"
 
   plan-module:
     runs-on: ubuntu-latest
     name: Terraform plan - Module changes
     needs: [changed-files]
-    if: ${{ fromJson(needs.changed-files.outputs.module-change_files).length > 0 }}
+    if: ${{ needs.changed-files.outputs.module-change == 'true' }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
@@ -50,13 +79,13 @@ jobs:
       - name: terraform plan
         uses: dflook/terraform-plan@v1
         with:
-          path: ${{ steps.changed-files.outputs.module-change_files[0] }}
+          path: ${{ needs.changed-files.outputs.module-directory }}
 
   plan-project:
     runs-on: ubuntu-latest
     name: Terraform plan - Project changes
     needs: [changed-files]
-    if: ${{ fromJson(needs.changed-files.outputs.project-change_files).length > 0 && fromJson(needs.changed-files.outputs.module-change_files).length == 0 }}
+    if: ${{ needs.changed-files.outputs.project-change == 'true' && needs.changed-files.outputs.module-change == 'false' }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
@@ -68,13 +97,13 @@ jobs:
       - name: terraform plan
         uses: dflook/terraform-plan@v1
         with:
-          path: ${{ steps.changed-files.outputs.project-change_files[0] }}
+          path: ${{ needs.changed-files.outputs.project-directory }}
 
   plan-environment:
     runs-on: ubuntu-latest
     name: Terraform plan - Environment changes
     needs: [changed-files]
-    if: ${{ fromJson(needs.changed-files.outputs.environment-change_files).length > 0 && fromJson(needs.changed-files.outputs.module-change_files).length == 0 && fromJson(needs.changed-files.outputs.project-change_files).length == 0 }}
+    if: ${{ needs.changed-files.outputs.environment-change == 'true' && needs.changed-files.outputs.module-change == 'false' && needs.changed-files.outputs.project-change == 'false' }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
@@ -86,4 +115,4 @@ jobs:
       - name: terraform plan
         uses: dflook/terraform-plan@v1
         with:
-          path: ${{ steps.changed-files.outputs.environment-change_files[0] }}
+          path: ${{ needs.changed-files.outputs.environment-directory }}
