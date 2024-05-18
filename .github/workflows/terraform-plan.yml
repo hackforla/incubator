@@ -59,6 +59,25 @@ jobs:
           directory=$(dirname "${{ fromJson(steps.changed-files.outputs.environment-change_files)[0] }}")
           echo "Extracted Directory: $directory"
           echo "::set-output name=directory::$directory"
+
+  plan-environment:
+    runs-on: ubuntu-latest
+    name: Terraform plan - Environment changes
+    needs: [changed-files]
+    if: ${{ needs.changed-files.outputs.environment-directory != '' }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.INCUBATOR_AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: terraform plan
+        uses: dflook/terraform-plan@v1
+        with:
+          path: ${{ needs.changed-files.outputs.environment-directory }}
+  
   plan-project:
     runs-on: ubuntu-latest
     name: Terraform plan - Project changes
@@ -76,39 +95,3 @@ jobs:
         uses: dflook/terraform-plan@v1
         with:
           path: ${{ needs.changed-files.outputs.project-directory }}
-
-  plan-module:
-    runs-on: ubuntu-latest
-    name: Terraform plan - Module changes
-    needs: [changed-files]
-    if: ${{ needs.changed-files.outputs.module-directory != '' && needs.changed-files.outputs.project-directory == '' }}
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.INCUBATOR_AWS_SECRET_ACCESS_KEY }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: terraform plan
-        uses: dflook/terraform-plan@v1
-        with:
-          path: ${{ needs.changed-files.outputs.module-directory }}
-
-  plan-environment:
-    runs-on: ubuntu-latest
-    name: Terraform plan - Environment changes
-    needs: [changed-files]
-    if: ${{ needs.changed-files.outputs.environment-directory != '' && needs.changed-files.outputs.module-directory == '' && needs.changed-files.outputs.project-directory == '' }}
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.INCUBATOR_AWS_SECRET_ACCESS_KEY }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: terraform plan
-        uses: dflook/terraform-plan@v1
-        with:
-          path: ${{ needs.changed-files.outputs.environment-directory }}
