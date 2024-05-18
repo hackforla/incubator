@@ -64,19 +64,15 @@ module "people_depot" {
   root_db_password = var.root_db_password
 }
 
-
 variable "root_db_password" {
   type        = string
   description = "root database password"
-  default     = "password"
 }
 
 variable "app_db_password" {
   type = string
-  default     = "password"
 }
 
 variable "container_image" {
   type = string
-  default = "ubuntu:latest"
 }
