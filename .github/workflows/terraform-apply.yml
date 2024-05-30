@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'terraform-incubator/**/*.tf'
 
 permissions:
   contents: read
@@ -14,7 +16,6 @@ jobs:
     name: Get changed terraform directories
     runs-on: ubuntu-latest
     outputs:
-      module-directory: ${{ steps.module-directory.outputs.directory }}
       project-directory: ${{ steps.project-directory.outputs.directory }}
       environment-directory: ${{ steps.environment-directory.outputs.directory }}
       has-environment-changes: ${{ steps.check-changes.outputs.has-environment-changes }}
@@ -30,8 +31,6 @@ jobs:
         uses: dorny/paths-filter@v2
         with:
           filters: |
-            module-change:
-              - 'terraform-modules/**'
             project-change:
               - 'terraform-incubator/*/project/*.tf'
             environment-change:
@@ -40,17 +39,8 @@ jobs:
 
       - name: List all changed files
         run: |
-          echo 'module-change: ${{ steps.changed-files.outputs.module-change_files }}'
           echo 'project-change: ${{ steps.changed-files.outputs.project-change_files }}'
           echo 'environment-change: ${{ steps.changed-files.outputs.environment-change_files }}'
-
-      - name: Extract module directory
-        id: module-directory
-        if: ${{ steps.changed-files.outputs['module-change'] == 'true' }}
-        run: |
-          directory=$(dirname "${{ fromJson(steps.changed-files.outputs.module-change_files)[0] }}")
-          echo "Extracted Directory: $directory"
-          echo "::set-output name=directory::$directory"
 
       - name: Extract project directory
         id: project-directory
@@ -91,16 +81,6 @@ jobs:
         run: |
           echo "Multiple changed directories detected: Please make changes to environments and projects in separate pull requests."
           exit 1
-
-      - name: Terraform validate - Modules
-        if: ${{ needs.changed-files.outputs.module-directory != '' && needs.changed-files.outputs.environment-directory == '' && needs.changed-files.outputs.project-directory == '' }}
-        uses: dflook/terraform-validate@v1
-        with:
-          path: ${{ needs.changed-files.outputs.module-directory }}
-
-      - name: Module validation failed
-        if: ${{ failure() && steps.validate.outputs.failure-reason == 'validate-failed' }}
-        run: echo "Module validation failed"
         
       - name: Terraform apply - Environment
         if: ${{ needs.changed-files.outputs.environment-directory != '' && (needs.changed-files.outputs.project-directory == '' || needs.changed-files.outputs.has-environment-changes == 'true') }}
@@ -108,7 +88,7 @@ jobs:
         with:
           path: ${{ needs.changed-files.outputs.environment-directory }}
       
-      - name: Terraform plan - Project
+      - name: Terraform apply - Project
         if: ${{ needs.changed-files.outputs.project-directory != '' && needs.changed-files.outputs.has-environment-changes != 'true' }}
         uses: dflook/terraform-apply@v1
         with:
