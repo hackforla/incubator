@@ -1,4 +1,4 @@
-name: Merge Terraform Apply
+name: Terraform Apply on Merge
 
 on: 
   push:
