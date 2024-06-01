@@ -1,0 +1,95 @@
+name: Terraform Apply on Merge
+
+on: 
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform-incubator/**/*.tf'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  changed-files:
+    name: Get changed terraform directories
+    runs-on: ubuntu-latest
+    outputs:
+      project-directory: ${{ steps.project-directory.outputs.directory }}
+      environment-directory: ${{ steps.environment-directory.outputs.directory }}
+      has-environment-changes: ${{ steps.check-changes.outputs.has-environment-changes }}
+      has-project-changes: ${{ steps.check-changes.outputs.has-project-changes }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            project-change:
+              - 'terraform-incubator/*/project/*.tf'
+            environment-change:
+              - 'terraform-incubator/*/!(project)/*.tf'
+          list-files: json
+
+      - name: List all changed files
+        run: |
+          echo 'project-change: ${{ steps.changed-files.outputs.project-change_files }}'
+          echo 'environment-change: ${{ steps.changed-files.outputs.environment-change_files }}'
+
+      - name: Extract project directory
+        id: project-directory
+        if: ${{ steps.changed-files.outputs['project-change'] == 'true' }}
+        run: |
+          directory=$(dirname "${{ fromJson(steps.changed-files.outputs.project-change_files)[0] }}")
+          echo "Extracted Directory: $directory"
+          echo "::set-output name=directory::$directory"
+
+      - name: Extract environment directory
+        id: environment-directory
+        if: ${{ steps.changed-files.outputs['environment-change'] == 'true' }}
+        run: |
+          directory=$(dirname "${{ fromJson(steps.changed-files.outputs.environment-change_files)[0] }}")
+          echo "Extracted Directory: $directory"
+          echo "::set-output name=directory::$directory"
+
+      - name: Check for conflicting changes
+        id: check-changes
+        run: |
+          echo "::set-output name=has-environment-changes::${{ steps.changed-files.outputs.environment-change_files != '[]' }}"
+          echo "::set-output name=has-project-changes::${{ steps.changed-files.outputs.project-change_files != '[]' }}"
+
+  apply:
+    runs-on: ubuntu-latest
+    name: Terraform Apply
+    needs: [changed-files]
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.INCUBATOR_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.INCUBATOR_AWS_SECRET_ACCESS_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Fail on multiple directory changes
+        if: ${{ needs.changed-files.outputs.has-environment-changes == 'true' && needs.changed-files.outputs.has-project-changes == 'true' }}
+        run: |
+          echo "Multiple changed directories detected: Please make changes to environments and projects in separate pull requests."
+          exit 1
+        
+      - name: Terraform apply - Environment
+        if: ${{ needs.changed-files.outputs.environment-directory != '' && (needs.changed-files.outputs.project-directory == '' || needs.changed-files.outputs.has-environment-changes == 'true') }}
+        uses: dflook/terraform-apply@v1
+        with:
+          path: ${{ needs.changed-files.outputs.environment-directory }}
+      
+      - name: Terraform apply - Project
+        if: ${{ needs.changed-files.outputs.project-directory != '' && needs.changed-files.outputs.has-environment-changes != 'true' }}
+        uses: dflook/terraform-apply@v1
+        with:
+          path: ${{ needs.changed-files.outputs.project-directory }}
