@@ -75,12 +75,15 @@ module "cognito" {
 variable "root_db_password" {
   type        = string
   description = "root database password"
+  default     = ""
 }
 
 variable "app_db_password" {
-  type = string
+  type    = string
+  default = ""
 }
 
 variable "container_image" {
-  type = string
+  type    = string
+  default = ""
 }
