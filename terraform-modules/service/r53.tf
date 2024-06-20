@@ -39,8 +39,3 @@ variable "aws_managed_dns" {
   type        = bool
   description = "Flag to either create record if domain is managed in AWS or output ALB DNS for user to manually create"
 }
-
-variable "host_names" {
-  description = "List of host names including the root domain and subdomains"
-  type        = list(string)
-}
