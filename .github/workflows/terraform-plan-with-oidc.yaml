@@ -1,0 +1,44 @@
+name: Terraform deploy with OIDC
+on:
+  workflow_dispatch:
+    inputs:
+      target-host-environment:
+        type: choice
+        description: The AWS environment to deploy (dev/test/prod)
+        options: 
+        - dev
+        - test
+        - prod
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+
+  TerraformPlan:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::035866691871:role/gha-incubator
+          role-session-name: ghaincubatorsession
+          aws-region: us-west-2
+
+      - name: 
+        uses: hashicorp/setup-terraform@v3
+          
+      - name:  Run terraform
+        run: |
+          pushd ./terraform-incubator/home-unite-us
+          terraform init
+          terraform plan 
+          popd
+
+          
