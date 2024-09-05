@@ -31,12 +31,13 @@ jobs:
           role-session-name: ghaincubatorsession
           aws-region: us-west-2
 
-      - name: 
+      - name: Setup terraform
         uses: hashicorp/setup-terraform@v3
           
       - name:  Run terraform
         run: |
-          pushd ./terraform-incubator/home-unite-us
+          TF_LOG='DEBUG'
+          pushd ./terraform-incubator/home-unite-us          
           terraform init
           terraform plan 
           popd
