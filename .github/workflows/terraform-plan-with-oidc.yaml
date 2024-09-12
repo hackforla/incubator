@@ -36,9 +36,7 @@ jobs:
           
       - name:  Run terraform
         run: |
-          pushd ./terraform-incubator/home-unite-us
+          pushd ./terraform-incubator/home-unite-us/dev
           terraform init
           terraform plan 
           popd
-
-          
