@@ -9,42 +9,28 @@ on:
         - dev
         - test
         - prod
-
-env:  
-  AWS_REGION : "us-west-2"
-  
 permissions:
   id-token: write
   contents: read
-
 jobs:
-
   TerraformPlan:
-
     runs-on: ubuntu-latest
-
     steps:
       - name: Clone repo
         uses: actions/checkout@v4
-
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::035866691871:role/gha-incubator
           role-session-name: ghaincubatorsession
-          aws-region: ${{ env.AWS_REGION }}
-
-      # Hello from AWS: WhoAmI
-      - name: Sts GetCallerIdentity
-        run: |
-          aws sts get-caller-identity
-          
-      - name: Setup terraform
+          aws-region: us-west-2
+      - name: 
         uses: hashicorp/setup-terraform@v3
-          
       - name:  Run terraform
         run: |
-          pushd ./terraform-incubator/home-unite-us/dev
+          pushd ./terraform-incubator/home-unite-us
           terraform init
           terraform plan 
           popd
+
+          
