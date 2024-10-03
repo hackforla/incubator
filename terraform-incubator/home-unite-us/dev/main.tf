@@ -161,7 +161,7 @@ resource "aws_ecs_service" "homeuniteus" {
 
 
 data "aws_lb" "incubator" {
-  arn  = local.lb_arn
+  arn = local.lb_arn
 }
 
 # Resource for subdomain CNAME records
