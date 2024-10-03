@@ -30,7 +30,10 @@ jobs:
         run: |
           pushd ./terraform-incubator/home-unite-us/dev
           terraform init
-          terraform plan 
+          terraform state mv aws_route53_record.www aws_route53_record.root_a_record
+          terraform plan
+          #terraform plan -out tf.plan
+          #terraform apply tf.plan
           popd
 
           
