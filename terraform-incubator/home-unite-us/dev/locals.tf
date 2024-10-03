@@ -7,6 +7,6 @@ locals {
   subdomains = [
     "qa"
   ]
-  host_names = [for subdomain in local.subdomains : "${subdomain}.${local.app_name}"]
+  host_names = [for subdomain in local.subdomains : "${subdomain}.${local.root_host_name}"]
   lb_arn     = "arn:aws:elasticloadbalancing:us-west-2:035866691871:loadbalancer/app/incubator-prod-lb/7451adf77133ef36"
 }
