@@ -15,7 +15,7 @@ resource "aws_route53_record" "root_a_record" {
 
   alias {
     name                   = data.aws_lb.incubator.dns_name
-    zone_id                = data.aws_route53_zone.selected[0].zone_id
+    zone_id                = aws_route53_zone.original.zone_id
     evaluate_target_health = false
   }
 
