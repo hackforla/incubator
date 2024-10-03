@@ -5,6 +5,7 @@ locals {
   vpc_id         = "vpc-0bec93a4d80243845"
   path_pattens   = ["/*"]
   subdomains = [
+    "www",
     "qa"
   ]
   host_names = [for subdomain in local.subdomains : "${subdomain}.${local.root_host_name}"]
