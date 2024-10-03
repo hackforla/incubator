@@ -1,7 +1,7 @@
 
-resource "aws_route53_zone" "main" {
-  name = local.root_host_name
-}
+# resource "aws_route53_zone" "main" {
+#   name = local.root_host_name
+# }
 
 resource "aws_route53_zone" "original" {
   name = local.root_host_name
@@ -12,7 +12,14 @@ resource "aws_route53_record" "root_a_record" {
   name    = local.root_host_name
   type    = "A"
   ttl     = 300
-  records = ["18.223.160.58"]
+
+  alias {
+    name                   = data.aws_lb.incubator.dns_name
+    zone_id                = data.aws_route53_zone.selected[0].zone_id
+    evaluate_target_health = false
+  }
+
+  # records = ["18.223.160.58"]
 }
 
 resource "aws_route53_record" "dev_a_record" {
