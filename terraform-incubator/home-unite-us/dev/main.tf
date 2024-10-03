@@ -32,7 +32,7 @@ resource "aws_lb_listener_rule" "homeuniteus" {
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.this.arn
+    target_group_arn = aws_lb_target_group.homeuniteus.arn
   }
 
   condition {
@@ -85,7 +85,6 @@ resource "aws_ecs_task_definition" "homeuniteus" {
         portMappings = [
           {
             containerPort = 80
-            hostPort      = 13827
             protocol      = "tcp"
           },
         ]
@@ -106,7 +105,7 @@ resource "aws_ecs_task_definition" "homeuniteus" {
 }
 
 
-resource "aws_security_group" "fargate" {
+resource "aws_security_group" "homeuniteus" {
   name        = "ecs_fargate_${local.app_name}"
   description = "Allow TLS inbound traffic"
   vpc_id      = local.vpc_id
@@ -134,7 +133,7 @@ resource "aws_ecs_service" "homeuniteus" {
   name                   = "homeuniteus"
   cluster                = "arn:aws:ecs:us-west-2:035866691871:cluster/incubator-prod"
   enable_execute_command = true
-  task_definition        = aws_ecs_task_definition.task.arn
+  task_definition        = aws_ecs_task_definition.homeuniteus.arn
   launch_type            = "FARGATE"
   desired_count          = 1
 
@@ -143,17 +142,17 @@ resource "aws_ecs_service" "homeuniteus" {
       "subnet-03202f3bf9a24c1a5",
       "subnet-08c26edd1afc2b9d7",
     ]
-    security_groups  = [aws_security_group.fargate.id]
+    security_groups  = [aws_security_group.homeuniteus.id]
     assign_public_ip = true
   }
 
   load_balancer {
     container_name   = local.app_name
     container_port   = 80
-    target_group_arn = aws_lb_target_group.this.arn
+    target_group_arn = aws_lb_target_group.homeuniteus.arn
   }
 
-  depends_on = [aws_lb_target_group.this, aws_lb_listener_rule.static]
+  depends_on = [aws_lb_target_group.homeuniteus, aws_lb_listener_rule.homeuniteus]
 
   lifecycle {
     ignore_changes = [desired_count]
