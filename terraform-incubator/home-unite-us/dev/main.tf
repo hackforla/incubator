@@ -166,7 +166,7 @@ data "aws_lb" "incubator" {
 
 # Resource for subdomain CNAME records
 resource "aws_route53_record" "subdomain" {
-  for_each = { for v in local.local.host_names : v => v }
+  for_each = { for v in local.host_names : v => v }
 
   zone_id = aws_route53_zone.main.zone_id
   name    = each.value
