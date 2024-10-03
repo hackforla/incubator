@@ -159,20 +159,3 @@ resource "aws_ecs_service" "homeuniteus" {
   }
 }
 
-
-data "aws_lb" "incubator" {
-  arn = local.lb_arn
-}
-
-# Resource for subdomain CNAME records
-resource "aws_route53_record" "subdomain" {
-  for_each = { for v in local.host_names : v => v }
-
-  zone_id = aws_route53_zone.main.zone_id
-  name    = each.value
-  type    = "CNAME"
-  ttl     = "300"
-  records = [
-    data.aws_lb.incubator.dns_name
-  ]
-}

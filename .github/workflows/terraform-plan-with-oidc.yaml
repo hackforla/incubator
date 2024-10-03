@@ -30,8 +30,9 @@ jobs:
         run: |
           pushd ./terraform-incubator/home-unite-us/dev
           terraform init
+          terraform import aws_route53_zone.original 'Z03829196Z0VAL9Q8CZ'
           terraform plan -out tf.plan
-          terraform apply tf.plan
+          # terraform apply tf.plan
           popd 
       # - name: Login to Amazon ECR
       #   id: login-ecr
