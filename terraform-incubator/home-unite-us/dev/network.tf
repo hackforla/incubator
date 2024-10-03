@@ -11,14 +11,13 @@ resource "aws_route53_record" "root_a_record" {
   zone_id = aws_route53_zone.original.zone_id
   name    = local.root_host_name
   type    = "A"
-  ttl     = 300
 
   alias {
     name                   = data.aws_lb.incubator.dns_name
     zone_id                = aws_route53_zone.original.zone_id
     evaluate_target_health = false
   }
-
+  # ttl     = 300
   # records = ["18.223.160.58"]
 }
 
