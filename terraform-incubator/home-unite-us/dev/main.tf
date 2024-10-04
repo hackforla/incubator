@@ -267,7 +267,7 @@ resource "aws_iam_policy" "homeuniteus_manage_ecr" {
                 "iam:CreateAccessKey",
                 "iam:ListAccessKeys"
             ],
-            "Resource": aws_iam_user.appadmin.arn
+            "Resource": data.aws_iam_user.appadmin.arn
         },
         {
           Sid = "GetAuthorizationToken",
@@ -302,7 +302,7 @@ resource "aws_iam_policy" "homeuniteus_manage_ecr" {
 
 # Attaching a policy to the role
 resource "aws_iam_user_policy_attachment" "homeuniteus_manage_ecr_tyler" {
-  user       = aws_iam_user.appadmin.user_name
+  user       = data.aws_iam_user.appadmin.user_name
   policy_arn = aws_iam_policy.homeuniteus_manage_ecr.arn
 }
 
