@@ -240,3 +240,69 @@ resource "aws_lb_listener_certificate" "domain" {
   listener_arn = local.listener_arn
   certificate_arn = aws_acm_certificate_validation.domain.certificate_arn
 }
+
+data "aws_iam_user" "appadmin" {
+  user_name = "tyler.thome"
+}
+
+resource "aws_iam_policy" "homeuniteus_manage_ecr" {
+  name        = "ManageHomeUniteUsECR"
+  description = "Manage the homeuniteus ECR"
+  policy      = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+        {
+          Sid = "ListImagesInRepository",
+          Effect = "Allow",
+          Action = [
+              "ecr:ListImages"
+          ],
+          Resource =  aws_ecr_repository.this.arn
+        },
+        {
+            "Sid": "ViewAndUpdateAccessKeys",
+            "Effect": "Allow",
+            "Action": [
+                "iam:UpdateAccessKey",
+                "iam:CreateAccessKey",
+                "iam:ListAccessKeys"
+            ],
+            "Resource": aws_iam_user.appadmin.arn
+        },
+        {
+          Sid = "GetAuthorizationToken",
+          Effect = "Allow",
+          Action = [
+              "ecr:GetAuthorizationToken"
+          ],
+          Resource = "*"
+        },
+        {
+          Sid = "ManageRepositoryContents",
+          Effect = "Allow",
+          Action = [
+                  "ecr:BatchCheckLayerAvailability",
+                  "ecr:GetDownloadUrlForLayer",
+                  "ecr:GetRepositoryPolicy",
+                  "ecr:DescribeRepositories",
+                  "ecr:ListImages",
+                  "ecr:DescribeImages",
+                  "ecr:BatchGetImage",
+                  "ecr:InitiateLayerUpload",
+                  "ecr:UploadLayerPart",
+                  "ecr:CompleteLayerUpload",
+                  "ecr:PutImage"
+          ],
+          Resource =  aws_ecr_repository.this.arn
+        }
+    ]
+  })
+}
+
+
+# Attaching a policy to the role
+resource "aws_iam_user_policy_attachment" "homeuniteus_manage_ecr_tyler" {
+  user       = aws_iam_user.appadmin.user_name
+  policy_arn = aws_iam_policy.homeuniteus_manage_ecr.arn
+}
+
