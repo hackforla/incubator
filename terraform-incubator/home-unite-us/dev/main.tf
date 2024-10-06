@@ -117,7 +117,7 @@ resource "aws_ecs_task_definition" "homeuniteus" {
           "value" = "DEV"
         }]
         essential = true
-        image     = "035866691871.dkr.ecr.us-west-2.amazonaws.com/homeuniteus:nginx-20241002.1"
+        image     = "035866691871.dkr.ecr.us-west-2.amazonaws.com/homeuniteus:nginx-20241006.1"
         logConfiguration = {
           logDriver = "awslogs"
           options = {
@@ -244,6 +244,7 @@ resource "aws_lb_listener_certificate" "domain" {
 data "aws_iam_user" "appadmin" {
   user_name = "tyler.thome"
 }
+
 
 resource "aws_iam_policy" "homeuniteus_manage_ecr" {
   name        = "ManageHomeUniteUsECR"
