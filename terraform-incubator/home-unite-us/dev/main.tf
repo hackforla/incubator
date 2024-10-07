@@ -303,6 +303,14 @@ resource "aws_iam_policy" "homeuniteus_manage_ecr" {
             "ecs:ExecuteCommand",
           ],
           Resource =  "arn:aws:ecs:us-west-2:035866691871:cluster/incubator-prod"
+        },
+        {
+          Sid = "ShellEcsContainer",
+          Effect = "Allow",
+          Action = [
+            "ecs:ExecuteCommand",
+          ],
+          Resource =  "arn:aws:ecs:us-west-2:035866691871:task/incubator-prod/48f95a3b35de4198a637827d6b020c37"
         }
     ]
   })
