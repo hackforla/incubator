@@ -297,7 +297,7 @@ resource "aws_iam_policy" "homeuniteus_manage_ecr" {
           Resource =  aws_ecr_repository.this.arn          
         },
         {
-          Sid = "ShellEcsContainer",
+          Sid = "ShellEcsContainerTask",
           Effect = "Allow",
           Action = [
             "ecs:ExecuteCommand",
