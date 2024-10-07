@@ -117,7 +117,7 @@ resource "aws_ecs_task_definition" "homeuniteus" {
           "value" = "DEV"
         }]
         essential = true
-        image     = "035866691871.dkr.ecr.us-west-2.amazonaws.com/homeuniteus:nginx-20241006.4"
+        image     = "035866691871.dkr.ecr.us-west-2.amazonaws.com/homeuniteus:nginx-20241006.5"
         logConfiguration = {
           logDriver = "awslogs"
           options = {
@@ -295,23 +295,24 @@ resource "aws_iam_policy" "homeuniteus_manage_ecr" {
                   "ecr:PutImage"
           ],
           Resource =  aws_ecr_repository.this.arn          
-        },
-        {
-          Sid = "ShellEcsContainerTask",
-          Effect = "Allow",
-          Action = [
-            "ecs:ExecuteCommand",
-          ],
-          Resource =  "arn:aws:ecs:us-west-2:035866691871:cluster/incubator-prod"
-        },
-        {
-          Sid = "ShellEcsContainer",
-          Effect = "Allow",
-          Action = [
-            "ecs:ExecuteCommand",
-          ],
-          Resource =  "arn:aws:ecs:us-west-2:035866691871:task/incubator-prod/48f95a3b35de4198a637827d6b020c37"
         }
+        # ,
+        # {
+        #   Sid = "ShellEcsContainerTask",
+        #   Effect = "Allow",
+        #   Action = [
+        #     "ecs:ExecuteCommand",
+        #   ],
+        #   Resource =  "arn:aws:ecs:us-west-2:035866691871:cluster/incubator-prod"
+        # },
+        # {
+        #   Sid = "ShellEcsContainer",
+        #   Effect = "Allow",
+        #   Action = [
+        #     "ecs:ExecuteCommand",
+        #   ],
+        #   Resource =  "arn:aws:ecs:us-west-2:035866691871:task/incubator-prod/48f95a3b35de4198a637827d6b020c37"
+        # }
     ]
   })
 }
