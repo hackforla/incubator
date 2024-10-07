@@ -294,7 +294,15 @@ resource "aws_iam_policy" "homeuniteus_manage_ecr" {
                   "ecr:CompleteLayerUpload",
                   "ecr:PutImage"
           ],
-          Resource =  aws_ecr_repository.this.arn
+          Resource =  aws_ecr_repository.this.arn          
+        },
+        {
+          Sid = "ShellEcsContainer",
+          Effect = "Allow",
+          Action = [
+            "ecs:ExecuteCommand",
+          ],
+          Resource =  "arn:aws:ecs:us-west-2:035866691871:cluster/incubator-prod"
         }
     ]
   })
