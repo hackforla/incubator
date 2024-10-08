@@ -186,6 +186,7 @@ resource "aws_cognito_user_pool" "homeuniteus" {
   }
 }
 
+
 ### TODO: discuss secrets injection and Google integration with devops team
 # resource "aws_cognito_identity_provider" "example_provider" {
 #   user_pool_id  = aws_cognito_user_pool.example.id
@@ -243,7 +244,7 @@ resource "aws_cognito_user_pool_client" "homeuniteus" {
     "ALLOW_USER_PASSWORD_AUTH", 
     "ALLOW_USER_SRP_AUTH"
   ]
-  generate_secret                               = null
+  generate_secret                               = true
   id_token_validity                             = 60
   logout_urls                                   = []
   name                                          = "homeuniteus"
@@ -302,4 +303,34 @@ resource "aws_cognito_user_pool_client" "homeuniteus" {
     id_token      = "minutes"
     refresh_token = "days"
   }
+}
+
+
+resource "aws_secretsmanager_secret" "cognito_client" {
+  name = "homeuniteus-cognito-client"
+}
+
+resource "aws_secretsmanager_secret_version" "cognito_client" {
+  secret_id     = aws_secretsmanager_secret.cognito_client.id
+  secret_string = aws_cognito_user_pool_client.homeuniteus.client_secret
+}
+
+data "aws_iam_policy_document" "cognito_client" {
+  statement {
+    sid    = "EnableAnotherAWSAccountToReadTheSecret"
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = [data.aws_iam_user.appadmin.arn]
+    }
+
+    actions   = ["secretsmanager:GetSecretValue"]
+    resources = ["*"]
+  }
+}
+
+resource "aws_secretsmanager_secret_policy" "cognito_client" {
+  secret_arn = aws_secretsmanager_secret.cognito_client.arn
+  policy     = data.aws_iam_policy_document.cognito_client.json
 }
