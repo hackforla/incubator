@@ -92,18 +92,12 @@ resource "aws_iam_policy" "homeuniteus_manage_ecr" {
             "mobiletargeting:GetApps",
             "acm:ListCertificates"
           ],
-          Resource = [
-            aws_cognito_user_pool.homeuniteus.arn,
-            aws_cognito_user_pool_client.homeuniteus.arn
-          ]
+          Resource = aws_cognito_user_pool.homeuniteus.arn
         },
         {
           Effect = "Allow",
           Action = "iam:CreateServiceLinkedRole",
-          Resource = [
-            aws_cognito_user_pool.homeuniteus.arn,
-            aws_cognito_user_pool_client.homeuniteus.arn
-          ],
+          Resource = aws_cognito_user_pool.homeuniteus.arn,
           Condition = {
             StringEquals = {
               "iam:AWSServiceName" = [
