@@ -186,6 +186,31 @@ resource "aws_cognito_user_pool" "homeuniteus" {
   }
 }
 
+### TODO: discuss secrets injection and Google integration with devops team
+# resource "aws_cognito_identity_provider" "example_provider" {
+#   user_pool_id  = aws_cognito_user_pool.example.id
+#   provider_name = "Google"
+#   provider_type = "Google"
+
+#   provider_details = {
+#     authorize_scopes = "email"
+#     client_id        = "your client_id"
+#     client_secret    = "your client_secret"
+#   }
+
+#   attribute_mapping = {
+#     birthdate    = "birthdays"
+#     email        = "email"
+#     family_name  = "family_name"
+#     gender       = "genders"
+#     given_name   = "given_name"
+#     name         = "names"
+#     phone_number = "phoneNumbers"
+#     picture      = "picture"
+#     username     = "sub"
+#   }
+# }
+
 resource "aws_cognito_user_pool_client" "homeuniteus" {
   access_token_validity                         = 30
   allowed_oauth_flows                           = ["code"]
@@ -245,9 +270,12 @@ resource "aws_cognito_user_pool_client" "homeuniteus" {
     "zoneinfo"
   ]
   refresh_token_validity                        = 30
+  # supported_identity_providers                  = [
+  #   "COGNITO", 
+  #   "Google"
+  # ]
   supported_identity_providers                  = [
-    "COGNITO", 
-    "Google"
+    "COGNITO"
   ]
   user_pool_id                                  = aws_cognito_user_pool.homeuniteus.id
   write_attributes                              = [
