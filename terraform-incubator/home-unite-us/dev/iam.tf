@@ -52,6 +52,77 @@ resource "aws_iam_policy" "homeuniteus_manage_ecr" {
                   "ecr:PutImage"
           ],
           Resource =  aws_ecr_repository.this.arn          
+        },
+        {
+          Sid = "ManageHomeUniteUsCognito",
+          Effect = "Allow",
+          Action = [
+                  "ecr:BatchCheckLayerAvailability",
+                  "ecr:GetDownloadUrlForLayer",
+                  "ecr:GetRepositoryPolicy",
+                  "ecr:DescribeRepositories",
+                  "ecr:ListImages",
+                  "ecr:DescribeImages",
+                  "ecr:BatchGetImage",
+                  "ecr:InitiateLayerUpload",
+                  "ecr:UploadLayerPart",
+                  "ecr:CompleteLayerUpload",
+                  "ecr:PutImage"
+          ],
+          Resource =  aws_ecr_repository.this.arn          
+        },
+        {
+          Effect = "Allow",
+          Action = [
+            "cognito-identity:*",
+            "cognito-idp:*",
+            "cognito-sync:*",
+            "iam:ListRoles",
+            "iam:ListOpenIdConnectProviders",
+            "iam:GetRole",
+            "iam:ListSAMLProviders",
+            "iam:GetSAMLProvider",
+            "kinesis:ListStreams",
+            "lambda:GetPolicy",
+            "lambda:ListFunctions",
+            "sns:GetSMSSandboxAccountStatus",
+            "sns:ListPlatformApplications",
+            "ses:ListIdentities",
+            "ses:GetIdentityVerificationAttributes",
+            "mobiletargeting:GetApps",
+            "acm:ListCertificates"
+          ],
+          Resource = [
+            aws_cognito_user_pool.homeuniteus.arn,
+            aws_cognito_user_pool_client.homeuniteus.arn
+          ]
+        },
+        {
+          Effect = "Allow",
+          Action = "iam:CreateServiceLinkedRole",
+          Resource = [
+            aws_cognito_user_pool.homeuniteus.arn,
+            aws_cognito_user_pool_client.homeuniteus.arn
+          ],
+          Condition = {
+            StringEquals = {
+              "iam:AWSServiceName" = [
+                "cognito-idp.amazonaws.com",
+                "email.cognito-idp.amazonaws.com"
+              ]
+            }
+          }
+        },
+        {
+          Effect = "Allow",
+          Action = [
+            "iam:DeleteServiceLinkedRole",
+            "iam:GetServiceLinkedRoleDeletionStatus"
+          ],
+          Resource = [
+            "arn:aws:iam::*:role/aws-service-role/cognito-idp.amazonaws.com/AWSServiceRoleForAmazonCognitoIdp*",
+            "arn:aws:iam::*:role/aws-service-role/email.cognito-idp.amazonaws.com/AWSServiceRoleForAmazonCognitoIdpEmail*"
+          ]
         }
         # ,
         # {
