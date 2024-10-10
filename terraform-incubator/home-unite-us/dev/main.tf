@@ -271,6 +271,7 @@ resource "aws_cognito_user_pool_client" "homeuniteus" {
     "zoneinfo"
   ]
   refresh_token_validity                        = 30
+  ### TODO: Discuss with h4la ops team about client
   # supported_identity_providers                  = [
   #   "COGNITO", 
   #   "Google"
