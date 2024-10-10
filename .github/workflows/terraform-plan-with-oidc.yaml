@@ -30,8 +30,21 @@ jobs:
         run: |
           pushd ./terraform-incubator/home-unite-us/dev
           terraform init
-          terraform plan -out tf.plan
-          terraform apply tf.plan
+          sudo apt-get -y update
+          sudo apt-get install graphviz
+          
+          terraform graph -type=plan | dot -Tpng -o graph.png
+
+          # terraform plan -out tf.plan
+          # terraform apply tf.plan
+
+      - name: Store plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: homeuniteus-graph
+          path: ./terraform-incubator/home-unite-us/dev/graph.png
+
+
       # - name: Login to Amazon ECR
       #   id: login-ecr
       #   uses: aws-actions/amazon-ecr-login@v2
