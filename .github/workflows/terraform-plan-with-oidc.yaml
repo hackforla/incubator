@@ -30,21 +30,25 @@ jobs:
         run: |
           pushd ./terraform-incubator/home-unite-us/dev
           terraform init
-          terraform show
+
+          mkdir -p ./tfshow
+
+          terraform show -no-color 1> ./tfshow/before.tf 2>&1
 
           # sudo apt-get -y update
-          # sudo apt-get install graphviz
-          
+          # sudo apt-get install graphviz          
           # terraform graph -type=plan | dot -Tpng -o graph.png
 
           terraform plan -out tf.plan
-          # terraform apply tf.plan
+          terraform apply tf.plan
+          terraform show -no-color 1> ./tfshow/after.tf 2>&1
+          tar czf ./homeuniteus.tfshow.tgz ./tfshow/*
 
       - name: Store plan
         uses: actions/upload-artifact@v4
         with:
-          name: homeuniteus-graph
-          path: ./terraform-incubator/home-unite-us/dev/graph.png
+          name: homeuniteus-tf-show
+          path: ./terraform-incubator/home-unite-us/dev/homeuniteus.tfshow.tgz
 
 
 
