@@ -1,8 +1,3 @@
-
-# resource "aws_route53_zone" "main" {
-#   name = local.root_host_name
-# }
-
 resource "aws_route53_zone" "original" {
   name = local.root_host_name
 }

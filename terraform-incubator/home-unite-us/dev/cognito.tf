@@ -159,6 +159,11 @@ resource "aws_cognito_user_pool" "homeuniteus" {
   }
 }
 
+resource "aws_cognito_user_pool_domain" "homeuniteus" {
+  domain       = "homeuniteus"
+  user_pool_id = aws_cognito_user_pool.homeuniteus.id
+}
+
 
 ### TODO: discuss secrets injection and Google integration with devops team
 # resource "aws_cognito_identity_provider" "example_provider" {
@@ -278,7 +283,6 @@ resource "aws_cognito_user_pool_client" "homeuniteus" {
     refresh_token = "days"
   }
 }
-
 
 resource "aws_secretsmanager_secret" "cognito_client" {
   name = "homeuniteus-cognito-client"

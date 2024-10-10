@@ -19,7 +19,7 @@ jobs:
       - name: Clone repo
         uses: actions/checkout@v4
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::035866691871:role/gha-incubator
           role-session-name: ghaincubatorsession
@@ -30,12 +30,14 @@ jobs:
         run: |
           pushd ./terraform-incubator/home-unite-us/dev
           terraform init
-          sudo apt-get -y update
-          sudo apt-get install graphviz
-          
-          terraform graph -type=plan | dot -Tpng -o graph.png
+          terraform show
 
-          # terraform plan -out tf.plan
+          # sudo apt-get -y update
+          # sudo apt-get install graphviz
+          
+          # terraform graph -type=plan | dot -Tpng -o graph.png
+
+          terraform plan -out tf.plan
           # terraform apply tf.plan
 
       - name: Store plan
@@ -43,6 +45,14 @@ jobs:
         with:
           name: homeuniteus-graph
           path: ./terraform-incubator/home-unite-us/dev/graph.png
+
+
+
+      # - name: Store plan
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: homeuniteus-graph
+      #     path: ./terraform-incubator/home-unite-us/dev/graph.png
 
 
       # - name: Login to Amazon ECR
