@@ -24,7 +24,7 @@ resource "aws_iam_policy" "ecs_shell_dev" {
 
 # via aws ecs execute-command --cluster incubator-prod --container homeuniteus --task bea9b5813b5f42db8191b723ab9e6d9c --command /bin/bash --interactive
 resource "aws_iam_role_policy_attachment" "ecs_shell_dev" {
-  role       = data.aws_iam_role.ecs_task.arn
+  role       = data.aws_iam_role.ecs_task.name
   policy_arn = aws_iam_policy.ecs_shell_dev.arn
 }
 
