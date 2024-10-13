@@ -1,3 +1,6 @@
+data "aws_iam_role" "ecs_task" {
+  name = "incubator-prod-ecs-task-role"
+}
 
 resource "aws_iam_policy" "ecs_shell_dev" {
   name        = "HomeUniteUsECSExecDev"
@@ -19,9 +22,9 @@ resource "aws_iam_policy" "ecs_shell_dev" {
 })
 }
 
-# via aws ecs execute-command --cluster incubator-prod --container homeuniteus --task 48f95a3b35de4198a637827d6b020c37 --command /bin/bash --interactive
+# via aws ecs execute-command --cluster incubator-prod --container homeuniteus --task bea9b5813b5f42db8191b723ab9e6d9c --command /bin/bash --interactive
 resource "aws_iam_role_policy_attachment" "ecs_shell_dev" {
-  role       = "arn:aws:iam::035866691871:role/incubator-prod-ecs-task-role"
+  role       = data.aws_iam_role.ecs_task.arn
   policy_arn = aws_iam_policy.ecs_shell_dev.arn
 }
 
@@ -60,14 +63,14 @@ resource "aws_ecs_task_definition" "homeuniteus" {
     ]
   )
   cpu                = "256"
-  execution_role_arn = "arn:aws:iam::035866691871:role/incubator-prod-ecs-task-role"
+  execution_role_arn = data.aws_iam_role.ecs_task.arn
   family             = "homeuniteus"
   memory             = "512"
   network_mode       = "awsvpc"
   requires_compatibilities = [
     "FARGATE",
   ]
-  task_role_arn = "arn:aws:iam::035866691871:role/incubator-prod-ecs-task-role"
+  task_role_arn = data.aws_iam_role.ecs_task.arn
 }
 
 resource "aws_security_group" "homeuniteus" {
