@@ -156,3 +156,11 @@ resource "aws_iam_user_policy_attachment" "homeuniteus_manage_ecr_tyler" {
   user       = data.aws_iam_user.appadmin.user_name
   policy_arn = aws_iam_policy.homeuniteus_manage_ecr.arn
 }
+
+# Attaching a policy to the role
+resource "aws_iam_user_policy_attachment" "homeuniteus_cloudshell_admin" {
+  user       = data.aws_iam_user.appadmin.user_name
+  policy_arn = "arn:aws:iam::aws:policy/AWSCloudShellFullAccess"
+}
+
+//arn:aws:iam::aws:policy/AWSCloudShellFullAccess
