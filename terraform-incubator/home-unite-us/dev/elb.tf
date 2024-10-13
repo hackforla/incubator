@@ -1,3 +1,9 @@
+
+data "aws_lb_listener" "listener" {
+  arn = local.listener_arn
+}
+
+
 resource "aws_lb_target_group" "homeuniteus" {
   target_type          = "ip"
   name                 = local.app_name
@@ -22,7 +28,7 @@ resource "aws_lb_target_group" "homeuniteus" {
 }
 
 resource "aws_lb_listener_rule" "homeuniteus" {
-  listener_arn = local.listener_arn
+  listener_arn = data.aws_lb_listener.listener.arn
 
   action {
     type             = "forward"

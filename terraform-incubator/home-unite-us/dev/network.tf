@@ -26,7 +26,7 @@ resource "aws_route53_record" "dev_a_record" {
 
 
 data "aws_lb" "incubator" {
-  arn = local.lb_arn
+  arn = data.aws_lb_listener.listener.load_balancer_arn
 }
 
 # Resource for subdomain CNAME records

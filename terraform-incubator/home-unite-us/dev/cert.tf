@@ -30,6 +30,6 @@ resource "aws_acm_certificate_validation" "domain" {
 }
 
 resource "aws_lb_listener_certificate" "domain" {
-  listener_arn = local.listener_arn
+  listener_arn    = local.listener_arn
   certificate_arn = aws_acm_certificate_validation.domain.certificate_arn
 }

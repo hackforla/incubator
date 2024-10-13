@@ -26,7 +26,7 @@ resource "aws_lambda_function" "cognito_custom_message" {
   function_name = "customMessage"
   role          = aws_iam_role.lambda.arn
   handler       = "index.handler"
-  architectures                      = ["x86_64"]
+  architectures = ["x86_64"]
 
   source_code_hash = data.archive_file.cognito_custom_message.output_base64sha256
 
@@ -62,7 +62,7 @@ resource "aws_iam_role" "cognito_idp" {
     Version = "2012-10-17",
     Statement = [
       {
-        Sid = "",
+        Sid    = "",
         Effect = "Allow",
         Principal = {
           Service = "cognito-idp.amazonaws.com"
@@ -99,11 +99,11 @@ resource "aws_iam_role_policy" "cognito_sns" {
 }
 
 resource "aws_cognito_user_pool" "homeuniteus" {
-  mfa_configuration          = "OPTIONAL"
-  name                       = "Home Unite Us"
-  username_attributes        = ["email", "phone_number"]
-  auto_verified_attributes   = ["email"]
-  deletion_protection        = "ACTIVE"
+  mfa_configuration        = "OPTIONAL"
+  name                     = "Home Unite Us"
+  username_attributes      = ["email", "phone_number"]
+  auto_verified_attributes = ["email"]
+  deletion_protection      = "ACTIVE"
   account_recovery_setting {
     recovery_mechanism {
       name     = "verified_email"
@@ -118,11 +118,11 @@ resource "aws_cognito_user_pool" "homeuniteus" {
     allow_admin_create_user_only = false
   }
   email_configuration {
-    email_sending_account  = "COGNITO_DEFAULT"
+    email_sending_account = "COGNITO_DEFAULT"
   }
   lambda_config {
-    custom_message                 = aws_lambda_function.cognito_custom_message.arn
-    pre_sign_up                    = aws_lambda_function.cognito_merge_users.arn
+    custom_message = aws_lambda_function.cognito_custom_message.arn
+    pre_sign_up    = aws_lambda_function.cognito_merge_users.arn
   }
   password_policy {
     minimum_length                   = 8
@@ -155,7 +155,7 @@ resource "aws_cognito_user_pool" "homeuniteus" {
     case_sensitive = false
   }
   verification_message_template {
-    default_email_option  = "CONFIRM_WITH_CODE"
+    default_email_option = "CONFIRM_WITH_CODE"
   }
 }
 
@@ -191,90 +191,90 @@ resource "aws_cognito_user_pool_domain" "homeuniteus" {
 # }
 
 resource "aws_cognito_user_pool_client" "homeuniteus" {
-  access_token_validity                         = 30
-  allowed_oauth_flows                           = ["code"]
-  allowed_oauth_flows_user_pool_client          = true
-  allowed_oauth_scopes                          = [
-    "aws.cognito.signin.user.admin", 
-    "email", 
-    "openid", 
-    "phone", 
+  access_token_validity                = 30
+  allowed_oauth_flows                  = ["code"]
+  allowed_oauth_flows_user_pool_client = true
+  allowed_oauth_scopes = [
+    "aws.cognito.signin.user.admin",
+    "email",
+    "openid",
+    "phone",
     "profile"
   ]
-  auth_session_validity                         = 3
-  callback_urls                                 = [
-    "http://localhost:4040/signin", 
-    "http://localhost:4040/signup", 
-    "http://localhost:4040/signup/coordinator", 
-    "http://localhost:4040/signup/host", 
-    "https://dev.homeunite.us/signin", 
-    "https://dev.homeunite.us/signup", 
-    "https://dev.homeunite.us/signup/coordinator", 
+  auth_session_validity = 3
+  callback_urls = [
+    "http://localhost:4040/signin",
+    "http://localhost:4040/signup",
+    "http://localhost:4040/signup/coordinator",
+    "http://localhost:4040/signup/host",
+    "https://dev.homeunite.us/signin",
+    "https://dev.homeunite.us/signup",
+    "https://dev.homeunite.us/signup/coordinator",
     "https://dev.homeunite.us/signup/host"
   ]
   default_redirect_uri                          = null
   enable_propagate_additional_user_context_data = false
   enable_token_revocation                       = true
-  explicit_auth_flows                           = [
-    "ALLOW_ADMIN_USER_PASSWORD_AUTH", 
-    "ALLOW_CUSTOM_AUTH", 
-    "ALLOW_REFRESH_TOKEN_AUTH", 
-    "ALLOW_USER_PASSWORD_AUTH", 
+  explicit_auth_flows = [
+    "ALLOW_ADMIN_USER_PASSWORD_AUTH",
+    "ALLOW_CUSTOM_AUTH",
+    "ALLOW_REFRESH_TOKEN_AUTH",
+    "ALLOW_USER_PASSWORD_AUTH",
     "ALLOW_USER_SRP_AUTH"
   ]
-  generate_secret                               = true
-  id_token_validity                             = 60
-  logout_urls                                   = []
-  name                                          = "homeuniteus"
-  prevent_user_existence_errors                 = "ENABLED"
-  read_attributes                               = [
-    "address", 
-    "birthdate", 
-    "email", 
-    "email_verified", 
-    "family_name", 
-    "gender", 
-    "given_name", 
-    "locale", 
-    "middle_name", 
-    "name", 
-    "nickname", 
-    "phone_number", 
-    "phone_number_verified", 
-    "picture", 
-    "preferred_username", 
-    "profile", 
-    "updated_at", 
-    "website", 
+  generate_secret               = true
+  id_token_validity             = 60
+  logout_urls                   = []
+  name                          = "homeuniteus"
+  prevent_user_existence_errors = "ENABLED"
+  read_attributes = [
+    "address",
+    "birthdate",
+    "email",
+    "email_verified",
+    "family_name",
+    "gender",
+    "given_name",
+    "locale",
+    "middle_name",
+    "name",
+    "nickname",
+    "phone_number",
+    "phone_number_verified",
+    "picture",
+    "preferred_username",
+    "profile",
+    "updated_at",
+    "website",
     "zoneinfo"
   ]
-  refresh_token_validity                        = 30
+  refresh_token_validity = 30
   ### TODO: Discuss with h4la ops team about client
   # supported_identity_providers                  = [
   #   "COGNITO", 
   #   "Google"
   # ]
-  supported_identity_providers                  = [
+  supported_identity_providers = [
     "COGNITO"
   ]
-  user_pool_id                                  = aws_cognito_user_pool.homeuniteus.id
-  write_attributes                              = [
-    "address", 
-    "birthdate", 
-    "email", 
-    "family_name", 
-    "gender", 
-    "given_name", 
-    "locale", 
-    "middle_name", 
-    "name", 
-    "nickname", 
-    "phone_number", 
-    "picture", 
-    "preferred_username", 
-    "profile", 
-    "updated_at", 
-    "website", 
+  user_pool_id = aws_cognito_user_pool.homeuniteus.id
+  write_attributes = [
+    "address",
+    "birthdate",
+    "email",
+    "family_name",
+    "gender",
+    "given_name",
+    "locale",
+    "middle_name",
+    "name",
+    "nickname",
+    "phone_number",
+    "picture",
+    "preferred_username",
+    "profile",
+    "updated_at",
+    "website",
     "zoneinfo"
   ]
   token_validity_units {

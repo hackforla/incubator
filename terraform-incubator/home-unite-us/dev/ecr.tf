@@ -10,8 +10,3 @@ resource "aws_ecr_repository" "this" {
     scan_on_push = true
   }
 }
-
-data "aws_lb_listener" "listener" {
-  arn = local.listener_arn
-}
-

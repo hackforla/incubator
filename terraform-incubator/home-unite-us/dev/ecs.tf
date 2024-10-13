@@ -5,21 +5,21 @@ data "aws_iam_role" "ecs_task" {
 resource "aws_iam_policy" "ecs_shell_dev" {
   name        = "HomeUniteUsECSExecDev"
   description = "Execute shell commands on dev HUU containers"
-  policy      = jsonencode({
-   "Version": "2012-10-17",
-   "Statement": [
-       {
-       "Effect": "Allow",
-       "Action": [
-            "ssmmessages:CreateControlChannel",
-            "ssmmessages:CreateDataChannel",
-            "ssmmessages:OpenControlChannel",
-            "ssmmessages:OpenDataChannel"
-       ],
-      "Resource": "*"
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel"
+        ],
+        "Resource" : "*"
       }
-   ]
-})
+    ]
+  })
 }
 
 # via aws ecs execute-command --cluster incubator-prod --container homeuniteus --task bea9b5813b5f42db8191b723ab9e6d9c --command /bin/bash --interactive
@@ -58,7 +58,8 @@ resource "aws_ecs_task_definition" "homeuniteus" {
           },
         ]
         readonlyRootFilesystem = false
-        volumesFrom            = []
+        volumesFrom            = [],
+        initProcessEnabled     = true
       },
     ]
   )
@@ -67,6 +68,7 @@ resource "aws_ecs_task_definition" "homeuniteus" {
   family             = "homeuniteus"
   memory             = "512"
   network_mode       = "awsvpc"
+
   requires_compatibilities = [
     "FARGATE",
   ]
@@ -103,8 +105,6 @@ resource "aws_ecs_service" "homeuniteus" {
   task_definition        = aws_ecs_task_definition.homeuniteus.arn
   launch_type            = "FARGATE"
   desired_count          = 1
-
-  
 
   network_configuration {
     subnets = [
