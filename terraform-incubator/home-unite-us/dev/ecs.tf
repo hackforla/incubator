@@ -1,4 +1,30 @@
 
+# resource "aws_iam_policy" "ecs_shell_dev" {
+#   name        = "HomeUniteUsECSExecDev"
+#   description = "Execute shell commands on dev HUU containers"
+#   policy      = jsonencode({
+#    "Version": "2012-10-17",
+#    "Statement": [
+#        {
+#        "Effect": "Allow",
+#        "Action": [
+#             "ssmmessages:CreateControlChannel",
+#             "ssmmessages:CreateDataChannel",
+#             "ssmmessages:OpenControlChannel",
+#             "ssmmessages:OpenDataChannel"
+#        ],
+#       "Resource": "*"
+#       }
+#    ]
+# })
+# }
+
+# # via aws ecs execute-command --cluster incubator-prod --container homeuniteus --task 48f95a3b35de4198a637827d6b020c37 --command /bin/bash --interactive
+# resource "aws_iam_user_policy_attachment" "ecs_shell_dev" {
+#   user       = data.aws_iam_user.appadmin.user_name
+#   policy_arn = aws_iam_policy.ecs_shell_dev.arn
+# }
+
 # aws_ecs_task_definition.task:
 resource "aws_ecs_task_definition" "homeuniteus" {
   container_definitions = jsonencode(
@@ -74,6 +100,8 @@ resource "aws_ecs_service" "homeuniteus" {
   task_definition        = aws_ecs_task_definition.homeuniteus.arn
   launch_type            = "FARGATE"
   desired_count          = 1
+
+  
 
   network_configuration {
     subnets = [

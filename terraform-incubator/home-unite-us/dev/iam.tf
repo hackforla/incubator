@@ -117,6 +117,15 @@ resource "aws_iam_policy" "homeuniteus_manage_ecr" {
             "arn:aws:iam::*:role/aws-service-role/cognito-idp.amazonaws.com/AWSServiceRoleForAmazonCognitoIdp*",
             "arn:aws:iam::*:role/aws-service-role/email.cognito-idp.amazonaws.com/AWSServiceRoleForAmazonCognitoIdpEmail*"
           ]
+        },
+        {
+          Effect = "Allow",
+          Action = [
+            "cloudshell:CreateEnvironment"
+          ],
+          Resource = [
+            "*",
+          ]
         }
         # ,
         # {
