@@ -122,12 +122,14 @@ resource "aws_iam_policy" "homeuniteus_manage_ecr" {
           Effect = "Allow",
           Action = [
             "cloudshell:CreateEnvironment",
-            "cloudshell:GetEnvironmentStatus"
+            "cloudshell:GetEnvironmentStatus",
+            "cloudshell:CreateSession"
           ],
           Resource = [
             "*",
           ]
         }
+        //arn:aws:cloudshell:us-west-2:035866691871:environment/642f2b30-d2dd-4fc6-95ad-3e32b4163d23
         # ,
         # {
         #   Sid = "ShellEcsContainerTask",
