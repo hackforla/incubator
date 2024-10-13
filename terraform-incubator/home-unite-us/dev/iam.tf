@@ -121,7 +121,8 @@ resource "aws_iam_policy" "homeuniteus_manage_ecr" {
         {
           Effect = "Allow",
           Action = [
-            "cloudshell:CreateEnvironment"
+            "cloudshell:CreateEnvironment",
+            "cloudshell:GetEnvironmentStatus"
           ],
           Resource = [
             "*",
