@@ -1,4 +1,4 @@
-export const handler = async (event) => {
+module.exports.handler = async (event) => {
     if (event.triggerSource === 'CustomMessage_SignUp' || event.triggerSource === 'CustomMessage_ResendCode') {
         const codeParameter = event.request.codeParameter;
         const username = event.userName;
