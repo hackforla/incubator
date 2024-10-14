@@ -36,17 +36,17 @@ resource "aws_lambda_function" "cognito_custom_message" {
 
 data "archive_file" "cognito_merge_users" {
   type        = "zip"
-  source_file = "./src/mergeUsers.py"
-  output_path = "mergeUsers.zip"
+  source_file = "./src/merge_users.py"
+  output_path = "merge_users.zip"
 }
 
 resource "aws_lambda_function" "cognito_merge_users" {
   # If the file is not in the current working directory you will need to include a
   # path.module in the filename.
-  filename      = "mergeUsers.zip"
+  filename      = "merge_users.zip"
   function_name = "mergeUsers"
   role          = aws_iam_role.lambda.arn
-  handler       = "lambda_function.lambda_handler"
+  handler       = "merge_users.lambda_handler"
 
   source_code_hash = data.archive_file.cognito_merge_users.output_base64sha256
 
