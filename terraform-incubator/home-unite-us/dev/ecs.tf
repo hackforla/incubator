@@ -22,7 +22,8 @@ resource "aws_iam_policy" "ecs_shell_dev" {
   })
 }
 
-# via aws ecs execute-command --cluster incubator-prod --container homeuniteus --task bea9b5813b5f42db8191b723ab9e6d9c --command /bin/bash --interactive
+# enables:
+#  aws ecs execute-command --cluster incubator-prod --container homeuniteus --task bea9b5813b5f42db8191b723ab9e6d9c --command /bin/bash --interactive
 resource "aws_iam_role_policy_attachment" "ecs_shell_dev" {
   role       = data.aws_iam_role.ecs_task.name
   policy_arn = aws_iam_policy.ecs_shell_dev.arn
@@ -39,7 +40,7 @@ resource "aws_ecs_task_definition" "homeuniteus" {
           "value" = "DEV"
         }]
         essential = true
-        image     = "035866691871.dkr.ecr.us-west-2.amazonaws.com/homeuniteus:app-20241013.1"
+        image     = "035866691871.dkr.ecr.us-west-2.amazonaws.com/homeuniteus:app-20241013.7"
         logConfiguration = {
           logDriver = "awslogs"
           options = {
