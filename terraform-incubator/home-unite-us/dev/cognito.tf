@@ -25,7 +25,7 @@ resource "aws_lambda_function" "cognito_custom_message" {
   filename      = "customMessage.zip"
   function_name = "customMessage"
   role          = aws_iam_role.lambda.arn
-  handler       = "index.handler"
+  handler       = "customMessage.handler"
   architectures = ["x86_64"]
 
   source_code_hash = data.archive_file.cognito_custom_message.output_base64sha256
