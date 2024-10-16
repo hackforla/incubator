@@ -226,7 +226,11 @@ resource "aws_cognito_user_pool_client" "homeuniteus" {
     "https://dev.homeunite.us/signin",
     "https://dev.homeunite.us/signup",
     "https://dev.homeunite.us/signup/coordinator",
-    "https://dev.homeunite.us/signup/host"
+    "https://dev.homeunite.us/signup/host",
+    "https://qa.homeunite.us/signin",
+    "https://qa.homeunite.us/signup",
+    "https://qa.homeunite.us/signup/coordinator",
+    "https://qa.homeunite.us/signup/host"
   ]
   default_redirect_uri                          = null
   enable_propagate_additional_user_context_data = false
