@@ -189,3 +189,12 @@ resource "aws_iam_user_policy_attachment" "homeuniteus_app" {
   user       = aws_iam_user.homeuniteus_app.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
 }
+
+resource "aws_secretsmanager_secret" "homeuniteus_app" {
+  name = "homeuniteus-app"
+}
+
+resource "aws_secretsmanager_secret_version" "homeuniteus_app" {
+  secret_id     = aws_secretsmanager_secret.homeuniteus_app.id
+  secret_string = aws_iam_access_key.homeuniteus_app.secret
+}
