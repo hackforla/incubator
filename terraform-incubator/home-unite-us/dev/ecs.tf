@@ -41,7 +41,7 @@ resource "aws_ecs_task_definition" "homeuniteus" {
           "value" = "DEV"
         }]
         essential = true
-        image     = "035866691871.dkr.ecr.us-west-2.amazonaws.com/homeuniteus:20241015.5"
+        image     = "035866691871.dkr.ecr.us-west-2.amazonaws.com/homeuniteus:20241015.6"
         logConfiguration = {
           logDriver = "awslogs"
           options = {
