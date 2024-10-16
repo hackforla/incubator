@@ -174,3 +174,18 @@ resource "aws_iam_user_policy_attachment" "homeuniteus_cloudshell_admin" {
 }
 
 //arn:aws:iam::aws:policy/AWSCloudShellFullAccess
+
+
+resource "aws_iam_user" "homeuniteus_app" {
+  name = "homeuniteus-app"
+}
+
+resource "aws_iam_access_key" "homeuniteus_app" {
+  user = aws_iam_user.homeuniteus_app.name
+}
+
+# Attaching a policy to the role
+resource "aws_iam_user_policy_attachment" "homeuniteus_cloudshell_admin" {
+  user       = aws_iam_user.homeuniteus_app.user_name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
+}
