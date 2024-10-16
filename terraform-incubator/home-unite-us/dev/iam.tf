@@ -186,6 +186,6 @@ resource "aws_iam_access_key" "homeuniteus_app" {
 
 # Attaching a policy to the role
 resource "aws_iam_user_policy_attachment" "homeuniteus_app" {
-  user       = aws_iam_user.homeuniteus_app.user_name
+  user       = aws_iam_user.homeuniteus_app.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
 }
