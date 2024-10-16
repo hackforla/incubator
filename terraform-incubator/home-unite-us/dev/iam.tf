@@ -198,3 +198,23 @@ resource "aws_secretsmanager_secret_version" "homeuniteus_app" {
   secret_id     = aws_secretsmanager_secret.homeuniteus_app.id
   secret_string = aws_iam_access_key.homeuniteus_app.secret
 }
+
+
+data "aws_iam_policy_document" "homeuniteus_app" {
+  statement {
+    sid    = "EnableAdminToReadHomeUniteUsAppSecret"
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = [data.aws_iam_user.appadmin.arn]
+    }
+
+    actions   = ["secretsmanager:GetSecretValue"]
+    resources = [aws_secretsmanager_secret.homeuniteus_app.arn]
+  }
+}
+resource "aws_secretsmanager_secret_policy" "homeuniteus_app" {
+  secret_arn = aws_secretsmanager_secret.homeuniteus_app.arn
+  policy     = data.aws_iam_policy_document.cognito_client.json
+}
