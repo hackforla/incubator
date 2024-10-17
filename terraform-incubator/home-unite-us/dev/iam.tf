@@ -173,9 +173,6 @@ resource "aws_iam_user_policy_attachment" "homeuniteus_cloudshell_admin" {
   policy_arn = "arn:aws:iam::aws:policy/AWSCloudShellFullAccess"
 }
 
-//arn:aws:iam::aws:policy/AWSCloudShellFullAccess
-
-
 resource "aws_iam_user" "homeuniteus_app" {
   name = "homeuniteus-app"
 }

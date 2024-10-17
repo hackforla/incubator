@@ -79,19 +79,19 @@ resource "aws_iam_role" "cognito_idp" {
 }
 
 resource "aws_lambda_permission" "allow_message_execution_from_user_pool" {
-  statement_id = "AllowMessageExecutionFromUserPool"
-  action = "lambda:InvokeFunction"
+  statement_id  = "AllowMessageExecutionFromUserPool"
+  action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.cognito_custom_message.function_name
-  principal = "cognito-idp.amazonaws.com"
-  source_arn = aws_cognito_user_pool.homeuniteus.arn
+  principal     = "cognito-idp.amazonaws.com"
+  source_arn    = aws_cognito_user_pool.homeuniteus.arn
 }
 
 resource "aws_lambda_permission" "allow_merge_execution_from_user_pool" {
-  statement_id = "AllowMergeExecutionFromUserPool"
-  action = "lambda:InvokeFunction"
+  statement_id  = "AllowMergeExecutionFromUserPool"
+  action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.cognito_merge_users.function_name
-  principal = "cognito-idp.amazonaws.com"
-  source_arn = aws_cognito_user_pool.homeuniteus.arn
+  principal     = "cognito-idp.amazonaws.com"
+  source_arn    = aws_cognito_user_pool.homeuniteus.arn
 }
 
 resource "aws_iam_role_policy" "cognito_sns" {
@@ -331,4 +331,31 @@ data "aws_iam_policy_document" "cognito_client" {
 resource "aws_secretsmanager_secret_policy" "cognito_client" {
   secret_arn = aws_secretsmanager_secret.cognito_client.arn
   policy     = data.aws_iam_policy_document.cognito_client.json
+}
+
+
+resource "aws_secretsmanager_secret" "google_client" {
+  name = "homeuniteus-google-client"
+}
+
+
+data "aws_iam_policy_document" "google_client" {
+  statement {
+    sid    = "EnableAdminUserToManageTheSecret"
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = [data.aws_iam_user.appadmin.arn]
+    }
+
+    actions   = ["secretsmanager:GetSecretValue", "secretsmanager:PutSecretValue"]
+    resources = ["*"]
+  }
+}
+
+
+resource "aws_secretsmanager_secret_policy" "google_client" {
+  secret_arn = aws_secretsmanager_secret.google_client.arn
+  policy     = data.aws_iam_policy_document.google_client.json
 }

@@ -41,8 +41,8 @@ jobs:
 
           terraform plan -out tf.plan
           terraform apply tf.plan
-          terraform show -no-color 1> ./tfshow/after.tf 2>&1
-          tar czf ./homeuniteus.tfshow.tgz ./tfshow/*
+          # terraform show -no-color 1> ./tfshow/after.tf 2>&1
+          # tar czf ./homeuniteus.tfshow.tgz ./tfshow/*
 
       - name: Store plan
         uses: actions/upload-artifact@v4
