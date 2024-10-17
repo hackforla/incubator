@@ -181,30 +181,30 @@ resource "aws_cognito_user_pool_domain" "homeuniteus" {
 }
 
 
-# ### TODO: discuss secrets injection and Google integration with devops team
-# resource "aws_cognito_identity_provider" "google_client" {
-#   user_pool_id  = aws_cognito_user_pool.example.id
-#   provider_name = "Google"
-#   provider_type = "Google"
+### TODO: discuss secrets injection and Google integration with devops team
+resource "aws_cognito_identity_provider" "google_client" {
+  user_pool_id  = aws_cognito_user_pool.example.id
+  provider_name = "Google"
+  provider_type = "Google"
 
-#   provider_details = {
-#     authorize_scopes = "email profile openid"
-#     client_id        = "your client_id"
-    # client_secret    = data.aws_secretsmanager_secret_version.google_client.secret_string
-#   }
+  provider_details = {
+    authorize_scopes = "email profile openid"
+    client_id        = data.aws_secretsmanager_secret_version.google_client_id.secret_string
+    client_secret    = data.aws_secretsmanager_secret_version.google_secret.secret_string
+  }
 
-#   attribute_mapping = {
-#     birthdate    = "birthdays"
-#     email        = "email"
-#     family_name  = "family_name"
-#     gender       = "genders"
-#     given_name   = "given_name"
-#     name         = "names"
-#     phone_number = "phoneNumbers"
-#     picture      = "picture"
-#     username     = "sub"
-#   }
-# }
+  attribute_mapping = {
+    birthdate    = "birthdays"
+    email        = "email"
+    family_name  = "family_name"
+    gender       = "genders"
+    given_name   = "given_name"
+    name         = "names"
+    phone_number = "phoneNumbers"
+    picture      = "picture"
+    username     = "sub"
+  }
+}
 
 resource "aws_cognito_user_pool_client" "homeuniteus" {
   access_token_validity                = 30
@@ -270,13 +270,13 @@ resource "aws_cognito_user_pool_client" "homeuniteus" {
   ]
   refresh_token_validity = 30
   ### TODO: Discuss with h4la ops team about client
-  # supported_identity_providers                  = [
-  #   "COGNITO", 
-  #   "Google"
-  # ]
-  supported_identity_providers = [
-    "COGNITO"
+  supported_identity_providers                  = [
+    "COGNITO", 
+    "Google"
   ]
+  # supported_identity_providers = [
+  #   "COGNITO"
+  # ]
   user_pool_id = aws_cognito_user_pool.homeuniteus.id
   write_attributes = [
     "address",
@@ -359,9 +359,9 @@ resource "aws_secretsmanager_secret_policy" "google_client_id" {
   policy     = data.aws_iam_policy_document.admin_manage_secrets.json
 }
 
-# data "aws_secretsmanager_secret_version" "google_client_id" {
-#   secret_id     = aws_secretsmanager_secret.google_client_id.id
-# }
+data "aws_secretsmanager_secret_version" "google_client_id" {
+  secret_id     = aws_secretsmanager_secret.google_client_id.id
+}
 
 resource "aws_secretsmanager_secret" "google_secret" {
   name = "homeuniteus-google-secret"
@@ -370,4 +370,8 @@ resource "aws_secretsmanager_secret" "google_secret" {
 resource "aws_secretsmanager_secret_policy" "google_secret" {
   secret_arn = aws_secretsmanager_secret.google_secret.arn
   policy     = data.aws_iam_policy_document.admin_manage_secrets.json
+}
+
+data "aws_secretsmanager_secret_version" "google_secret" {
+  secret_id     = aws_secretsmanager_secret.google_secret.id
 }
