@@ -183,7 +183,7 @@ resource "aws_cognito_user_pool_domain" "homeuniteus" {
 
 ### TODO: discuss secrets injection and Google integration with devops team
 resource "aws_cognito_identity_provider" "google_client" {
-  user_pool_id  = aws_cognito_user_pool.example.id
+  user_pool_id  = aws_cognito_user_pool.homeuniteus.id
   provider_name = "Google"
   provider_type = "Google"
 
