@@ -181,16 +181,16 @@ resource "aws_cognito_user_pool_domain" "homeuniteus" {
 }
 
 
-### TODO: discuss secrets injection and Google integration with devops team
-# resource "aws_cognito_identity_provider" "example_provider" {
+# ### TODO: discuss secrets injection and Google integration with devops team
+# resource "aws_cognito_identity_provider" "google_client" {
 #   user_pool_id  = aws_cognito_user_pool.example.id
 #   provider_name = "Google"
 #   provider_type = "Google"
 
 #   provider_details = {
-#     authorize_scopes = "email"
+#     authorize_scopes = "email profile openid"
 #     client_id        = "your client_id"
-#     client_secret    = "your client_secret"
+    # client_secret    = data.aws_secretsmanager_secret_version.google_client.secret_string
 #   }
 
 #   attribute_mapping = {
@@ -334,12 +334,8 @@ resource "aws_secretsmanager_secret_policy" "cognito_client" {
 }
 
 
-resource "aws_secretsmanager_secret" "google_client" {
-  name = "homeuniteus-google-client"
-}
 
-
-data "aws_iam_policy_document" "google_client" {
+data "aws_iam_policy_document" "admin_manage_secrets" {
   statement {
     sid    = "EnableAdminUserToManageTheSecret"
     effect = "Allow"
@@ -354,8 +350,24 @@ data "aws_iam_policy_document" "google_client" {
   }
 }
 
+resource "aws_secretsmanager_secret" "google_client_id" {
+  name = "homeuniteus-google-clientid"
+}
 
 resource "aws_secretsmanager_secret_policy" "google_client" {
   secret_arn = aws_secretsmanager_secret.google_client.arn
-  policy     = data.aws_iam_policy_document.google_client.json
+  policy     = data.aws_iam_policy_document.admin_manage_secrets.json
+}
+
+data "aws_secretsmanager_secret_version" "google_client" {
+  secret_id     = aws_secretsmanager_secret.google_client.id
+}
+
+resource "aws_secretsmanager_secret" "google_secret" {
+  name = "homeuniteus-google-secret"
+}
+
+resource "aws_secretsmanager_secret_policy" "google_secret" {
+  secret_arn = aws_secretsmanager_secret.google_secret.arn
+  policy     = data.aws_iam_policy_document.admin_manage_secrets.json
 }
