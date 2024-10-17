@@ -354,13 +354,13 @@ resource "aws_secretsmanager_secret" "google_client_id" {
   name = "homeuniteus-google-clientid"
 }
 
-resource "aws_secretsmanager_secret_policy" "google_client" {
-  secret_arn = aws_secretsmanager_secret.google_client.arn
+resource "aws_secretsmanager_secret_policy" "google_client_id" {
+  secret_arn = aws_secretsmanager_secret.google_client_id.arn
   policy     = data.aws_iam_policy_document.admin_manage_secrets.json
 }
 
-data "aws_secretsmanager_secret_version" "google_client" {
-  secret_id     = aws_secretsmanager_secret.google_client.id
+data "aws_secretsmanager_secret_version" "google_client_id" {
+  secret_id     = aws_secretsmanager_secret.google_client_id.id
 }
 
 resource "aws_secretsmanager_secret" "google_secret" {
