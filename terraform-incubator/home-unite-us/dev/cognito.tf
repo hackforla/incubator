@@ -175,6 +175,22 @@ resource "aws_cognito_user_pool" "homeuniteus" {
   }
 }
 
+locals {
+  groups = [
+    "Hosts",
+    "Guests",
+    "Coordinators",
+    "Admins"
+  ]
+}
+
+resource "aws_cognito_user_group" "homeuniteus" {
+  for_each = toset(local.groups)
+  name         = each.value
+  user_pool_id = aws_cognito_user_pool.homeuniteus.id
+  description  = "Managed by Terraform"
+}
+
 resource "aws_cognito_user_pool_domain" "homeuniteus" {
   domain       = "homeuniteus"
   user_pool_id = aws_cognito_user_pool.homeuniteus.id
