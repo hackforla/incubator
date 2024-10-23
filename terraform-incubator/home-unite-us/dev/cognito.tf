@@ -200,6 +200,7 @@ resource "aws_cognito_user_pool_domain" "homeuniteus" {
 ### TODO: discuss secrets injection and Google integration with devops team
 resource "aws_cognito_identity_provider" "google_client" {
   user_pool_id  = aws_cognito_user_pool.homeuniteus.id
+
   provider_name = "Google"
   provider_type = "Google"
 
@@ -207,12 +208,12 @@ resource "aws_cognito_identity_provider" "google_client" {
     authorize_scopes = "email profile openid"
     client_id        = data.aws_secretsmanager_secret_version.google_client_id.secret_string
     client_secret    = data.aws_secretsmanager_secret_version.google_secret.secret_string
-    # attributes_url                = "https://people.googleapis.com/v1/people/me?personFields="
-    # attributes_url_add_attributes = "true"
-    # authorize_url                 = "https://accounts.google.com/o/oauth2/v2/auth"
-    # oidc_issuer                   = "https://accounts.google.com"
-    # token_request_method          = "POST"
-    # token_url                     = "https://www.googleapis.com/oauth2/v4/token"
+    attributes_url                = "https://people.googleapis.com/v1/people/me?personFields="
+    attributes_url_add_attributes = "true"
+    authorize_url                 = "https://accounts.google.com/o/oauth2/v2/auth"
+    oidc_issuer                   = "https://accounts.google.com"
+    token_request_method          = "POST"
+    token_url                     = "https://www.googleapis.com/oauth2/v4/token"
   }
 
   attribute_mapping = {
@@ -226,6 +227,7 @@ resource "aws_cognito_identity_provider" "google_client" {
     picture      = "picture"
     username     = "sub"
   }
+
 }
 
 resource "aws_cognito_user_pool_client" "homeuniteus" {
