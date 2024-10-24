@@ -147,6 +147,15 @@ resource "aws_iam_policy" "homeuniteus_manage_ecr" {
         Resource = [
           "arn:aws:ecs:us-west-2:035866691871:task-definition/homeuniteus:*"
         ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "iam:PassRole"
+        ],
+        Resource = [
+          "arn:aws:iam::035866691871:role/incubator-prod-ecs-task-role"
+        ]
       }
       # 
       //arn:aws:cloudshell:us-west-2:035866691871:environment/642f2b30-d2dd-4fc6-95ad-3e32b4163d23
