@@ -138,7 +138,17 @@ resource "aws_iam_policy" "homeuniteus_manage_ecr" {
           "arn:aws:ecs:us-west-2:035866691871:cluster/incubator-prod",
           "arn:aws:ecs:us-west-2:035866691871:task/incubator-prod/*"
         ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "ecs:RegisterTaskDefinition"
+        ],
+        Resource = [
+          "arn:aws:ecs:us-west-2:035866691871:task-definition/homeuniteus:*"
+        ]
       }
+      # 
       //arn:aws:cloudshell:us-west-2:035866691871:environment/642f2b30-d2dd-4fc6-95ad-3e32b4163d23
       # ,
       # {
