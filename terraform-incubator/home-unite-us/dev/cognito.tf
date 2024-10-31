@@ -117,10 +117,7 @@ resource "aws_iam_role_policy" "cognito_sns" {
 resource "aws_cognito_user_pool" "homeuniteus" {
   mfa_configuration        = "OPTIONAL"
   name                     = "Home Unite Us"
-  username_attributes      = [
-    "email", 
-    "phone_number"
-  ]
+  username_attributes      = ["email", "phone_number"]
   auto_verified_attributes = ["email"]
   deletion_protection      = "ACTIVE"
   account_recovery_setting {
@@ -220,14 +217,14 @@ resource "aws_cognito_identity_provider" "google_client" {
   }
 
   attribute_mapping = {
-    # birthdate    = "birthdays"
+    birthdate    = "birthdays"
     email        = "email"
-    # family_name  = "family_name"
-    # gender       = "genders"
-    # given_name   = "given_name"
-    # name         = "names"
-    # phone_number = "phoneNumbers"
-    # picture      = "picture"
+    family_name  = "family_name"
+    gender       = "genders"
+    given_name   = "given_name"
+    name         = "names"
+    phone_number = "phoneNumbers"
+    picture      = "picture"
     username     = "sub"
   }
 
@@ -241,6 +238,7 @@ resource "aws_cognito_user_pool_client" "homeuniteus" {
     "aws.cognito.signin.user.admin",
     "email",
     "openid",
+    "phone",
     "profile"
   ]
   auth_session_validity = 3
@@ -274,25 +272,25 @@ resource "aws_cognito_user_pool_client" "homeuniteus" {
   name                          = "homeuniteus"
   prevent_user_existence_errors = "ENABLED"
   read_attributes = [
-    # "address",
-    # "birthdate",
+    "address",
+    "birthdate",
     "email",
-    # "email_verified",
-    # "family_name",
-    # "gender",
-    # "given_name",
-    # "locale",
-    # "middle_name",
-    # "name",
-    # "nickname",
-    # "phone_number",
-    # "phone_number_verified",
-    # "picture",
-    # "preferred_username",
+    "email_verified",
+    "family_name",
+    "gender",
+    "given_name",
+    "locale",
+    "middle_name",
+    "name",
+    "nickname",
+    "phone_number",
+    "phone_number_verified",
+    "picture",
+    "preferred_username",
     "profile",
-    # "updated_at",
-    # "website",
-    # "zoneinfo"
+    "updated_at",
+    "website",
+    "zoneinfo"
   ]
   refresh_token_validity = 30
   ### TODO: Discuss with h4la ops team about client
@@ -305,23 +303,23 @@ resource "aws_cognito_user_pool_client" "homeuniteus" {
   # ]
   user_pool_id = aws_cognito_user_pool.homeuniteus.id
   write_attributes = [
-    # "address",
-    # "birthdate",
+    "address",
+    "birthdate",
     "email",
-    # "family_name",
-    # "gender",
-    # "given_name",
-    # "locale",
-    # "middle_name",
-    # "name",
-    # "nickname",
-    # "phone_number",
-    # "picture",
-    # "preferred_username",
+    "family_name",
+    "gender",
+    "given_name",
+    "locale",
+    "middle_name",
+    "name",
+    "nickname",
+    "phone_number",
+    "picture",
+    "preferred_username",
     "profile",
-    # "updated_at",
-    # "website",
-    # "zoneinfo"
+    "updated_at",
+    "website",
+    "zoneinfo"
   ]
   token_validity_units {
     access_token  = "minutes"
