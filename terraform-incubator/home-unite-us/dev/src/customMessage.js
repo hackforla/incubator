@@ -36,7 +36,7 @@ module.exports.handler = async (event) => {
         const codeParameter = event.request.codeParameter;
         const username = event.request.usernameParameter;
 
-        const url = `${event.request.clientMetadata.url}/api/auth/confirmInvite`;
+        const url = `${event.request.clientMetadata.url}/api/auth/confirm-invite`;
 
         const body = `
             <div>
