@@ -6,7 +6,7 @@ data "terraform_remote_state" "shared" {
     dynamodb_table = "terraform-locks"
     encrypt        = true
     key            = "terragrunt-states/incubator/./terraform.tfstate"
-    region         = "us-west-2"
+    region         = "us-west-1"
   }
 }
 
