@@ -15,7 +15,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     permissions:
-      id-token: 'write'
+      id-token: write
       contents: read
       pull-requests: write
 
