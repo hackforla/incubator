@@ -43,7 +43,7 @@ resource "aws_ecs_task_definition" "homeuniteus" {
         essential = true
         # image     = "035866691871.dkr.ecr.us-west-2.amazonaws.com/homeuniteus:20241017.1"
         # image     = "035866691871.dkr.ecr.us-west-2.amazonaws.com/homeuniteus:20241112.2"
-        image     = "035866691871.dkr.ecr.us-west-2.amazonaws.com/homeuniteus:474d7e82c4.20250109-200214"
+        image     = "035866691871.dkr.ecr.us-west-2.amazonaws.com/homeuniteus:474d7e82c4.20250110-022733"
         logConfiguration = {
           logDriver = "awslogs"
           options = {
@@ -161,6 +161,7 @@ data "aws_lambda_invocation" "this" {
   })
 }
 
-output "result_entry" {
-  value = data.aws_lambda_invocation.this.result
-}
+# output "result_entry" {
+#   value = data.aws_lambda_invocation.this.result
+#   sensitive = true
+# }
