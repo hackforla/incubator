@@ -152,7 +152,7 @@ data "aws_lambda_invocation" "this" {
 
   input = jsonencode({
     environment      = "homeuniteus-qa"
-    db_host          = data.aws_db_instance.endpoint
+    db_host          = data.aws_db_instance.incubator.endpoint
     root_db_username = "postgres"
     root_db_password = data.aws_ssm_parameter.rds_credentials.value
     new_db           = "homeuniteus-qa"
