@@ -40,7 +40,7 @@ jobs:
           # terraform graph -type=plan | dot -Tpng -o graph.png
 
           terraform plan -out tf.plan
-          terraform apply tf.plan
+          # terraform apply tf.plan
           # terraform show -no-color 1> ./tfshow/after.tf 2>&1
           # tar czf ./homeuniteus.tfshow.tgz ./tfshow/*
 

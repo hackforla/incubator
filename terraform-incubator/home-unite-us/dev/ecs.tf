@@ -131,3 +131,36 @@ resource "aws_ecs_service" "homeuniteus" {
     ignore_changes = [desired_count]
   }
 }
+
+
+data "aws_ssm_parameter" "rds_credentials" {
+  name = "rds_credentials"
+}
+
+data "aws_db_instance" "incubator" {
+  db_instance_identifier = "incubator-prod-database"
+}
+
+resource "random_password" "db" {
+  length           = 23
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
+data "aws_lambda_invocation" "this" {
+  function_name = "incubator-prod_multi-tenant-db"
+
+  input = jsonencode({
+    environment      = "homeuniteus-qa"
+    db_host          = data.aws_db_instance.endpoint
+    root_db_username = "postgres"
+    root_db_password = data.aws_ssm_parameter.rds_credentials.value
+    new_db           = "homeuniteus-qa"
+    new_db_user      = "homeuniteus"
+    new_db_password  = random_password.db.result
+  })
+}
+
+output "result_entry" {
+  value = element(concat(data.aws_lambda_invocation.this.*.result, [""]), 0)
+}
