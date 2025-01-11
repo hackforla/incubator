@@ -143,8 +143,7 @@ data "aws_db_instance" "incubator" {
 
 resource "random_password" "db" {
   length           = 23
-  special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
+  special          = false
 }
 
 data "aws_lambda_invocation" "this" {
