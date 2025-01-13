@@ -146,11 +146,26 @@ resource "random_password" "db" {
   special          = false
 }
 
-data "aws_lambda_invocation" "this" {
+# data "aws_lambda_invocation" "this" {
+#   function_name = "incubator-prod_multi-tenant-db"
+
+#   input = jsonencode({
+#     environment      = "qa"
+#     db_host          = data.aws_db_instance.incubator.endpoint
+#     root_db_username = "postgres"
+#     root_db_password = data.aws_ssm_parameter.rds_credentials.value
+#     new_db           = "homeuniteus"
+#     new_db_user      = "homeuniteus"
+#     new_db_password  = random_password.db.result
+#   })
+# }
+
+
+data "aws_lambda_invocation" "create_rds" {
   function_name = "incubator-prod_multi-tenant-db"
 
   input = jsonencode({
-    environment      = "qa"
+    environment      = "dev"
     db_host          = data.aws_db_instance.incubator.endpoint
     root_db_username = "postgres"
     root_db_password = data.aws_ssm_parameter.rds_credentials.value
@@ -178,3 +193,44 @@ resource "aws_secretsmanager_secret_version" "rds_password" {
   secret_id     = aws_secretsmanager_secret.rds_password.id
   secret_string = random_password.db.result
 }
+
+
+
+############# TEMP ######################
+# resource "aws_lambda_function" "create_db" {
+#   filename      = "lambda.zip"
+#   function_name = "${local.envname}_multi-tenant-db"
+#   role          = aws_iam_role.this.arn
+#   handler       = "database.lambda_handler"
+#   runtime       = "python3.8"
+
+#   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+
+#   layers = [aws_lambda_layer_version.python-sqlalchemy.arn]
+
+#   vpc_config {
+#     subnet_ids         = local.db_subnet_ids
+#     security_group_ids = [aws_security_group.this.id]
+#   }
+
+#   environment {
+#     variables = {
+#       FOO = "BAR"
+#     }
+#   }
+
+#   tags = var.tags
+# }
+
+# data "archive_file" "lambda_zip" {
+#   type        = "zip"
+#   source_dir  = "${path.module}/files"
+#   output_path = "${path.module}/lambda.zip"
+# }
+
+# resource "aws_lambda_layer_version" "python-sqlalchemy" {
+#   filename   = "sqlalchemy.zip"
+#   layer_name = "sqlalchemy"
+
+#   compatible_runtimes = ["python3.8"]
+# }
