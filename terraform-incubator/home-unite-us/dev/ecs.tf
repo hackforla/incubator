@@ -165,7 +165,7 @@ resource "aws_lambda_invocation" "create_rds_dev" {
   function_name = "incubator-prod_multi-tenant-db"
 
   input = jsonencode({
-    environment      = "qa"
+    environment      = "dev"
     db_host          = data.aws_db_instance.incubator.endpoint
     root_db_username = "postgres"
     root_db_password = data.aws_ssm_parameter.rds_credentials.value
@@ -175,7 +175,7 @@ resource "aws_lambda_invocation" "create_rds_dev" {
   })
   
   triggers = {
-    "invocation" = "20250112-1"
+    "invocation" = "20250112-2"
   }
 
 }
