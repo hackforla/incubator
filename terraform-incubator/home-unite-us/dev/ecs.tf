@@ -146,19 +146,19 @@ resource "random_password" "db" {
   special          = false
 }
 
-# data "aws_lambda_invocation" "this" {
-#   function_name = "incubator-prod_multi-tenant-db"
+data "aws_lambda_invocation" "this" {
+  function_name = "incubator-prod_multi-tenant-db"
 
-#   input = jsonencode({
-#     environment      = "qa"
-#     db_host          = data.aws_db_instance.incubator.endpoint
-#     root_db_username = "postgres"
-#     root_db_password = data.aws_ssm_parameter.rds_credentials.value
-#     new_db           = "homeuniteus"
-#     new_db_user      = "homeuniteus"
-#     new_db_password  = random_password.db.result
-#   })
-# }
+  input = jsonencode({
+    environment      = "qa"
+    db_host          = data.aws_db_instance.incubator.endpoint
+    root_db_username = "postgres"
+    root_db_password = data.aws_ssm_parameter.rds_credentials.value
+    new_db           = "homeuniteus"
+    new_db_user      = "homeuniteus"
+    new_db_password  = random_password.db.result
+  })
+}
 
 
 data "aws_lambda_invocation" "create_rds" {
@@ -175,10 +175,16 @@ data "aws_lambda_invocation" "create_rds" {
   })
 }
 
-# output "result_entry" {
-#   value = data.aws_lambda_invocation.this.result
-#   sensitive = true
-# }
+output "result_entry" {
+  value = data.aws_lambda_invocation.this.result
+  sensitive = true
+}
+
+
+output "result_entry_dev" {
+  value = data.aws_lambda_invocation.create_rds.result
+  sensitive = true
+}
 
 resource "aws_secretsmanager_secret" "rds_password" {
   name = "homeuniteus-rds-password"
