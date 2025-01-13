@@ -146,7 +146,22 @@ resource "random_password" "db" {
   special          = false
 }
 
-data "aws_lambda_invocation" "this" {
+# data "aws_lambda_invocation" "this" {
+#   function_name = "incubator-prod_multi-tenant-db"
+
+#   input = jsonencode({
+#     environment      = "qa"
+#     db_host          = data.aws_db_instance.incubator.endpoint
+#     root_db_username = "postgres"
+#     root_db_password = data.aws_ssm_parameter.rds_credentials.value
+#     new_db           = "homeuniteus"
+#     new_db_user      = "homeuniteus"
+#     new_db_password  = random_password.db.result
+#   })
+# }
+
+
+resource "aws_lambda_invocation" "create_rds_dev" {
   function_name = "incubator-prod_multi-tenant-db"
 
   input = jsonencode({
@@ -158,31 +173,21 @@ data "aws_lambda_invocation" "this" {
     new_db_user      = "homeuniteus"
     new_db_password  = random_password.db.result
   })
+  
+  triggers = {
+    "invocation" = "20250112-1"
+  }
+
 }
 
-
-data "aws_lambda_invocation" "create_rds" {
-  function_name = "incubator-prod_multi-tenant-db"
-
-  input = jsonencode({
-    environment      = "dev"
-    db_host          = data.aws_db_instance.incubator.endpoint
-    root_db_username = "postgres"
-    root_db_password = data.aws_ssm_parameter.rds_credentials.value
-    new_db           = "homeuniteus"
-    new_db_user      = "homeuniteus"
-    new_db_password  = random_password.db.result
-  })
-}
-
-output "result_entry" {
-  value = data.aws_lambda_invocation.this.result
-  sensitive = true
-}
+# output "result_entry" {
+#   value = data.aws_lambda_invocation.this.result
+#   sensitive = true
+# }
 
 
 output "result_entry_dev" {
-  value = data.aws_lambda_invocation.create_rds.result
+  value = data.aws_lambda_invocation.create_rds_dev.result
   sensitive = true
 }
 
