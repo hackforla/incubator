@@ -142,7 +142,7 @@ data "aws_db_instance" "incubator" {
 }
 
 resource "random_password" "db" {
-  length           = 23
+  length           = 21
   special          = false
 }
 
@@ -164,3 +164,17 @@ data "aws_lambda_invocation" "this" {
 #   value = data.aws_lambda_invocation.this.result
 #   sensitive = true
 # }
+
+resource "aws_secretsmanager_secret" "rds_password" {
+  name = "homeuniteus-rds-password"
+}
+
+resource "aws_secretsmanager_secret_policy" "rds_password" {
+  secret_arn = aws_secretsmanager_secret.rds_password.arn
+  policy     = data.aws_iam_policy_document.admin_manage_secrets.json
+}
+
+resource "aws_secretsmanager_secret_version" "rds_password" {
+  secret_id     = aws_secretsmanager_secret.rds_password.id
+  secret_string = random_password.db.result
+}
