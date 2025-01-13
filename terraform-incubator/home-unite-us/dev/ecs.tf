@@ -187,7 +187,7 @@ resource "aws_lambda_invocation" "create_rds_dev" {
 
 
 output "result_entry_dev" {
-  value = data.aws_lambda_invocation.create_rds_dev.result
+  value = aws_lambda_invocation.create_rds_dev.result
   sensitive = true
 }
 
