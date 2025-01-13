@@ -156,7 +156,17 @@ resource "aws_iam_policy" "homeuniteus_manage_ecr" {
         Resource = [
           "arn:aws:iam::035866691871:role/incubator-prod-ecs-task-role"
         ]
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "ecs:UpdateService"
+        ],
+        Resource = [
+          "arn:aws:ecs:us-west-2:035866691871:service/incubator-prod/homeuniteus"
+        ]
       }
+      # ecs:UpdateService
       # 
       //arn:aws:cloudshell:us-west-2:035866691871:environment/642f2b30-d2dd-4fc6-95ad-3e32b4163d23
       # ,
