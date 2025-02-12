@@ -33,9 +33,9 @@ jobs:
 
           # mkdir -p ./tfshow
 
-          echo '```hcl
+          echo '```hcl'  >> $GITHUB_STEP_SUMMARY
           terraform show -no-color 2>&1 >> $GITHUB_STEP_SUMMARY
-          ```'
+          echo '```' >> $GITHUB_STEP_SUMMARY
 
           # sudo apt-get -y update
           # sudo apt-get install graphviz          
