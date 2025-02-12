@@ -1,16 +1,5 @@
-data "aws_iam_policy_document" "instance_assume_role_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["ec2.amazonaws.com"]
-    }
-  }
+module "people-depot" {
+    source = "./projects/people-depot"
 }
 
-resource "aws_iam_role" "instance" {
-  name               = "incubator_test_role"
-  path               = "/system/"
-  assume_role_policy = data.aws_iam_policy_document.instance_assume_role_policy.json
-}
+data "aws_caller_identity" "current" {}
