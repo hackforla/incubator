@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TF_VAR_pgpassword: ${{ secrets.TF_VAR_pgpassword }}
+      TF_VAR_pghost: ${{ secrets.TF_VAR_pghost }}
 
     permissions:
       id-token: write
