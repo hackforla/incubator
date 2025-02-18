@@ -6,6 +6,7 @@ on:
       - main  # or any other branch you want to trigger the deployment
     paths: 
       - '**/*.tf'
+      - '**/*.yml'
 
 permissions:
   id-token: write
