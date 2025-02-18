@@ -16,8 +16,8 @@ jobs:
     name: Terraform Apply
     runs-on: ubuntu-latest
     env:
-      TF_VAR_pgpassword: ${{ secrets.TF_VAR_pgpassword }}
-      TF_VAR_pghost: ${{ secrets.TF_VAR_pghost }}
+      TF_VAR_pgpassword: ${{ secrets.TF_VAR_PGPASSWORD }}
+      TF_VAR_pghost: ${{ secrets.TF_VAR_PGHOST }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     permissions:
