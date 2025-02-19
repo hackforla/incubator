@@ -6,7 +6,7 @@ on:
       - main  # or any other branch you want to trigger the deployment
     paths: 
       - '**/*.tf'
-      - '**/*.yml'
+      - '**/*.yaml'
 
 jobs:
   terraform-plan:
