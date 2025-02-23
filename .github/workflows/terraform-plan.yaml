@@ -8,6 +8,10 @@ on:
       - '**/*.tf'
       - '**/*.yaml'
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   terraform-plan:
     name: Terraform Plan
