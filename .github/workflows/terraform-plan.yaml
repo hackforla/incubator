@@ -8,6 +8,10 @@ on:
       - '**/*.tf'
       - '**/*.yaml'
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   terraform-plan:
     name: Terraform Plan
@@ -30,7 +34,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v3
       with:
         role-to-assume: arn:aws:iam::035866691871:role/gha-incubator
-        role-session-name: ghaincubatorsession
+        role-session-name: ghaincubatorplan
         aws-region: us-west-2
 
     - name: Terraform Plan

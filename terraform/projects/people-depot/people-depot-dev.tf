@@ -34,16 +34,16 @@ module "people_depot_backend_stage_service" {
    container_port = 8000
    container_image = "${module.people_depot_ecr_backend.repository_url}:dev"
    container_environment = [
-      { "name": "DEBUG", "value": "false"},
+      { "name": "DEBUG", "value": "False"},
       { "name": "SECRET_KEY", "value": random_password.cookie_key.result},
       { "name": "DJANGO_PORT", "value": "8000"},
       { "name": "DJANGO_ALLOWED_HOSTS", "value": module.people_depot_backend_stage_dns_entry.full_dns_name},
-      { "name": "SECURE_HSTS", "value": "31536000"},
-      { "name": "SECURE_HSTS_INCLUDE_SUBDOMAINS", "value": "true"},
-      { "name": "SECURE_HSTS_PRELOAD", "value": "true"},
-      { "name": "SECURE_SSL_REDIRECT", "value": "true"},
-      { "name": "SESSION_COOKIE_SECURE", "value": "true"},
-      { "name": "CSRF_COOKIE_SECURE", "value": "true"},
+      { "name": "SECURE_HSTS_SECONDS", "value": "31536000"},
+      { "name": "SECURE_HSTS_INCLUDE_SUBDOMAINS", "value": "True"},
+      { "name": "SECURE_HSTS_PRELOAD", "value": "True"},
+      { "name": "SECURE_SSL_REDIRECT", "value": "True"},
+      { "name": "SESSION_COOKIE_SECURE", "value": "True"},
+      { "name": "CSRF_COOKIE_SECURE", "value": "True"},
       { "name": "SQL_USER", "value": module.people_depot_dev_database.owner_username},
       { "name": "SQL_DATABASE", "value": module.people_depot_dev_database.database},
       { "name": "DATABASE", "value": module.people_depot_dev_database.database},
