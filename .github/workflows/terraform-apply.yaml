@@ -1,5 +1,4 @@
 name: Terraform apply (OIDC)
-
 on:
   push:
     branches:
