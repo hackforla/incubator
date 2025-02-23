@@ -4,7 +4,7 @@ locals {
 }
 
 module "civic_tech_jobs_ecr_fullstack" {
-   source  "../../modules/ecr"
+   source = "../../modules/ecr"
    project_name = "${local.project_name_civic_tech_jobs}-fullstack"
 } 
 
