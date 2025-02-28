@@ -41,7 +41,6 @@ module "people_depot_backend_stage_service" {
       { "name": "SECURE_HSTS_SECONDS", "value": "31536000"},
       { "name": "SECURE_HSTS_INCLUDE_SUBDOMAINS", "value": "True"},
       { "name": "SECURE_HSTS_PRELOAD", "value": "True"},
-      { "name": "SECURE_SSL_REDIRECT", "value": "True"},
       { "name": "SESSION_COOKIE_SECURE", "value": "True"},
       { "name": "CSRF_COOKIE_SECURE", "value": "True"},
       { "name": "SQL_USER", "value": module.people_depot_dev_database.owner_username},
