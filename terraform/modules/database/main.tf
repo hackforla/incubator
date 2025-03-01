@@ -86,7 +86,7 @@ module "db_user_username" {
   project_name = var.project_name
   environment = var.environment
   value = postgresql_role.db_user.name
-  name = "db-user-password"
+  name = "db-user-username"
 }
 
 
@@ -96,7 +96,7 @@ module "db_viewer_username" {
   project_name = var.project_name
   environment = var.environment
   value = postgresql_role.db_viewer.name
-  name = "db-viewer-password"
+  name = "db-viewer-username"
 }
 
 /*
