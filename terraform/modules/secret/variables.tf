@@ -20,6 +20,6 @@ variable "length" {
 }
 
 variable "value" {
-  type = number
+  type = string
   default = null
 }
