@@ -65,6 +65,39 @@ resource "postgresql_role" "db_viewer" {
   password = module.db_viewer_password.value
 }
 
+/*
+* Usernames stored as secrets
+*/ 
+
+
+module "db_owner_username" {
+  source = "../secret"
+  application_type = var.application_type
+  project_name = var.project_name
+  environment = var.environment
+  value = postgresql_role.db_owner.name
+  name = "db-owner-password"
+}
+
+
+module "db_user_username" {
+  source = "../secret"
+  application_type = var.application_type
+  project_name = var.project_name
+  environment = var.environment
+  value = postgresql_role.db_user.name
+  name = "db-user-password"
+}
+
+
+module "db_viewer_username" {
+  source = "../secret"
+  application_type = var.application_type
+  project_name = var.project_name
+  environment = var.environment
+  value = postgresql_role.db_viewer.name
+  name = "db-viewer-password"
+}
 
 /*
 *  Postgres Grants - apply permissions to generated roles

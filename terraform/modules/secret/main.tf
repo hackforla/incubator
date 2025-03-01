@@ -12,7 +12,7 @@ resource "random_password" "password" {
 resource "aws_ssm_parameter" "this" {
   name     = local.secret_name
   type     = "SecureString"
-  value    = random_password.password.result
+  value    = var.value == null ? random_password.password.result : var.value
 }
 
 output "arn" {

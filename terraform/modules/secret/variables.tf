@@ -18,3 +18,8 @@ variable "length" {
   type    = number
   default = 48
 }
+
+variable "value" {
+  type = number
+  default = null
+}
