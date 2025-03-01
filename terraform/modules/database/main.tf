@@ -76,7 +76,7 @@ module "db_owner_username" {
   project_name = var.project_name
   environment = var.environment
   value = postgresql_role.db_owner.name
-  name = "db-owner-password"
+  name = "db-owner-username"
 }
 
 
