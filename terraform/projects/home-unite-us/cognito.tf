@@ -205,7 +205,7 @@ resource "aws_cognito_user_group" "homeuniteus" {
 }
 
 resource "aws_cognito_user_pool_domain" "homeuniteus" {
-  domain       = "homeuniteus"
+  domain       = local.project_name
   user_pool_id = aws_cognito_user_pool.homeuniteus.id
 }
 
