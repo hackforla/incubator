@@ -37,6 +37,7 @@ module "qa_service" {
       { "name": "COGNITO_REGION", "value": "us-west-2"},
       { "name": "COGNITO_REDIRECT_URI", "value": "https://${module.qa_dns_entry.full_dns_name}/signin"},
       { "name": "COGNITO_USER_POOL_ID", "value": aws_cognito_user_pool.homeuniteus.id},
+      { "name": "COGNITO_ENDPOINT_URL", "value": "https://${aws_cognito_user_pool.homeuniteus.endpoint}"},
       { "name": "COGNITO_ACCESS_ID", "value": "dev"},
       { "name": "COGNITO_ACCESS_KEY", "value": "dev"},
       { "name": "HUU_ENVIRONMENT", "value": "dev"},
