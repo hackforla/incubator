@@ -28,7 +28,7 @@ resource "aws_iam_role_policy_attachment" "lambda_cognito" {
 
 data "archive_file" "cognito_custom_message" {
   type        = "zip"
-  source_file = "./lambda/customMessage.js"
+  source_file = "${path.module}/lambda/customMessage.js"
   output_path = "customMessage.zip"
 }
 
@@ -49,7 +49,7 @@ resource "aws_lambda_function" "cognito_custom_message" {
 
 data "archive_file" "cognito_merge_users" {
   type        = "zip"
-  source_file = "./lambda/merge_users.py"
+  source_file = "${path.module}/lambda/merge_users.py"
   output_path = "merge_users.zip"
 }
 
