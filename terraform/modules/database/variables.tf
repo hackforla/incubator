@@ -48,3 +48,18 @@ output "user_password_arn" {
 output "viewer_password_arn" {
   value = module.db_viewer_password.arn
 }
+
+output "owner_password" {
+  value = module.db_owner_password.value
+  sensitive = true
+}
+
+output "user_password" {
+  value = module.db_user_password.value
+  sensitive = true
+}
+
+output "viewer_password" {
+  value = module.db_viewer_password.value
+  sensitive = true
+}
