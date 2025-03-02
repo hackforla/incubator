@@ -38,8 +38,8 @@ module "qa_service" {
       { "name": "COGNITO_REDIRECT_URI", "value": "https://${module.qa_dns_entry.full_dns_name}/signin"},
       { "name": "COGNITO_USER_POOL_ID", "value": aws_cognito_user_pool.homeuniteus.id},
       { "name": "COGNITO_ENDPOINT_URL", "value": "https://home-unite-us.auth.us-west-2.amazoncognito.com"},
-      { "name": "COGNITO_ACCESS_ID", "value": "dev"},
-      { "name": "COGNITO_ACCESS_KEY", "value": "dev"},
+      { "name": "COGNITO_ACCESS_ID", "value": ""},
+      { "name": "COGNITO_ACCESS_KEY", "value": ""},
       { "name": "HUU_ENVIRONMENT", "value": "dev"},
       { "name": "ROOT_URL", "value": "https://${module.qa_dns_entry.full_dns_name}"},
       { "name": "LOG_LEVEL", "value": "INFO"}
