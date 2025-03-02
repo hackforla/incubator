@@ -49,7 +49,7 @@ resource "aws_lambda_function" "cognito_custom_message" {
 
 data "archive_file" "cognito_merge_users" {
   type        = "zip"
-  source_file = "./src/merge_users.py"
+  source_file = "./lambda/merge_users.py"
   output_path = "merge_users.zip"
 }
 
