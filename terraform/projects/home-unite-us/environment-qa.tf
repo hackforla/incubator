@@ -2,7 +2,7 @@
 module "qa_dns_entry" {
    source = "../../modules/dns-entry"
    subdomain = "qa1"
-   zone_id = "Z0420800PGQ9JP6DM9EX"
+   zone_id = "Z03829196Z0VAL9Q8CZ"
 }
 
 module "database_dev" {
