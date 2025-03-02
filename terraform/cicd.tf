@@ -17,10 +17,11 @@ resource "aws_iam_policy" "incubator_builder" {
         Action = [
           "ecr:CompleteLayerUpload",
           "ecr:UploadLayerPart",
-           "ecr:InitiateLayerUpload",
-           "ecr:BatchCheckLayerAvailability",
-           "ecr:PutImage",
-           "ecr:BatchGetImage"
+          "ecr:InitiateLayerUpload",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:PutImage",
+          "ecr:BatchGetImage"
         ]
         Resource = "arn:aws:ecr:us-west-2:${data.aws_caller_identity.current.account_id}:repository/*"
       },
