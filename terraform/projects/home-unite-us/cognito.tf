@@ -354,51 +354,11 @@ resource "aws_secretsmanager_secret_version" "cognito_client" {
   secret_string = aws_cognito_user_pool_client.homeuniteus.client_secret
 }
 
-data "aws_iam_policy_document" "cognito_client" {
-  statement {
-    sid    = "EnableAnotherAWSAccountToReadTheSecret"
-    effect = "Allow"
-
-    principals {
-      type        = "AWS"
-      identifiers = [data.aws_iam_user.appadmin.arn]
-    }
-
-    actions   = ["secretsmanager:GetSecretValue"]
-    resources = ["*"]
-  }
-}
-
-resource "aws_secretsmanager_secret_policy" "cognito_client" {
-  secret_arn = aws_secretsmanager_secret.cognito_client.arn
-  policy     = data.aws_iam_policy_document.cognito_client.json
-}
-
-
-
-data "aws_iam_policy_document" "admin_manage_secrets" {
-  statement {
-    sid    = "EnableAdminUserToManageTheSecret"
-    effect = "Allow"
-
-    principals {
-      type        = "AWS"
-      identifiers = [data.aws_iam_user.appadmin.arn]
-    }
-
-    actions   = ["secretsmanager:GetSecretValue", "secretsmanager:PutSecretValue"]
-    resources = ["*"]
-  }
-}
 
 resource "aws_secretsmanager_secret" "google_client_id" {
   name = "home-unite-us-google-clientid"
 }
 
-resource "aws_secretsmanager_secret_policy" "google_client_id" {
-  secret_arn = aws_secretsmanager_secret.google_client_id.arn
-  policy     = data.aws_iam_policy_document.admin_manage_secrets.json
-}
 
 data "aws_secretsmanager_secret_version" "google_client_id" {
   secret_id     = aws_secretsmanager_secret.google_client_id.id
@@ -406,11 +366,6 @@ data "aws_secretsmanager_secret_version" "google_client_id" {
 
 resource "aws_secretsmanager_secret" "google_secret" {
   name = "home-unite-us-google-secret"
-}
-
-resource "aws_secretsmanager_secret_policy" "google_secret" {
-  secret_arn = aws_secretsmanager_secret.google_secret.arn
-  policy     = data.aws_iam_policy_document.admin_manage_secrets.json
 }
 
 data "aws_secretsmanager_secret_version" "google_secret" {
