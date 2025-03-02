@@ -108,6 +108,33 @@ resource "aws_iam_role" "instance" {
   }
 }
 
+resource "aws_iam_policy" "container_policy" {
+  name        = "${var.project_name}-${var.application_type}-${var.environment}-task-policy"
+  description = ""
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "ssmmessages:CreateControlChannel",
+          "ssmmessages:CreateDataChannel",
+          "ssmmessages:OpenControlChannel",
+          "ssmmessages:OpenDataChannel"
+        ],
+        "Resource" : "*"
+      }
+    ]
+  })
+}
+
+# enables:
+#  aws ecs execute-command --cluster incubator-prod --container homeuniteus --task bea9b5813b5f42db8191b723ab9e6d9c --command /bin/bash --interactive
+resource "aws_iam_role_policy_attachment" "task_policy" {
+  role       = aws_iam_role.instance.name
+  policy_arn = aws_iam_policy.container_policy.arn
+}
+
 resource "aws_cloudwatch_log_group" "this" {
   name = "/ecs/${local.envappname}"
 
@@ -141,6 +168,8 @@ resource "aws_ecs_task_definition" "task" {
       }
       environment = var.container_environment
       secrets = var.container_environment_secrets
+      readonlyRootFilesystem = false
+      initProcessEnabled     = true
     }
   ])
 
@@ -152,7 +181,6 @@ resource "aws_ecs_task_definition" "task" {
   cpu                      = local.task_cpu
 
 }
-
 
 
 resource "aws_ecs_service" "fargate" {
