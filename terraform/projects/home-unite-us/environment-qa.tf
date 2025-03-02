@@ -56,6 +56,6 @@ module "qa_service" {
 
 
 resource "aws_iam_role_policy_attachment" "test-attach" {
-  role       = module.qa_service.task_role_arn
+  role       = module.qa_service.task_role_name
   policy_arn = "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
 }
