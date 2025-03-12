@@ -22,7 +22,7 @@ module "civic_tech_jobs_backend_stage_service" {
    source = "../../modules/container"
    project_name = local.project_name_civic_tech_jobs
    environment = "stage"
-   application_type = "fullstack"
+   application_type = "fs"
    
    container_port = 8000
    container_image = "${module.civic_tech_jobs_ecr_fullstack.repository_url}:stage"
