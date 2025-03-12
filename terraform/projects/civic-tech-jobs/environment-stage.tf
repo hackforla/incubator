@@ -36,7 +36,7 @@ module "civic_tech_jobs_backend_stage_service" {
       { "name": "SECURE_HSTS_PRELOAD", "value": "True"},
       { "name": "SESSION_COOKIE_SECURE", "value": "True"},
       { "name": "CSRF_COOKIE_SECURE", "value": "True"},
-      { "name": "SQL_USER", " value": module.civic_tech_jobs_stage_database.owner_username},
+      { "name": "SQL_USER", "value": module.civic_tech_jobs_stage_database.owner_username},
       { "name": "SQL_DATABASE", "value": module.civic_tech_jobs_stage_database.database},
       { "name": "DATABASE", "value": module.civic_tech_jobs_stage_database.database},
       { "name": "SQL_ENGINE", "value": "django.db.backends.postgresql"},
