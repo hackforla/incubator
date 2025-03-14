@@ -28,15 +28,24 @@ module "civic_tech_jobs_fullstack_stage_service" {
    container_image = "${module.civic_tech_jobs_ecr_fullstack.repository_url}:stage"
    container_environment = [
       { "name": "DEBUG", "value": "False"},
+      { "name": "ENVIRON", "value": "stage"},
       { "name": "SECRET_KEY", "value": random_password.cookie_key.result},
-      { "name": "DJANGO_PORT", "value": "8000"},
       { "name": "DJANGO_ALLOWED_HOSTS", "value": module.civic_tech_jobs_fullstack_stage_dns_entry.full_dns_name},
-      { "name": "SQL_USER", "value": module.civic_tech_jobs_stage_database.owner_username},
-      { "name": "SQL_DATABASE", "value": module.civic_tech_jobs_stage_database.database},
-      { "name": "DATABASE", "value": module.civic_tech_jobs_stage_database.database},
       { "name": "SQL_ENGINE", "value": "django.db.backends.postgresql"},
+      { "name": "SQL_DATABASE", "value": module.civic_tech_jobs_stage_database.database},
+      { "name": "SQL_USER", "value": module.civic_tech_jobs_stage_database.owner_username},
       { "name": "SQL_HOST", "value": module.civic_tech_jobs_stage_database.host},
       { "name": "SQL_PORT", "value": module.civic_tech_jobs_stage_database.port},
+
+      { "name": "DJANGO_PORT", "value": "8000"},
+      { "name": "DATABASE", "value": module.civic_tech_jobs_stage_database.database},
+
+
+      { "name": "CSRF_COOKIE_SECURE", "value": "False"},
+      { "name": "SESSION_COOKIE_SECURE", "value": "False"},
+      { "name": "SECURE_SSL_REDIRECT", "value": "False"},
+      { "name": "HSTS_ENABLED", "value": "False"},
+
       { "name": "COGNITO_DOMAIN", "value": "peopledepot"},
       { "name": "COGNITO_AWS_REGION", "value": "us-west-2"},
       { "name": "COGNITO_USER_POOL", "value": "us-west-2_Fn4rkZpuB"},
