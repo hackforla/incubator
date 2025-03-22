@@ -45,7 +45,7 @@ resource "aws_lambda_function" "cognito_custom_message" {
 
   runtime = "nodejs18.x"
   lifecycle {
-    ignore_changes = [ "source_code_hash" ]
+    ignore_changes = [ source_code_hash ]
   }
 }
 
@@ -67,7 +67,7 @@ resource "aws_lambda_function" "cognito_merge_users" {
 
   runtime = "python3.12"
   lifecycle {
-    ignore_changes = [ "source_code_hash" ]
+    ignore_changes = [ source_code_hash ]
   }
 }
 
