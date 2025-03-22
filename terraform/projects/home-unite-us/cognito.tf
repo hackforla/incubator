@@ -44,7 +44,9 @@ resource "aws_lambda_function" "cognito_custom_message" {
   source_code_hash = data.archive_file.cognito_custom_message.output_base64sha256
 
   runtime = "nodejs18.x"
-
+  lifecycle {
+    ignore_changes = [ "source_code_hash" ]
+  }
 }
 
 data "archive_file" "cognito_merge_users" {
@@ -64,7 +66,9 @@ resource "aws_lambda_function" "cognito_merge_users" {
   source_code_hash = data.archive_file.cognito_merge_users.output_base64sha256
 
   runtime = "python3.12"
-
+  lifecycle {
+    ignore_changes = [ "source_code_hash" ]
+  }
 }
 
 resource "aws_iam_role" "cognito_idp" {
