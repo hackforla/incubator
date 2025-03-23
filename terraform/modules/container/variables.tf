@@ -57,3 +57,8 @@ variable "path" {
     type = string
     default = null
 }
+
+variable "health_check_path" {
+    type = string
+    default = "/"
+}

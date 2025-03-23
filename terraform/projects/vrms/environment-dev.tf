@@ -46,6 +46,7 @@ module "backend_dev_service" {
    
    hostname = module.dev_dns_entry.full_dns_name
    path = "/api/*"
+   health_check_path = "/api/healthcheck"
 
    listener_priority = 400
 } 
