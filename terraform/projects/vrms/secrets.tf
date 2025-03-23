@@ -4,7 +4,7 @@ module "custom_request_header_secret" {
    application_type = "backend"
    project_name = local.project_name
    name = "custom-request-header"
-   value = ""
+   value = " "
 }
 
 module "gmail_client_id_secret" {
@@ -12,7 +12,7 @@ module "gmail_client_id_secret" {
    application_type = "backend"
    project_name = local.project_name
    name = "gmail-client-id"
-   value = ""
+   value = " "
 }
 
 module "gmail_refresh_token_secret" {
@@ -20,7 +20,7 @@ module "gmail_refresh_token_secret" {
    application_type = "backend"
    project_name = local.project_name
    name = "gmail-refresh-token"
-   value = ""
+   value = " "
 }
 
 module "gmail_secret_id_secret" {
@@ -28,7 +28,7 @@ module "gmail_secret_id_secret" {
    application_type = "backend"
    project_name = local.project_name
    name = "gmail-secret-id"
-   value = ""
+   value = " "
 }
 
 module "mailhog_password_secret" {
@@ -36,7 +36,7 @@ module "mailhog_password_secret" {
    application_type = "backend"
    project_name = local.project_name
    name = "mailhog-password"
-   value = ""
+   value = " "
 }
 
 module "mailhog_user_secret" {
@@ -44,7 +44,7 @@ module "mailhog_user_secret" {
    application_type = "backend"
    project_name = local.project_name
    name = "mailhog-user"
-   value = ""
+   value = " "
 }
 
 module "slack_bot_token_secret" {
@@ -52,7 +52,7 @@ module "slack_bot_token_secret" {
    application_type = "backend"
    project_name = local.project_name
    name = "slack-bot-token"
-   value = ""
+   value = " "
 }
 
 module "slack_client_secret_secret" {
@@ -60,7 +60,7 @@ module "slack_client_secret_secret" {
    application_type = "backend"
    project_name = local.project_name
    name = "slack-client-secret"
-   value = ""
+   value = " "
 }
 
 module "slack_oauth_token_secret" {
@@ -68,7 +68,7 @@ module "slack_oauth_token_secret" {
    application_type = "backend"
    project_name = local.project_name
    name = "slack-oauth-token"
-   value = ""
+   value = " "
 }
 
 module "slack_signing_secret_secret" {
@@ -76,5 +76,5 @@ module "slack_signing_secret_secret" {
    application_type = "backend"
    project_name = local.project_name
    name = "slack-signing-secret"
-   value = ""
+   value = " "
 }
