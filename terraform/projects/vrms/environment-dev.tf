@@ -1,6 +1,6 @@
 module "dev_dns_entry" {
    source = "../../modules/dns-entry"
-   subdomain = "dev2"
+   subdomain = "dev"
    zone_id = "Z0420800PGQ9JP6DM9EX"
 }
 
@@ -16,7 +16,7 @@ module "dev_database_url_secret" {
 module "backend_dev_service" {
    source = "../../modules/container"
    project_name = local.project_name
-   environment = "dev2"
+   environment = "dev"
    application_type = "backend"
    
    container_port = 4000
