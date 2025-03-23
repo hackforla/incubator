@@ -8,6 +8,7 @@ variable "application_type" {
 
 variable "environment" {
   type = string
+  default = ""
 }
 
 variable "name" {

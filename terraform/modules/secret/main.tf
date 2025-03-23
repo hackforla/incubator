@@ -1,5 +1,5 @@
 locals {
-  secret_name = "/${var.project_name}/${var.application_type}-${var.environment}-${var.name}"
+  secret_name = "/${var.project_name}/${var.application_type}-${var.environment != "" ? "${var.environment}-" : "" }${var.name}"
 }
 
 resource "random_password" "password" {
