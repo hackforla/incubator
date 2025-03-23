@@ -50,3 +50,29 @@ module "backend_dev_service" {
 
    listener_priority = 400
 } 
+
+
+module "frontend_dev_service" {
+   source = "../../modules/container"
+   project_name = local.project_name
+   environment = "dev"
+   application_type = "frontend"
+   
+   container_port = 3000
+   container_image = "${module.ecr_frontend.repository_url}:dev"
+   container_environment = [
+      { "name": "BACKEND_HOST", "value": "https://dev.vrms.io"},
+      { "name": "BACKEND_PORT", "value": "4000"},
+      { "name": "CLIENT_PORT", "value": "443"},
+      { "name": "CLIENT_URL", "value": "https://dev.vrms.io"},
+      { "name": "REACT_APP_PROXY", "value": "https://dev.vrms.io"}
+   ]
+   container_environment_secrets = [
+      { "name": "REACT_APP_CUSTOM_REQUEST_HEADER", "valueFrom": module.custom_request_header_secret.arn}
+   ]
+   
+   hostname = module.dev_dns_entry.full_dns_name
+   path = "/*"
+
+   listener_priority = 401
+} 
