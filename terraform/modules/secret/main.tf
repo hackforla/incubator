@@ -13,6 +13,10 @@ resource "aws_ssm_parameter" "this" {
   name     = local.secret_name
   type     = "SecureString"
   value    = var.value == null ? random_password.password.result : var.value
+
+  lifecycle {
+    ignore_changes = [ value ]
+  }
 }
 
 output "arn" {
