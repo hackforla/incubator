@@ -1,8 +1,8 @@
 
 module "civic_tech_jobs_fullstack_stage_dns_entry" {
    source = "../../modules/dns-entry"
-   subdomain = "civictechjobs-stage"
-   zone_id = "Z0420800PGQ9JP6DM9EX"
+   subdomain = "stage"
+   zone_id = "Z06949943QJY32WRKG577"
 }
 
 module "civic_tech_jobs_stage_database" {
