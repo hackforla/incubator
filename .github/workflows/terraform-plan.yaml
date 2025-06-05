@@ -18,7 +18,7 @@ jobs:
       contents: read
       pull-requests: write
 
-    env:
+    # env:
       # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # TF_VAR_pgpassword: ${{ secrets.TF_VAR_PGPASSWORD }}
       # TF_VAR_pghost: ${{ secrets.TF_VAR_PGHOST }}
