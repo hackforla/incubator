@@ -9,6 +9,7 @@ on:
       - '**/*.yaml'
 
 permissions:
+  id-token: write
   contents: read
 
 jobs:
@@ -21,6 +22,7 @@ jobs:
       TF_VAR_pghost: ${{ secrets.TF_VAR_PGHOST }}
 
     permissions:
+      id-token: write
       contents: read
       pull-requests: write
 
