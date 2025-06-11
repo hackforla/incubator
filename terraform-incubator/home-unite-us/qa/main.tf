@@ -19,14 +19,14 @@ locals {
 }
 
 resource "aws_iam_user" "developer" {
-    for_each = local.developers
+    for_each = toset(local.developers)
     name          = each.value
     path          = "/"
     force_destroy = true
 }
 
 resource "aws_iam_user_login_profile" "developer" {
-    for_each = local.developers
+    for_each = toset(local.developers)
   user    = aws_iam_user.developer[each.key].name
   pgp_key = file("./public.asc")
 }
