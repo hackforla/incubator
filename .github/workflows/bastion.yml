@@ -2,43 +2,72 @@ name: Turn on/off Bastion Server
 on:
   workflow_dispatch:
     inputs:
-      state:
-        description: 'Turn bastion on/off'
-        required: true
-        default: 'enable'
-
-env:
-  BASTION_ASG_NAME_PROD: incubator-test-bastion
-  AWS_REGION_PROD: us-west-1
-
+      target-host-environment:
+        type: choice
+        description: The AWS environment to deploy (dev/test/prod)
+        options: 
+        - dev
+        - test
+        - prod
+permissions:
+  id-token: write
+  contents: read
 jobs:
-  bastion:
-    name: Scale Bastion server
+  TerraformPlan:
     runs-on: ubuntu-latest
     steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::035866691871:role/gha-incubator
+          role-session-name: ghaincubatorsession
+          aws-region: us-west-2
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name:  Generate and apply plan
+        run: |
+          pushd ./terraform-incubator/home-unite-us/qa
+          terraform init
 
-    - name: Debug Action
-      uses: hmarr/debug-action@v1.0.0
+          # mkdir -p ./tfshow
 
-    - name: Interpolate Bastion capacity flag
-      id: bastion_capacity
-      run: |
-        echo "bastion_count=$(\
-          if [[ ${{ github.event.inputs.state }} == 'enable' ]]; then \
-          echo 1; \
-          else
-          echo 0; \
-          fi)" >> $GITHUB_ENV
+          # echo '```hcl'  >> $GITHUB_STEP_SUMMARY
+          # terraform plan -no-color 2>&1 >> $GITHUB_STEP_SUMMARY
+          # echo '```' >> $GITHUB_STEP_SUMMARY
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION_PROD }}
+          # sudo apt-get -y update
+          # sudo apt-get install graphviz          
+          # terraform graph -type=plan | dot -Tpng -o graph.png
 
-    - name: Scale up/down Bastion ASG
-      run: |
-        aws autoscaling update-auto-scaling-group \
-        	--auto-scaling-group-name ${{ env.BASTION_ASG_NAME_PROD }} \
-        	--desired-capacity ${{ env.bastion_count }}
+          terraform plan -out tf.plan
+          # terraform apply tf.plan
+          # terraform show -no-color 1> ./tfshow/after.tf 2>&1
+          # tar czf ./homeuniteus.tfshow.tgz ./tfshow/*
+
+      # - name: Store plan
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: homeuniteus-tf-show
+      #     path: ./terraform-incubator/home-unite-us/dev/homeuniteus.tfshow.tgz
+
+
+
+      # - name: Store plan
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: homeuniteus-graph
+      #     path: ./terraform-incubator/home-unite-us/dev/graph.png
+
+
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v2
+      #   with:
+      #     registries: "035866691871"
+      # - name: Push an example image
+      #   run: |
+      #     docker pull nginx:alpine
+      #     docker tag nginx:alpine '035866691871.dkr.ecr.us-west-2.amazonaws.com/homeuniteus:nginx-20241002.1'
+      #     docker push '035866691871.dkr.ecr.us-west-2.amazonaws.com/homeuniteus:nginx-20241002.1'
