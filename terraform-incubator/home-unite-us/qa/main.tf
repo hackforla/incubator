@@ -13,7 +13,7 @@ terraform {
 
 locals {
     developers = [
-        "mugdh.chauhan", 
+        "mugdh.chauhan",
         "jack.pashayan"
     ]
 }
@@ -27,7 +27,14 @@ resource "aws_iam_user" "developer" {
 
 resource "aws_iam_user_login_profile" "developer" {
     for_each = toset(local.developers)
-  user    = aws_iam_user.developer[each.key].name
-  pgp_key = file("./public.asc")
+    user    = aws_iam_user.developer[each.key].name
+    pgp_key = file("./public.asc")
 }
 
+output "dev_pw_mugdh" {
+  value = aws_iam_user_login_profile.developer["mugdh.chauhan"].encrypted_password
+}
+
+output "dev_pw_jack" {
+  value = aws_iam_user_login_profile.developer["jack.pashayan"].encrypted_password
+}
