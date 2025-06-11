@@ -29,22 +29,9 @@ jobs:
       - name:  Generate and apply plan
         run: |
           pushd ./terraform-incubator/home-unite-us/qa
-          terraform init
-
-          # mkdir -p ./tfshow
-
-          # echo '```hcl'  >> $GITHUB_STEP_SUMMARY
-          # terraform plan -no-color 2>&1 >> $GITHUB_STEP_SUMMARY
-          # echo '```' >> $GITHUB_STEP_SUMMARY
-
-          # sudo apt-get -y update
-          # sudo apt-get install graphviz          
-          # terraform graph -type=plan | dot -Tpng -o graph.png
-
+          terraform init          
           terraform plan -out tf.plan
-          # terraform apply tf.plan
-          # terraform show -no-color 1> ./tfshow/after.tf 2>&1
-          # tar czf ./homeuniteus.tfshow.tgz ./tfshow/*
+          terraform apply tf.plan
 
       # - name: Store plan
       #   uses: actions/upload-artifact@v4
