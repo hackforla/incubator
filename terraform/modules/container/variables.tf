@@ -62,3 +62,8 @@ variable "health_check_path" {
     type = string
     default = "/"
 }
+
+variable "additional_host_urls" {
+    type = list(string)
+    default = []
+}
