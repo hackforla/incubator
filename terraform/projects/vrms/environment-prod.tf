@@ -51,6 +51,7 @@ module "backend_prod_service" {
    ]
    
    hostname = "vrms.io"
+   additional_host_urls = ["www.vrms.io"]
    path = "/api/*"
    health_check_path = "/api/healthcheck"
 
@@ -78,6 +79,7 @@ module "frontend_prod_service" {
    ]
    
    hostname = "vrms.io"
+   additional_host_urls = ["www.vrms.io"]
 
    path = "/*"
 
