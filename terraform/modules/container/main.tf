@@ -12,6 +12,8 @@ locals {
 
   task_network_mode = "awsvpc"
   target_type       = "ip"
+
+  hostname_array = concat([var.hostname], var.additional_host_urls)
 }
 
 // security group for the container
@@ -80,7 +82,7 @@ resource "aws_lb_listener_rule" "static" {
 
   condition {
     host_header {
-      values = [var.hostname]
+      values = local.hostname_array
     }
   }
 }

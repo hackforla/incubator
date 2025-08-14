@@ -20,7 +20,7 @@ resource "aws_db_instance" "default" {
   enabled_cloudwatch_logs_exports       = ["postgresql", "upgrade"]
   engine                                = "postgres"
   engine_lifecycle_support              = "open-source-rds-extended-support"
-  engine_version                        = jsonencode(13.15)
+  engine_version                        = "13.20"
   iam_database_authentication_enabled   = false
   identifier                            = "incubator-prod-database"
   instance_class                        = "db.t3.small"
