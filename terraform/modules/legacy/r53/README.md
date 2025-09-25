@@ -1,9 +1,17 @@
 <!-- BEGIN_TF_DOCS -->
-# R53 
+## Requirements
 
-Add description.
+No requirements.
 
+## Providers
 
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+
+## Modules
+
+No modules.
 
 ## Resources
 
@@ -11,6 +19,7 @@ Add description.
 |------|------|
 | [aws_route53_record.www](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_zone.selected](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -19,14 +28,7 @@ Add description.
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | The domain name where the application will be deployed, must already live in AWS | `string` | n/a | yes |
 | <a name="input_host_names"></a> [host\_names](#input\_host\_names) | The URL where the application will be hosted, must be a subdomain of the domain\_name | `list(string)` | n/a | yes |
 
-## Providers
+## Outputs
 
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-
-
-To automatically update this documentation, install terraform-docs on your local machine run the following: 
-    cd <directory of README location to update>
-    terraform-docs -c .terraform.docs.yml . 
+No outputs.
 <!-- END_TF_DOCS -->    
