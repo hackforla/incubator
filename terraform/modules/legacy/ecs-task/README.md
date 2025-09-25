@@ -1,14 +1,20 @@
 <!-- BEGIN_TF_DOCS -->
-# ECS-Task
+## Requirements
 
-Add description.
+No requirements.
 
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_application_container_def"></a> [application\_container\_def](#module\_application\_container\_def) | cloudposse/ecs-container-definition/aws | 0.56.0 |
+
 ## Resources
 
 | Name | Type |
@@ -22,6 +28,7 @@ Add description.
 | [aws_lb_listener_rule.static](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener_rule) | resource |
 | [aws_lb_target_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group) | resource |
 | [aws_service_discovery_service.internal](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/service_discovery_service) | resource |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -44,17 +51,10 @@ Add description.
 | <a name="input_project_name"></a> [project\_name](#input\_project\_name) | The overall name of the project using this infrastructure; used to group related resources by | `any` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | n/a | `string` | n/a | yes |
 | <a name="input_service_discovery_dns_namespace_id"></a> [service\_discovery\_dns\_namespace\_id](#input\_service\_discovery\_dns\_namespace\_id) | n/a | `string` | n/a | yes |
-| <a name="input_shared_configuration"></a> [shared\_configuration](#input\_shared\_configuration) | Configuration object from shared resources | <pre>object({<br>    alb_https_listener_arn = string<br>    cluster_id             = string<br>    cluster_name           = string<br>    vpc_id                 = string<br>    public_subnet_ids      = set(string)<br>  })</pre> | n/a | yes |
+| <a name="input_shared_configuration"></a> [shared\_configuration](#input\_shared\_configuration) | Configuration object from shared resources | <pre>object({<br/>    alb_https_listener_arn = string<br/>    cluster_id             = string<br/>    cluster_name           = string<br/>    vpc_id                 = string<br/>    public_subnet_ids      = set(string)<br/>  })</pre> | n/a | yes |
 | <a name="input_task_role_arn"></a> [task\_role\_arn](#input\_task\_role\_arn) | n/a | `string` | n/a | yes |
 
-## Providers
+## Outputs
 
-| Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
-
-
-To automatically update this documentation, install terraform-docs on your local machine run the following: 
-    cd <directory of README location to update>
-    terraform-docs -c .terraform.docs.yml . 
+No outputs.
 <!-- END_TF_DOCS -->    
