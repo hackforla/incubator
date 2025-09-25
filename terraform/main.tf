@@ -14,6 +14,11 @@ module "vrms" {
     source = "./projects/vrms"
 }
 
+module "civic-tech-index" {
+    source = "./projects/civic-tech-index"
+}
+
+
 
 
 data "aws_caller_identity" "current" {}
