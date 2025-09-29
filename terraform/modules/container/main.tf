@@ -176,7 +176,7 @@ resource "aws_ecs_task_definition" "task" {
     }
   ])
 
-  requires_compatibilities = ["FARGATE"]
+  requires_compatibilities = [ var.launch_type == "fargate" ? "FARGATE" : "EC2"]
   network_mode             = local.task_network_mode
   task_role_arn            = aws_iam_role.instance.arn
   execution_role_arn       = "arn:aws:iam::035866691871:role/incubator-prod-ecs-task-role"
@@ -192,7 +192,7 @@ resource "aws_ecs_service" "fargate" {
   cluster                = "incubator-prod"
   enable_execute_command = true
   task_definition        = aws_ecs_task_definition.task.arn
-  launch_type            = "FARGATE"
+  launch_type            = var.launch_type == "fargate" ? "FARGATE" : "EC2"
   desired_count          = 1
 
   network_configuration {

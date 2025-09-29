@@ -57,6 +57,8 @@ module "frontend_dev_service" {
    project_name = local.project_name
    environment = "dev"
    application_type = "frontend"
+
+   launch_type = "ec2"
    
    container_port = 3000
    container_image = "${module.ecr_frontend.repository_url}:dev"

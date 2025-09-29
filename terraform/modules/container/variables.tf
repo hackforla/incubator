@@ -67,3 +67,13 @@ variable "additional_host_urls" {
     type = list(string)
     default = []
 }
+
+variable "launch_type" {
+  type = string
+  default = "fargate"
+
+  validation {
+    condition     = contains(["ec2", "fargate"], var.launch_type)
+    error_message = "Must be either \"ec2\" or \"fargate\"."
+  }
+}
