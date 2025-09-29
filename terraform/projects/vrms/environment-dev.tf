@@ -19,6 +19,8 @@ module "backend_dev_service" {
    environment = "dev"
    application_type = "backend"
    
+   launch_type = "ec2"
+   
    container_port = 4000
    container_image = "${module.ecr_backend.repository_url}:dev"
    container_environment = [

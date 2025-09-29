@@ -25,6 +25,8 @@ module "backend_prod_service" {
    environment = "prod"
    application_type = "backend"
    
+   launch_type = "ec2"
+   
    container_port = 4000
    container_image = "${module.ecr_backend.repository_url}:prod"
    container_environment = [
@@ -64,6 +66,8 @@ module "frontend_prod_service" {
    project_name = local.project_name
    environment = "prod"
    application_type = "frontend"
+
+   launch_type = "ec2"
    
    container_port = 3000
    container_image = "${module.ecr_frontend.repository_url}:prod"

@@ -24,6 +24,8 @@ module "backend_stage_service" {
    environment = "stage"
    application_type = "backend"
    
+   launch_type = "ec2"
+   
    container_port = 8000
    container_image = "035866691871.dkr.ecr.us-west-2.amazonaws.com/civictechindex-backend-stage:77845e0"
    container_environment = [
