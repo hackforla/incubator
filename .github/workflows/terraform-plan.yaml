@@ -42,3 +42,25 @@ jobs:
       with:
         path: terraform
         backend_config_file: terraform/prod.backend.tfvars
+
+  terraform-docs:
+    name: Generate Terraform Docs
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.event.pull_request.head.ref }}
+
+    - name: Render terraform docs inside the README.md and push changes back to PR branch
+      uses: terraform-docs/gh-actions@v1.4.1
+      with:
+        find-dir: "terraform"
+        output-file: README.md
+        output-method: inject
+        git-push: "true"
+        git-commit-message: "terraform-docs: automated updates to Terraform modules README.md"
