@@ -27,6 +27,8 @@ module "qa_service" {
    project_name = local.project_name
    environment = "qa"
    application_type = "fullstack"
+
+   launch_type = "ec2"
    
    container_port = 80
    container_image = "${module.ecr_fullstack.repository_url}:qa"
