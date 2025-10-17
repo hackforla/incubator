@@ -17,7 +17,7 @@ variable "container_image" {
 
 variable "container_cpu" {
   type    = number
-  default = 512
+  default = 256
 }
 
 variable "container_memory" {

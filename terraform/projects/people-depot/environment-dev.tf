@@ -31,6 +31,8 @@ module "backend_dev_service" {
    environment = "dev"
    application_type = "backend"
    
+   launch_type = "ec2"
+   
    container_port = 8000
    container_image = "${module.people_depot_ecr_backend.repository_url}:dev"
    container_environment = [
