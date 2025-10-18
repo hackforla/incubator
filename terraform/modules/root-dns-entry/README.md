@@ -1,4 +1,9 @@
 <!-- BEGIN_TF_DOCS -->
+# root-dns-entry
+
+Creates a Route 53 DNS entry that points to incubator's main ingress (cloudfront or ALB).
+All services that require web access (frontends or API backends) should use this.
+
 ## Requirements
 
 No requirements.
@@ -18,8 +23,6 @@ No modules.
 | Name | Type |
 |------|------|
 | [aws_route53_record.www](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
-| [aws_lb.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/lb) | data source |
-| [aws_route53_zone.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
 
 ## Inputs
 
