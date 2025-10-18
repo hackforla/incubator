@@ -1,8 +1,10 @@
 /**
  * # root-dns-entry
  *
- * Creates a Route 53 DNS entry that points to incubator's main ingress (cloudfront or ALB). 
- * All services that require web access (frontends or API backends) should use this.
+ * This is used to create a root DNS entry in Route 53, for example "vrms.io" or "homeunite.us"
+ * that have no "www" or subdomain before it. The Route 53 DNS entry points to incubator's main 
+ * ingress (cloudfront or ALB). All services that require web access (frontends or API backends) 
+ * should use this.
  * 
  */
 
