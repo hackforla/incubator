@@ -28,11 +28,11 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_zone_id"></a> [zone\_id](#input\_zone\_id) | n/a | `string` | n/a | yes |
+| <a name="input_zone_id"></a> [zone\_id](#input\_zone\_id) | the Route 53 hosted zone id to create the entry | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_full_dns_name"></a> [full\_dns\_name](#output\_full\_dns\_name) | n/a |
+| <a name="output_full_dns_name"></a> [full\_dns\_name](#output\_full\_dns\_name) | full dns name, i.e. "qa.vrms.io" |
 <!-- END_TF_DOCS -->
