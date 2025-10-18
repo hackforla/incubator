@@ -1,4 +1,19 @@
 <!-- BEGIN_TF_DOCS -->
+# database
+
+Creates a database on a shared RDS posgresql instance. The name of the
+created database has the format `project-name_application-type_environment`.
+For example, for the production backend database of vrms, the created
+database name will be `vrms_backend_production`.
+
+This module also creates three users:
+1. viewer - read access
+1. user - read/write access
+1. owner - admin access
+
+The credentials get stored as secrets (SSM parameters). The ARNs of those
+parameters are output variables, listed below
+
 ## Requirements
 
 | Name | Version |
@@ -9,7 +24,6 @@
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 | <a name="provider_postgresql"></a> [postgresql](#provider\_postgresql) | 1.25.0 |
 
 ## Modules
@@ -33,30 +47,29 @@
 | [postgresql_role.db_owner](https://registry.terraform.io/providers/cyrilgdn/postgresql/1.25.0/docs/resources/role) | resource |
 | [postgresql_role.db_user](https://registry.terraform.io/providers/cyrilgdn/postgresql/1.25.0/docs/resources/role) | resource |
 | [postgresql_role.db_viewer](https://registry.terraform.io/providers/cyrilgdn/postgresql/1.25.0/docs/resources/role) | resource |
-| [aws_db_instance.shared](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/db_instance) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_application_type"></a> [application\_type](#input\_application\_type) | n/a | `string` | n/a | yes |
-| <a name="input_environment"></a> [environment](#input\_environment) | n/a | `string` | n/a | yes |
-| <a name="input_project_name"></a> [project\_name](#input\_project\_name) | n/a | `string` | n/a | yes |
+| <a name="input_application_type"></a> [application\_type](#input\_application\_type) | frontend, backend, or fullstack | `string` | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | what environment this is for - staging, production, etc | `string` | n/a | yes |
+| <a name="input_project_name"></a> [project\_name](#input\_project\_name) | HfLA project name (vrms, home-unite-us, etc) | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_database"></a> [database](#output\_database) | n/a |
-| <a name="output_host"></a> [host](#output\_host) | n/a |
-| <a name="output_owner_password"></a> [owner\_password](#output\_owner\_password) | n/a |
-| <a name="output_owner_password_arn"></a> [owner\_password\_arn](#output\_owner\_password\_arn) | n/a |
-| <a name="output_owner_username"></a> [owner\_username](#output\_owner\_username) | n/a |
-| <a name="output_port"></a> [port](#output\_port) | n/a |
-| <a name="output_user_password"></a> [user\_password](#output\_user\_password) | n/a |
-| <a name="output_user_password_arn"></a> [user\_password\_arn](#output\_user\_password\_arn) | n/a |
-| <a name="output_user_username"></a> [user\_username](#output\_user\_username) | n/a |
-| <a name="output_viewer_password"></a> [viewer\_password](#output\_viewer\_password) | n/a |
-| <a name="output_viewer_password_arn"></a> [viewer\_password\_arn](#output\_viewer\_password\_arn) | n/a |
-| <a name="output_viewer_username"></a> [viewer\_username](#output\_viewer\_username) | n/a |
+| <a name="output_database"></a> [database](#output\_database) | name of created postgresql database |
+| <a name="output_host"></a> [host](#output\_host) | hostname URL of RDS postgresql database |
+| <a name="output_owner_password"></a> [owner\_password](#output\_owner\_password) | 'owner' user password credential |
+| <a name="output_owner_password_arn"></a> [owner\_password\_arn](#output\_owner\_password\_arn) | SSM parameter ARN of password for 'owner' user |
+| <a name="output_owner_username"></a> [owner\_username](#output\_owner\_username) | login username of 'owner' user |
+| <a name="output_port"></a> [port](#output\_port) | running port of RDS postgresql database |
+| <a name="output_user_password"></a> [user\_password](#output\_user\_password) | 'user' user password credential |
+| <a name="output_user_password_arn"></a> [user\_password\_arn](#output\_user\_password\_arn) | SSM parameter ARN of password for 'user' user |
+| <a name="output_user_username"></a> [user\_username](#output\_user\_username) | login username of 'user' user |
+| <a name="output_viewer_password"></a> [viewer\_password](#output\_viewer\_password) | 'viewer' user password credential |
+| <a name="output_viewer_password_arn"></a> [viewer\_password\_arn](#output\_viewer\_password\_arn) | SSM parameter ARN of password for 'viewer' user |
+| <a name="output_viewer_username"></a> [viewer\_username](#output\_viewer\_username) | login username of 'viewer' user |
 <!-- END_TF_DOCS -->    
