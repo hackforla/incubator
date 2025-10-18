@@ -1,16 +1,16 @@
-// XXX Decommision - not enough here to merit separate module
-// --------------------------
-// General Variables
-// --------------------------
+/**
+ * # ecr
+ *
+ * This creates a standard Elastic Container Registry docker registry.
+ * 
+ */
+
 
 variable "project_name" {
   type        = string
-  description = "The overall name of the project using this infrastructure; used to group related resources by"
+  description = "HfLA project name (vrms, home-unite-us, etc)"
 }
 
-// --------------------------
-// Elastic Container Repository
-// --------------------------
 resource "aws_ecr_repository" "this" {
   name                 = var.project_name
   image_tag_mutability = "MUTABLE"
