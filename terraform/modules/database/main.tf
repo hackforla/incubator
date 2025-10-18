@@ -1,13 +1,26 @@
+/**
+ * # database
+ *
+ * Creates a database on a shared RDS posgresql instance. The name of the 
+ * created database has the format `project-name_application-type_environment`.
+ * For example, for the production backend database of vrms, the created
+ * database name will be `vrms_backend_production`.
+ *
+ * This module also creates three users:
+ * 1. viewer - read access
+ * 1. user - read/write access
+ * 1. owner - admin access
+ *
+ * The credentials get stored as secrets (SSM parameters). The ARNs of those
+ * parameters are output variables, listed below
+ */
 
-
+// terraform-docs-ignore
 data "aws_db_instance" "shared" {
   db_instance_identifier = "incubator-prod-database"
 }
 
 
-# "rds_dbowner_password"
-# "rds_dbuser_password"
-# "rds_dbviewer_password"
 
 
 /*
@@ -65,10 +78,10 @@ resource "postgresql_role" "db_viewer" {
   password = module.db_viewer_password.value
 }
 
+
 /*
 * Usernames stored as secrets
 */ 
-
 
 module "db_owner_username" {
   source = "../secret"
@@ -99,9 +112,11 @@ module "db_viewer_username" {
   name = "db-viewer-username"
 }
 
+
 /*
 *  Postgres Grants - apply permissions to generated roles
 */
+
 resource "postgresql_grant" "user" {
   database    = postgresql_database.db.name
   role        = postgresql_role.db_user.name
@@ -117,7 +132,6 @@ resource "postgresql_grant" "viewer" {
   object_type = "table"
   privileges  = ["SELECT"]
 }
-
 
 
 /*
