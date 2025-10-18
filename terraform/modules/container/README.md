@@ -35,7 +35,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_additional_host_urls"></a> [additional\_host\_urls](#input\_additional\_host\_urls) | n/a | `list(string)` | `[]` | no |
 | <a name="input_application_type"></a> [application\_type](#input\_application\_type) | defines what type of application is running, fullstack, client, backend, etc. will be used for cloudwatch logs | `string` | n/a | yes |
-| <a name="input_container_cpu"></a> [container\_cpu](#input\_container\_cpu) | n/a | `number` | `512` | no |
+| <a name="input_container_cpu"></a> [container\_cpu](#input\_container\_cpu) | n/a | `number` | `256` | no |
 | <a name="input_container_environment"></a> [container\_environment](#input\_container\_environment) | n/a | <pre>list(object({<br/>    name = string<br/>    value = string<br/>  }))</pre> | n/a | yes |
 | <a name="input_container_environment_secrets"></a> [container\_environment\_secrets](#input\_container\_environment\_secrets) | n/a | <pre>list(object({<br/>    name = string<br/>    valueFrom = string<br/>  }))</pre> | `[]` | no |
 | <a name="input_container_image"></a> [container\_image](#input\_container\_image) | n/a | `string` | n/a | yes |
@@ -44,6 +44,7 @@ No modules.
 | <a name="input_environment"></a> [environment](#input\_environment) | n/a | `string` | n/a | yes |
 | <a name="input_health_check_path"></a> [health\_check\_path](#input\_health\_check\_path) | n/a | `string` | `"/"` | no |
 | <a name="input_hostname"></a> [hostname](#input\_hostname) | n/a | `string` | n/a | yes |
+| <a name="input_launch_type"></a> [launch\_type](#input\_launch\_type) | n/a | `string` | `"fargate"` | no |
 | <a name="input_listener_priority"></a> [listener\_priority](#input\_listener\_priority) | n/a | `number` | n/a | yes |
 | <a name="input_path"></a> [path](#input\_path) | n/a | `string` | `null` | no |
 | <a name="input_project_name"></a> [project\_name](#input\_project\_name) | The overall name of the project using this infrastructure; used to group related resources by | `any` | n/a | yes |

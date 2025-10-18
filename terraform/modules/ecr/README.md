@@ -1,4 +1,8 @@
 <!-- BEGIN_TF_DOCS -->
+# ecr
+
+This creates a standard Elastic Container Registry docker registry.
+
 ## Requirements
 
 No requirements.
@@ -23,12 +27,12 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_project_name"></a> [project\_name](#input\_project\_name) | The overall name of the project using this infrastructure; used to group related resources by | `string` | n/a | yes |
+| <a name="input_project_name"></a> [project\_name](#input\_project\_name) | HfLA project name (vrms, home-unite-us, etc) | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_arn"></a> [arn](#output\_arn) | n/a |
-| <a name="output_repository_url"></a> [repository\_url](#output\_repository\_url) | n/a |
+| <a name="output_arn"></a> [arn](#output\_arn) | ARN of the created ECR repository |
+| <a name="output_repository_url"></a> [repository\_url](#output\_repository\_url) | URL of the docker repository repo |
 <!-- END_TF_DOCS -->    

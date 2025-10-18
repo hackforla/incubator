@@ -1,4 +1,10 @@
 <!-- BEGIN_TF_DOCS -->
+# dns-entry
+
+This is used to create a root DNS entry in Route 53, for example "qa.vrms.io" or "staging.homeunite.us".
+The Route 53 DNS entry points to incubator's main ingress (cloudfront or ALB). All services that require
+web access (frontends or API backends) should use this.
+
 ## Requirements
 
 No requirements.
@@ -18,19 +24,17 @@ No modules.
 | Name | Type |
 |------|------|
 | [aws_route53_record.www](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
-| [aws_lb.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/lb) | data source |
-| [aws_route53_zone.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_subdomain"></a> [subdomain](#input\_subdomain) | n/a | `string` | n/a | yes |
-| <a name="input_zone_id"></a> [zone\_id](#input\_zone\_id) | n/a | `string` | n/a | yes |
+| <a name="input_subdomain"></a> [subdomain](#input\_subdomain) | DNS entry - for example, in `qa.vrms.io` the subdomain is `qa` | `string` | n/a | yes |
+| <a name="input_zone_id"></a> [zone\_id](#input\_zone\_id) | the Route 53 hosted zone id to create the entry | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_full_dns_name"></a> [full\_dns\_name](#output\_full\_dns\_name) | n/a |
+| <a name="output_full_dns_name"></a> [full\_dns\_name](#output\_full\_dns\_name) | full dns name, i.e. `qa.vrms.io` |
 <!-- END_TF_DOCS -->
