@@ -6,10 +6,10 @@
  * For example, for the production backend database of vrms, the created
  * database name will be `vrms_backend_production`.
  *
- * This module also creates three users:
- * 1. viewer - read access
- * 1. user - read/write access
- * 1. owner - admin access
+ * This module also creates three posgresql users:
+ * 1. viewer - read (SELECT) access
+ * 1. user - read/write (SELECT, INSERT, UPDATE, DELETE) access
+ * 1. owner - admin access (databse owner)
  *
  * The credentials get stored as secrets (SSM parameters). The ARNs of those
  * parameters are output variables, listed below
