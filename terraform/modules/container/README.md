@@ -1,4 +1,15 @@
 <!-- BEGIN_TF_DOCS -->
+# container
+
+This module sets up a running container within ECS. This could be a backend, frontend,
+or fullstack container
+
+Some things to watch out for:
+1. `listener_priority` - determines the order that load balancer rules run in when
+forwarding traffic to the service. If you have a backend that runs with the path `/api/v1`,
+and a frontend that just runs with `/`, make sure that the backend has a lower listener
+priority than the frontend, otherwise all traffic will be sent to the frontend.
+
 ## Requirements
 
 No requirements.
@@ -33,26 +44,26 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_additional_host_urls"></a> [additional\_host\_urls](#input\_additional\_host\_urls) | n/a | `list(string)` | `[]` | no |
+| <a name="input_additional_host_urls"></a> [additional\_host\_urls](#input\_additional\_host\_urls) | if multiple hostnames route to this container. For example, both `www.vrms.io` and `vrms.io` | `list(string)` | `[]` | no |
 | <a name="input_application_type"></a> [application\_type](#input\_application\_type) | defines what type of application is running, fullstack, client, backend, etc. will be used for cloudwatch logs | `string` | n/a | yes |
-| <a name="input_container_cpu"></a> [container\_cpu](#input\_container\_cpu) | n/a | `number` | `256` | no |
-| <a name="input_container_environment"></a> [container\_environment](#input\_container\_environment) | n/a | <pre>list(object({<br/>    name = string<br/>    value = string<br/>  }))</pre> | n/a | yes |
-| <a name="input_container_environment_secrets"></a> [container\_environment\_secrets](#input\_container\_environment\_secrets) | n/a | <pre>list(object({<br/>    name = string<br/>    valueFrom = string<br/>  }))</pre> | `[]` | no |
-| <a name="input_container_image"></a> [container\_image](#input\_container\_image) | n/a | `string` | n/a | yes |
-| <a name="input_container_memory"></a> [container\_memory](#input\_container\_memory) | n/a | `number` | `1024` | no |
-| <a name="input_container_port"></a> [container\_port](#input\_container\_port) | n/a | `number` | n/a | yes |
+| <a name="input_container_cpu"></a> [container\_cpu](#input\_container\_cpu) | CPU allocation for the container. 1024 is a full vCPU. Typically containers can run on much less | `number` | `256` | no |
+| <a name="input_container_environment"></a> [container\_environment](#input\_container\_environment) | a list of name/value pairs of environmental variables. example: `{name = 'environment', value = 'production'}` | <pre>list(object({<br/>    name = string<br/>    value = string<br/>  }))</pre> | n/a | yes |
+| <a name="input_container_environment_secrets"></a> [container\_environment\_secrets](#input\_container\_environment\_secrets) | similar to `container_environment`, but values are set from secrets. Database credentails and such should use this. example: `{name = 'postgresql_password', valueFrom = (SECRET_ARN)}`. If you are using the `secret` terraform module, the ARN is an output value | <pre>list(object({<br/>    name = string<br/>    valueFrom = string<br/>  }))</pre> | `[]` | no |
+| <a name="input_container_image"></a> [container\_image](#input\_container\_image) | The full address of the ECR image used by the container: for example `035866691871.dkr.ecr.us-west-2.amazonaws.com/civictechindex-backend-prod:77845e0` | `string` | n/a | yes |
+| <a name="input_container_memory"></a> [container\_memory](#input\_container\_memory) | memory allocation in MB. 1024 is one full gig of memory | `number` | `1024` | no |
+| <a name="input_container_port"></a> [container\_port](#input\_container\_port) | what port this container opens up to the outside | `number` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | n/a | `string` | n/a | yes |
-| <a name="input_health_check_path"></a> [health\_check\_path](#input\_health\_check\_path) | n/a | `string` | `"/"` | no |
-| <a name="input_hostname"></a> [hostname](#input\_hostname) | n/a | `string` | n/a | yes |
-| <a name="input_launch_type"></a> [launch\_type](#input\_launch\_type) | n/a | `string` | `"fargate"` | no |
-| <a name="input_listener_priority"></a> [listener\_priority](#input\_listener\_priority) | n/a | `number` | n/a | yes |
-| <a name="input_path"></a> [path](#input\_path) | n/a | `string` | `null` | no |
+| <a name="input_health_check_path"></a> [health\_check\_path](#input\_health\_check\_path) | path for load balancer health checks. This path should return HTTP 200 if the app is up. This path does not need to follow the prefix of `path`, it can be any path | `string` | `"/"` | no |
+| <a name="input_hostname"></a> [hostname](#input\_hostname) | hostname for load balancer routing, ex: "www.vrms.io" | `string` | n/a | yes |
+| <a name="input_launch_type"></a> [launch\_type](#input\_launch\_type) | infrastructure type, either `ec2` or `fargate`. Always use `ec2` unless you have a good reason | `string` | `"fargate"` | no |
+| <a name="input_listener_priority"></a> [listener\_priority](#input\_listener\_priority) | rule priority for load balancer rules. Make sure that rules with a longer path, `/api/v1/*` have a LOWER priority (evaluated first) than shorter ones, `/*` | `number` | n/a | yes |
+| <a name="input_path"></a> [path](#input\_path) | path for load balancer routing, for example `/api/*` | `string` | `null` | no |
 | <a name="input_project_name"></a> [project\_name](#input\_project\_name) | The overall name of the project using this infrastructure; used to group related resources by | `any` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_task_role_arn"></a> [task\_role\_arn](#output\_task\_role\_arn) | n/a |
-| <a name="output_task_role_name"></a> [task\_role\_name](#output\_task\_role\_name) | n/a |
+| <a name="output_task_role_arn"></a> [task\_role\_arn](#output\_task\_role\_arn) | ARN of the task role that this container uses. Good for setting up permissions like s3 access |
+| <a name="output_task_role_name"></a> [task\_role\_name](#output\_task\_role\_name) | IAM role name of the task role that this container uses. |
 <!-- END_TF_DOCS -->
