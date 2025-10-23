@@ -1,3 +1,19 @@
+/**
+ * # container
+ *
+ * This module sets up a running container within ECS. This could be a backend, frontend,
+ * or fullstack container
+ * 
+ * Some things to watch out for:
+ * 1. `listener_priority` - determines the order that load balancer rules run in when
+ * forwarding traffic to the service. If you have a backend that runs with the path `/api/v1`,
+ * and a frontend that just runs with `/`, make sure that the backend has a lower listener
+ * priority than the frontend, otherwise all traffic will be sent to the frontend.
+ */
+
+// terraform-docs-ignore
+
+
 locals {
   envappname = "${var.project_name}-${var.application_type}-${var.environment}"
 
