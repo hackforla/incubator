@@ -20,3 +20,11 @@ provider "postgresql" {
   connect_timeout = 15
   superuser = false
 }
+
+provider "aws" {
+  default_tags {
+    tags = {
+      managed-by = "terraform-incubator"
+    }
+  }
+}
