@@ -14,6 +14,9 @@ variable "project_name" {
 resource "aws_ecr_repository" "this" {
   name                 = var.project_name
   image_tag_mutability = "MUTABLE"
+  tags = {
+    project = var.project_name
+  }
 
   image_scanning_configuration {
     scan_on_push = true
