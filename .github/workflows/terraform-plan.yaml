@@ -33,8 +33,8 @@ jobs:
     - name: configure aws credentials
       uses: aws-actions/configure-aws-credentials@v3
       with:
-        role-to-assume: arn:aws:iam::035866691871:role/gha-incubator
-        role-session-name: ghaincubatorplan
+        role-to-assume: arn:aws:iam::035866691871:role/incubator-tf-plan
+        role-session-name: incubatortfplan
         aws-region: us-west-2
 
     - name: Terraform Plan
@@ -64,3 +64,4 @@ jobs:
         output-method: inject
         git-push: "true"
         git-commit-message: "terraform-docs: automated updates to Terraform modules README.md"
+
