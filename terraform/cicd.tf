@@ -42,6 +42,15 @@ resource "aws_iam_policy" "incubator_builder" {
          Resource  = [
             "arn:aws:ecs:us-west-2:${data.aws_caller_identity.current.account_id}:service/incubator-prod/*"
          ]
+      },
+      // allow read home-unite-us secrets
+      {
+        Sid = "SecretsManagerReadHomeUniteUs"
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = "arn:aws:secretsmanager:us-west-2:${data.aws_caller_identity.current.account_id}:secret:home-unite-us-*"
       }
     ]
   })
