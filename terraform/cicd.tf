@@ -42,16 +42,8 @@ resource "aws_iam_policy" "incubator_builder" {
          Resource  = [
             "arn:aws:ecs:us-west-2:${data.aws_caller_identity.current.account_id}:service/incubator-prod/*"
          ]
-      },
-      // allow read secrets
-      {
-        Sid = "SecretsManagerReadAll"
-        Effect = "Allow"
-        Action = [
-          "secretsmanager:GetSecretValue"
-        ]
-        Resource = "arn:aws:secretsmanager:us-west-2:${data.aws_caller_identity.current.account_id}:secret:*"
       }
+      
     ]
   })
 }
