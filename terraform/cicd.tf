@@ -43,6 +43,7 @@ resource "aws_iam_policy" "incubator_builder" {
             "arn:aws:ecs:us-west-2:${data.aws_caller_identity.current.account_id}:service/incubator-prod/*"
          ]
       }
+      
     ]
   })
 }
