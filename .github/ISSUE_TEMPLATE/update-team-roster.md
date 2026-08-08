@@ -14,4 +14,4 @@ Rolling Roster of Team Participants.
 Add or update your personal info to the team roster.
 
 ### Resources/Instructions
-ADD URL TO TEAM ROSTER HERE
+[Team Roster](https://docs.google.com/spreadsheets/d/1j6l2cdyAEZ73NCXw0CwwMnh8tZda-oE7tu8usBwv4Bs?gid=2032152864)
