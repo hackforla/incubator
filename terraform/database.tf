@@ -9,7 +9,7 @@ resource "aws_db_instance" "default" {
   apply_immediately                     = true
   auto_minor_version_upgrade            = true
   availability_zone                     = "us-west-2a"
-  backup_retention_period               = 0
+  backup_retention_period               = 4
   backup_target                         = "region"
   backup_window                         = "03:00-06:00"
   ca_cert_identifier                    = "rds-ca-rsa2048-g1"
