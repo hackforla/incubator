@@ -1,11 +1,25 @@
-import {
-  to = aws_db_instance.default
-  id = "incubator-prod-database"
-}
+# RDS rejects a major version upgrade that keeps a parameter group from the old
+# engine family, and AWS creates default groups lazily -- default.postgres15
+# does not exist in this account. A managed group also gives future tuning
+# somewhere to live.
+#
+# password_encryption is deliberately left unset: postgres15 sets no value, so
+# the engine default (scram-sha-256) applies to roles created after the upgrade.
+# See hackforla/incubator#150 for the decision.
+resource "aws_db_parameter_group" "postgres15" {
+  name        = "incubator-prod-postgres15"
+  family      = "postgres15"
+  description = "incubator-prod-database, PostgreSQL 15"
 
+  tags = {
+    Name              = "incubator-prod-postgres15"
+    terraform_managed = "true"
+  }
+}
 
 resource "aws_db_instance" "default" {
   allocated_storage                     = 100
+  allow_major_version_upgrade           = true
   apply_immediately                     = true
   auto_minor_version_upgrade            = true
   availability_zone                     = "us-west-2a"
@@ -20,14 +34,14 @@ resource "aws_db_instance" "default" {
   enabled_cloudwatch_logs_exports       = ["postgresql", "upgrade"]
   engine                                = "postgres"
   engine_lifecycle_support              = "open-source-rds-extended-support"
-  engine_version                        = "13.20"
+  engine_version                        = "15"
   iam_database_authentication_enabled   = false
   identifier                            = "incubator-prod-database"
   instance_class                        = "db.t3.small"
   multi_az                              = false
   network_type                          = "IPV4"
-  option_group_name                     = "default:postgres-13"
-  parameter_group_name                  = "default.postgres13"
+  option_group_name                     = "default:postgres-15"
+  parameter_group_name                  = aws_db_parameter_group.postgres15.name
   port                                  = 5432
   publicly_accessible                   = true
   skip_final_snapshot                   = true
