@@ -17,6 +17,11 @@ resource "aws_db_parameter_group" "postgres15" {
   }
 }
 
+# option_group_name is deliberately absent. Option groups do nothing for
+# PostgreSQL, and AWS creates the default ones lazily -- naming
+# "default:postgres-15" before it exists fails the apply with
+# OptionGroupNotFoundFault. Leaving the attribute out lets RDS assign the
+# family default itself during the major upgrade. Do not add it back.
 resource "aws_db_instance" "default" {
   allocated_storage                     = 100
   allow_major_version_upgrade           = true
@@ -40,7 +45,6 @@ resource "aws_db_instance" "default" {
   instance_class                        = "db.t3.small"
   multi_az                              = false
   network_type                          = "IPV4"
-  option_group_name                     = "default:postgres-15"
   parameter_group_name                  = aws_db_parameter_group.postgres15.name
   port                                  = 5432
   publicly_accessible                   = true
