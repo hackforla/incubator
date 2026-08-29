@@ -7,6 +7,10 @@ on:
     paths: 
       - '**/*.tf'
       - '**/*.yaml'
+  # Manual trigger, for when a push to main produces no apply run. A squash commit
+  # whose message carries a CI-skip directive creates no run at all, so there is
+  # nothing to re-run from the Actions tab and main silently stays unapplied.
+  workflow_dispatch:
 
 permissions:
   id-token: write
