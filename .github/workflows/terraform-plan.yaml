@@ -63,5 +63,9 @@ jobs:
         output-file: README.md
         output-method: inject
         git-push: "true"
-        git-commit-message: "terraform-docs: automated updates to Terraform modules README.md"
+        # [skip ci] stops this README-only commit re-firing the pull_request event.
+        # That second run is attributed to github-actions[bot], which the repo's
+        # first_time_contributors approval policy gates, so every PR touching .tf
+        # needed a manual approval for a plan that was already green one commit earlier.
+        git-commit-message: "terraform-docs: automated updates to Terraform modules README.md [skip ci]"
 
