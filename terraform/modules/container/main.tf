@@ -28,10 +28,14 @@ locals {
 
   is_fargate = var.launch_type == "fargate"
 
-  # prod starts the replacement task before draining the old one, which needs a spare
-  # ENI slot on the cluster; everywhere else stops first, so a deploy needs none.
+  # prod must keep a task serving throughout a deploy, so it always needs a spare ENI
+  # slot. Non-prod may drop to zero, which lets a deploy proceed even when the cluster
+  # has no free slot left.
   deployment_min = var.deployment_minimum_healthy_percent != null ? var.deployment_minimum_healthy_percent : (var.environment == "prod" ? 100 : 0)
-  deployment_max = var.deployment_maximum_percent != null ? var.deployment_maximum_percent : (var.environment == "prod" ? 200 : 100)
+  # max stays 200 everywhere: ECS Availability Zone Rebalancing rejects maximumPercent <= 100,
+  # so a non-prod 0/100 is refused at UpdateService. 0/200 still lets a deploy fall back to
+  # stop-then-start when no spare ENI slot is free, rather than deadlocking on placement.
+  deployment_max = var.deployment_maximum_percent != null ? var.deployment_maximum_percent : 200
 
   # ENI slots (10 per m5.large) are the scarce resource and ECS cannot binpack on ENIs,
   # so spread -- binpacking memory would fill one host's slots while the other sat idle.
