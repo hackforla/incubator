@@ -13,6 +13,8 @@ No providers.
 |------|--------|---------|
 | <a name="module_backend_prod_service"></a> [backend\_prod\_service](#module\_backend\_prod\_service) | ../../modules/container | n/a |
 | <a name="module_backend_stage_service"></a> [backend\_stage\_service](#module\_backend\_stage\_service) | ../../modules/container | n/a |
+| <a name="module_ecr_backend_prod"></a> [ecr\_backend\_prod](#module\_ecr\_backend\_prod) | ../../modules/ecr | n/a |
+| <a name="module_ecr_backend_stage"></a> [ecr\_backend\_stage](#module\_ecr\_backend\_stage) | ../../modules/ecr | n/a |
 | <a name="module_prod_database_password_secret"></a> [prod\_database\_password\_secret](#module\_prod\_database\_password\_secret) | ../../modules/secret | n/a |
 | <a name="module_prod_database_username_secret"></a> [prod\_database\_username\_secret](#module\_prod\_database\_username\_secret) | ../../modules/secret | n/a |
 | <a name="module_stage_database_password_secret"></a> [stage\_database\_password\_secret](#module\_stage\_database\_password\_secret) | ../../modules/secret | n/a |
