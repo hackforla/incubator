@@ -11,8 +11,14 @@ variable "project_name" {
   description = "HfLA project name (vrms, home-unite-us, etc)"
 }
 
+variable "repository_name" {
+  type        = string
+  default     = null
+  description = "Repository name, for repositories whose name predates the project naming convention. Defaults to project_name."
+}
+
 resource "aws_ecr_repository" "this" {
-  name                 = var.project_name
+  name                 = coalesce(var.repository_name, var.project_name)
   image_tag_mutability = "MUTABLE"
   tags = {
     project = var.project_name
