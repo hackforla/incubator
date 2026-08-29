@@ -52,6 +52,8 @@ No modules.
 | <a name="input_container_image"></a> [container\_image](#input\_container\_image) | The full address of the ECR image used by the container: for example `035866691871.dkr.ecr.us-west-2.amazonaws.com/civictechindex-backend-prod:77845e0` | `string` | n/a | yes |
 | <a name="input_container_memory"></a> [container\_memory](#input\_container\_memory) | memory allocation in MB. 1024 is one full gig of memory | `number` | `1024` | no |
 | <a name="input_container_port"></a> [container\_port](#input\_container\_port) | what port this container opens up to the outside | `number` | n/a | yes |
+| <a name="input_deployment_maximum_percent"></a> [deployment\_maximum\_percent](#input\_deployment\_maximum\_percent) | Ceiling on running tasks during a deploy. Leave null to derive from `environment`: 200 for prod, 100 everywhere else. | `number` | `null` | no |
+| <a name="input_deployment_minimum_healthy_percent"></a> [deployment\_minimum\_healthy\_percent](#input\_deployment\_minimum\_healthy\_percent) | Percent of the desired count that must stay running during a deploy. Leave null to derive from `environment`: 100 for prod, 0 everywhere else. | `number` | `null` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | n/a | `string` | n/a | yes |
 | <a name="input_health_check_path"></a> [health\_check\_path](#input\_health\_check\_path) | path for load balancer health checks. This path should return HTTP 200 if the app is up. This path does not need to follow the prefix of `path`, it can be any path | `string` | `"/"` | no |
 | <a name="input_hostname"></a> [hostname](#input\_hostname) | hostname for load balancer routing, ex: "www.vrms.io" | `string` | n/a | yes |
