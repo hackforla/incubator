@@ -27,7 +27,7 @@ module "backend_stage_service" {
    launch_type = "ec2"
    
    container_port = 8000
-   container_image = "035866691871.dkr.ecr.us-west-2.amazonaws.com/civictechindex-backend-stage:77845e0"
+   container_image = "${module.ecr_backend_stage.repository_url}:77845e0"
    container_environment = [
       { "name": "POSTGRES_DATABASE", "value": "cti_stage"},
       { "name": "POSTGRES_HOST", "value": "incubator-prod-database.cewewwrvdqjn.us-west-2.rds.amazonaws.com"},
