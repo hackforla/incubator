@@ -3,7 +3,7 @@
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.12 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.16.0 |
 | <a name="requirement_postgresql"></a> [postgresql](#requirement\_postgresql) | 1.25.0 |
 
 ## Providers
