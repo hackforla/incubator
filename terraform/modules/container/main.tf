@@ -23,8 +23,11 @@ locals {
   container_cpu    = var.container_cpu 
   container_memory = var.container_memory
 
-  task_cpu    = var.container_cpu
-  task_memory = var.container_memory
+  # EC2 deliberately omits task-level cpu/memory. Task-level memory is a hard cap AND is
+  # what the scheduler subtracts from a host, so setting it would override the soft
+  # container-level memoryReservation below and undo the packing. Fargate requires both.
+  task_cpu    = local.is_fargate ? var.container_cpu : null
+  task_memory = local.is_fargate ? var.container_memory : null
 
   is_fargate = var.launch_type == "fargate"
 
@@ -183,10 +186,14 @@ resource "aws_ecs_task_definition" "task" {
   family = local.envappname
 
   container_definitions = jsonencode([
-    {
-      name      = local.envappname
-      image     = var.container_image
-      cpu       = var.container_cpu
+    merge({
+      name  = local.envappname
+      image = var.container_image
+      # cpu 0 on EC2 reserves nothing. Container cpu maps to Docker CpuShares -- a relative
+      # weight, not a cap -- so this changes placement only, never runtime headroom.
+      cpu = local.is_fargate ? var.container_cpu : 0
+      # memory stays the hard cap; memoryReservation (merged in below) is the soft figure
+      # the scheduler actually subtracts from a host.
       memory    = var.container_memory
       essential = true
       portMappings = [
@@ -207,7 +214,7 @@ resource "aws_ecs_task_definition" "task" {
       secrets = var.container_environment_secrets
       readonlyRootFilesystem = false
       initProcessEnabled     = true
-    }
+    }, local.is_fargate ? {} : { memoryReservation = var.container_memory_reservation })
   ])
 
   requires_compatibilities = [ var.launch_type == "fargate" ? "FARGATE" : "EC2"]
