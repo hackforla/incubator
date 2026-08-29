@@ -26,6 +26,20 @@ locals {
   task_cpu    = var.container_cpu
   task_memory = var.container_memory
 
+  is_fargate = var.launch_type == "fargate"
+
+  # prod starts the replacement task before draining the old one, which needs a spare
+  # ENI slot on the cluster; everywhere else stops first, so a deploy needs none.
+  deployment_min = var.deployment_minimum_healthy_percent != null ? var.deployment_minimum_healthy_percent : (var.environment == "prod" ? 100 : 0)
+  deployment_max = var.deployment_maximum_percent != null ? var.deployment_maximum_percent : (var.environment == "prod" ? 200 : 100)
+
+  # ENI slots (10 per m5.large) are the scarce resource and ECS cannot binpack on ENIs,
+  # so spread -- binpacking memory would fill one host's slots while the other sat idle.
+  placement_strategies = local.is_fargate ? [] : [
+    { type = "spread", field = "attribute:ecs.availability-zone" },
+    { type = "spread", field = "instanceId" },
+  ]
+
   task_network_mode = "awsvpc"
   target_type       = "ip"
 
@@ -210,6 +224,17 @@ resource "aws_ecs_service" "fargate" {
   task_definition        = aws_ecs_task_definition.task.arn
   launch_type            = var.launch_type == "fargate" ? "FARGATE" : "EC2"
   desired_count          = 1
+
+  deployment_minimum_healthy_percent = local.deployment_min
+  deployment_maximum_percent         = local.deployment_max
+
+  dynamic "ordered_placement_strategy" {
+    for_each = local.placement_strategies
+    content {
+      type  = ordered_placement_strategy.value.type
+      field = ordered_placement_strategy.value.field
+    }
+  }
 
   network_configuration {
     subnets          = ["subnet-089e80a53e1522e28", "subnet-03ed55f60a6c28e72"]

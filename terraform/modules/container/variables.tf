@@ -89,3 +89,15 @@ variable "launch_type" {
     error_message = "Must be either \"ec2\" or \"fargate\"."
   }
 }
+
+variable "deployment_minimum_healthy_percent" {
+  description = "Percent of the desired count that must stay running during a deploy. Leave null to derive from `environment`: 100 for prod, 0 everywhere else."
+  type        = number
+  default     = null
+}
+
+variable "deployment_maximum_percent" {
+  description = "Ceiling on running tasks during a deploy. Leave null to derive from `environment`: 200 for prod, 100 everywhere else."
+  type        = number
+  default     = null
+}
