@@ -101,3 +101,9 @@ variable "deployment_maximum_percent" {
   type        = number
   default     = null
 }
+
+variable "container_memory_reservation" {
+  description = "Soft memory limit in MiB. ECS subtracts this from a container instance when placing the task; the container may burst above it up to `container_memory`, which stays the hard cap. EC2 launch type only."
+  type        = number
+  default     = 256
+}
