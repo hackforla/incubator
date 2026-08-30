@@ -32,3 +32,66 @@ import {
   to = module.civic-tech-index.aws_s3_bucket_policy.website
   id = "civictechindex.org"
 }
+
+# Adopts the home-unite-us production Cognito stack. The `Home Unite Us` pool carries
+# the live user accounts and its ids are baked into the running production image, so
+# it is imported in place rather than rebuilt. The QA pool in cognito-qa.tf is a
+# separate pool and is untouched by these. See hackforla/incubator#166.
+import {
+  to = module.home-unite-us.aws_cognito_user_pool.homeuniteus_prod
+  id = "us-west-2_VH24AGQ3p"
+}
+
+import {
+  to = module.home-unite-us.aws_cognito_user_pool_client.homeuniteus_prod
+  id = "us-west-2_VH24AGQ3p/b76g3q852lb4us1rbo19he3uj"
+}
+
+import {
+  to = module.home-unite-us.aws_cognito_user_pool_domain.homeuniteus_prod
+  id = "homeuniteus"
+}
+
+# The fifth group on the pool, us-west-2_VH24AGQ3p_Google, is created automatically by
+# Cognito for federated users and is deliberately not declared or imported.
+import {
+  to = module.home-unite-us.aws_cognito_user_group.homeuniteus_prod["Hosts"]
+  id = "us-west-2_VH24AGQ3p/Hosts"
+}
+
+import {
+  to = module.home-unite-us.aws_cognito_user_group.homeuniteus_prod["Guests"]
+  id = "us-west-2_VH24AGQ3p/Guests"
+}
+
+import {
+  to = module.home-unite-us.aws_cognito_user_group.homeuniteus_prod["Coordinators"]
+  id = "us-west-2_VH24AGQ3p/Coordinators"
+}
+
+import {
+  to = module.home-unite-us.aws_cognito_user_group.homeuniteus_prod["Admins"]
+  id = "us-west-2_VH24AGQ3p/Admins"
+}
+
+import {
+  to = module.home-unite-us.aws_cognito_identity_provider.google_client_prod
+  id = "us-west-2_VH24AGQ3p:Google"
+}
+
+# The pool's sms_configuration references this role, so it has to come into state
+# alongside the pool. The inline policy id is role_name:policy_name.
+import {
+  to = module.home-unite-us.aws_iam_role.cognito_idp_prod
+  id = "homeuniteus-cognito-idp"
+}
+
+import {
+  to = module.home-unite-us.aws_iam_role_policy.cognito_sns_prod
+  id = "homeuniteus-cognito-idp:homeuniteus-cognito-idp"
+}
+
+import {
+  to = module.home-unite-us.aws_secretsmanager_secret.cognito_client_prod
+  id = "arn:aws:secretsmanager:us-west-2:035866691871:secret:homeuniteus-cognito-client-EEaiW4"
+}
