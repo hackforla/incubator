@@ -52,26 +52,15 @@ import {
   id = "homeuniteus"
 }
 
-# The fifth group on the pool, us-west-2_VH24AGQ3p_Google, is created automatically by
-# Cognito for federated users and is deliberately not declared or imported.
+# The four user groups come in through a single for_each block. Terraform honours
+# only one import block per resource address, so four separate static blocks left
+# three of the groups unimported and planned as creates against groups that already
+# exist. The fifth group on the pool, us-west-2_VH24AGQ3p_Google, is created
+# automatically by Cognito for federated users and is deliberately not declared.
 import {
-  to = module.home-unite-us.aws_cognito_user_group.homeuniteus_prod["Hosts"]
-  id = "us-west-2_VH24AGQ3p/Hosts"
-}
-
-import {
-  to = module.home-unite-us.aws_cognito_user_group.homeuniteus_prod["Guests"]
-  id = "us-west-2_VH24AGQ3p/Guests"
-}
-
-import {
-  to = module.home-unite-us.aws_cognito_user_group.homeuniteus_prod["Coordinators"]
-  id = "us-west-2_VH24AGQ3p/Coordinators"
-}
-
-import {
-  to = module.home-unite-us.aws_cognito_user_group.homeuniteus_prod["Admins"]
-  id = "us-west-2_VH24AGQ3p/Admins"
+  for_each = toset(["Hosts", "Guests", "Coordinators", "Admins"])
+  to       = module.home-unite-us.aws_cognito_user_group.homeuniteus_prod[each.key]
+  id       = "us-west-2_VH24AGQ3p/${each.key}"
 }
 
 import {

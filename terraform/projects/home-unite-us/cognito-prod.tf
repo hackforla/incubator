@@ -306,6 +306,16 @@ resource "aws_cognito_user_pool_client" "homeuniteus_prod" {
     id_token      = "minutes"
     refresh_token = "days"
   }
+
+  // generate_secret cannot be read back from the API, so on import Terraform sees it
+  // going from null to true and plans a replacement. Replacing this client would mint
+  // a new client id, which is compiled into the production frontend bundle and would
+  // break sign-in. prevent_destroy is deliberate belt-and-braces: if some future
+  // change does require replacement, the plan should fail loudly rather than proceed.
+  lifecycle {
+    ignore_changes  = [generate_secret]
+    prevent_destroy = true
+  }
 }
 
 // Only the secret container is managed, not its version. The stored value is the
