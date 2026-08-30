@@ -84,3 +84,11 @@ import {
   to = module.home-unite-us.aws_secretsmanager_secret.cognito_client_prod
   id = "arn:aws:secretsmanager:us-west-2:035866691871:secret:homeuniteus-cognito-client-EEaiW4"
 }
+
+# Adopts the production image repository. It is declared as a plain resource in
+# projects/home-unite-us/ecr.tf rather than through modules/ecr, because the module
+# would rename it. See hackforla/incubator#166.
+import {
+  to = module.home-unite-us.aws_ecr_repository.homeuniteus_prod
+  id = "homeuniteus"
+}
