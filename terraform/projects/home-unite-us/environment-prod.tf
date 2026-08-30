@@ -6,27 +6,6 @@
 // traffic until rule 16 is removed. That cutover, and deleting the old stack, is a
 // separate change. See hackforla/incubator#166.
 
-data "aws_db_instance" "shared_prod" {
-  db_instance_identifier = "incubator-prod-database"
-}
-
-// The production database predates Terraform and is not created here -- it already
-// exists inside the shared instance, with its password in a Secrets Manager secret
-// left behind by the Terragrunt stack. Only the assembled connection string is stored,
-// as an SSM parameter, matching how the QA environment passes DATABASE_URL.
-data "aws_secretsmanager_secret_version" "rds_password_prod" {
-  secret_id = "homeuniteus-rds-password"
-}
-
-module "db_url_prod" {
-  source           = "../../modules/secret"
-  project_name     = local.project_name
-  application_type = "fullstack"
-  environment      = "prod"
-  name             = "database_url"
-  value            = "postgresql+psycopg2://homeuniteus:${data.aws_secretsmanager_secret_version.rds_password_prod.secret_string}@${data.aws_db_instance.shared_prod.address}:${data.aws_db_instance.shared_prod.port}/homeuniteus"
-}
-
 module "prod_service" {
   source           = "../../modules/container"
   project_name     = local.project_name
@@ -59,6 +38,19 @@ module "prod_service" {
     // in use. It is not a copy-paste error from the QA environment.
     { "name" : "HUU_ENVIRONMENT", "value" : "qa" },
     { "name" : "APP_ENVIRONMENT", "value" : "DEV" },
+    // Matches what the unmanaged service runs. Reducing it to INFO was considered and
+    // deliberately not done, to keep this migration behaviour-preserving.
+    { "name" : "LOG_LEVEL", "value" : "DEBUG" },
+    // SQLite on the container's own filesystem, which is what production has always
+    // run on -- the RDS instance is not involved despite what the abandoned Terragrunt
+    // state suggests. The task definition declares no volume and no mount, so this file
+    // is created empty on every task start and destroyed with the task. Application
+    // data therefore does not survive a deploy, a host drain or an AZ rebalance; the
+    // log group shows 743 task generations. Reproduced here deliberately so the cutover
+    // changes nothing, and recorded so the next reader does not mistake it for working
+    // persistence. The absolute form is used because a relative URL would depend on the
+    // process's working directory.
+    { "name" : "DATABASE_URL", "value" : "sqlite:////opt/huu/homeuniteus.db" },
     { "name" : "COGNITO_CLIENT_ID", "value" : aws_cognito_user_pool_client.homeuniteus_prod.id },
     { "name" : "COGNITO_CLIENT_SECRET", "value" : aws_cognito_user_pool_client.homeuniteus_prod.client_secret },
     { "name" : "COGNITO_REGION", "value" : "us-west-2" },
@@ -72,12 +64,7 @@ module "prod_service" {
     { "name" : "COGNITO_ACCESS_KEY", "value" : "" },
     // The frontend bundle is compiled with VITE_HUU_API_BASE_URL=https://qa.homeunite.us/api,
     // so the backend's ROOT_URL has to agree with it or the OAuth redirect breaks.
-    { "name" : "ROOT_URL", "value" : "https://qa.homeunite.us" },
-    { "name" : "LOG_LEVEL", "value" : "INFO" }
-  ]
-
-  container_environment_secrets = [
-    { "name" : "DATABASE_URL", "valueFrom" : module.db_url_prod.arn },
+    { "name" : "ROOT_URL", "value" : "https://qa.homeunite.us" }
   ]
 
   // Both hostnames are served by one rule, matching the unmanaged rule at priority 16.
@@ -86,6 +73,12 @@ module "prod_service" {
   hostname             = "qa.homeunite.us"
   additional_host_urls = ["www.homeunite.us"]
   path                 = "/*"
+
+  // Checks the API rather than "/". The container runs nginx in the foreground and the
+  // API as a background process, so nginx keeps serving the static bundle -- and the
+  // target keeps reporting healthy -- even when the API is dead. That happened on the
+  // first deploy of this service and a "/" check reported it healthy throughout.
+  health_check_path = "/api/health/"
 
   listener_priority = 17
 }
