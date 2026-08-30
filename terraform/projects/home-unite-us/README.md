@@ -16,7 +16,6 @@ No requirements.
 |------|--------|---------|
 | <a name="module_cicd_integration"></a> [cicd\_integration](#module\_cicd\_integration) | ../../modules/cicd_integration | n/a |
 | <a name="module_database_dev"></a> [database\_dev](#module\_database\_dev) | ../../modules/database | n/a |
-| <a name="module_db_url_prod"></a> [db\_url\_prod](#module\_db\_url\_prod) | ../../modules/secret | n/a |
 | <a name="module_db_url_qa"></a> [db\_url\_qa](#module\_db\_url\_qa) | ../../modules/secret | n/a |
 | <a name="module_ecr_fullstack"></a> [ecr\_fullstack](#module\_ecr\_fullstack) | ../../modules/ecr | n/a |
 | <a name="module_prod_service"></a> [prod\_service](#module\_prod\_service) | ../../modules/container | n/a |
@@ -58,11 +57,9 @@ No requirements.
 | [aws_secretsmanager_secret_version.cognito_client](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret_version) | resource |
 | [archive_file.cognito_custom_message](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [archive_file.cognito_merge_users](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
-| [aws_db_instance.shared_prod](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/db_instance) | data source |
 | [aws_iam_policy_document.lambda_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_secretsmanager_secret_version.google_client_id](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret_version) | data source |
 | [aws_secretsmanager_secret_version.google_secret](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret_version) | data source |
-| [aws_secretsmanager_secret_version.rds_password_prod](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/secretsmanager_secret_version) | data source |
 
 ## Inputs
 
