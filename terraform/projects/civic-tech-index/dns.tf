@@ -53,13 +53,7 @@ resource "aws_route53_record" "api_stage" {
   records = ["incubator-prod-lb-569274394.us-west-2.elb.amazonaws.com"]
 }
 
-// DNS validation for the ACM certificate *.civictechindex.org
-// (arn:...:certificate/4db5d979-9797-4689-a9e9-58b7ac55c79d), attached to
-// incubator-prod-lb. Moves to the certificate resource when ACM comes into Terraform.
-resource "aws_route53_record" "cert_validation" {
-  zone_id = aws_route53_zone.this.zone_id
-  name    = "_9aed66007870880679080f7176758008.civictechindex.org"
-  type    = "CNAME"
-  ttl     = 300
-  records = ["_5f8c553c390792dc338365781f5ccc8e.zzxlnyslwt.acm-validations.aws."]
-}
+// The DNS validation record for the *.civictechindex.org certificate used to be declared
+// here. It moved to the acm-certificate module in certificate.tf, which owns the
+// certificate, its validation records and its load balancer attachment together.
+// See hackforla/incubator#185.

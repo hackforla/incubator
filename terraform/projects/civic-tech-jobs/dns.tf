@@ -41,29 +41,13 @@ resource "aws_route53_record" "www" {
   records = ["hackforla.github.io"]
 }
 
-// DNS validation for the ACM certificate civictechjobs.org
-// (arn:...:certificate/b6bea889-5221-4425-b09c-716199866af6). That certificate is
-// ISSUED but attached to nothing -- the apex is served by GitHub Pages, so an ALB
-// certificate for it is unused. The record still has to stay or renewal fails.
-// Both this and the certificate are for the ACM task to resolve, not this one.
-resource "aws_route53_record" "cert_validation_apex" {
-  zone_id = aws_route53_zone.this.zone_id
-  name    = "_a57d306f01d9b44fbca0d00a608ea608.civictechjobs.org"
-  type    = "CNAME"
-  ttl     = 300
-  records = ["_bfd3a50aa6f2f2dec50d28873885838d.tctzzymbbs.acm-validations.aws."]
-}
+// The validation record for the apex certificate used to be declared here. That
+// certificate was attached to nothing, which made it ineligible for renewal, and it was
+// deleted in hackforla/incubator#185 rather than adopted -- the apex is served by GitHub
+// Pages with GitHub's own certificate, so nothing depended on it. This record goes with
+// it; it validates a certificate that no longer exists.
 
-// DNS validation for the ACM certificate stage.civictechjobs.org
-// (arn:...:certificate/af0b30d5-0d64-4065-905b-eaced30fe8ba), which is attached to
-// incubator-prod-lb and serves the stage environment. The value has no trailing dot
-// where the others in this account do; Route 53 treats both as absolute, and it is
-// reproduced verbatim so it does not show as a diff. Moves to the certificate
-// resource when ACM comes into Terraform.
-resource "aws_route53_record" "cert_validation_stage" {
-  zone_id = aws_route53_zone.this.zone_id
-  name    = "_1ca49dd660678abe9478619c13875864.stage.civictechjobs.org"
-  type    = "CNAME"
-  ttl     = 300
-  records = ["_aaf9335595c8bd7c846a550221d3b3e4.tctzzymbbs.acm-validations.aws"]
-}
+// The DNS validation record for the stage.civictechjobs.org certificate used to be
+// declared here. It moved to the acm-certificate module in certificate.tf, which owns the
+// certificate, its validation records and its load balancer attachment together.
+// See hackforla/incubator#185.

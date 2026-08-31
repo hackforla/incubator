@@ -14,6 +14,7 @@ No requirements.
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_certificate"></a> [certificate](#module\_certificate) | ../../modules/acm-certificate | n/a |
 | <a name="module_cicd_integration"></a> [cicd\_integration](#module\_cicd\_integration) | ../../modules/cicd_integration | n/a |
 | <a name="module_database_dev"></a> [database\_dev](#module\_database\_dev) | ../../modules/database | n/a |
 | <a name="module_db_url_qa"></a> [db\_url\_qa](#module\_db\_url\_qa) | ../../modules/secret | n/a |
@@ -51,7 +52,6 @@ No requirements.
 | [aws_lambda_permission.allow_merge_execution_from_user_pool](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
 | [aws_lambda_permission.allow_message_execution_from_user_pool](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
 | [aws_route53_record.apex](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
-| [aws_route53_record.cert_validation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.qa](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.www](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_zone.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_zone) | resource |
