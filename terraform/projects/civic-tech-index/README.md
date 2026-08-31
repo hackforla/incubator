@@ -15,6 +15,7 @@ No requirements.
 |------|--------|---------|
 | <a name="module_backend_prod_service"></a> [backend\_prod\_service](#module\_backend\_prod\_service) | ../../modules/container | n/a |
 | <a name="module_backend_stage_service"></a> [backend\_stage\_service](#module\_backend\_stage\_service) | ../../modules/container | n/a |
+| <a name="module_certificate"></a> [certificate](#module\_certificate) | ../../modules/acm-certificate | n/a |
 | <a name="module_ecr_backend_prod"></a> [ecr\_backend\_prod](#module\_ecr\_backend\_prod) | ../../modules/ecr | n/a |
 | <a name="module_ecr_backend_stage"></a> [ecr\_backend\_stage](#module\_ecr\_backend\_stage) | ../../modules/ecr | n/a |
 | <a name="module_prod_database_password_secret"></a> [prod\_database\_password\_secret](#module\_prod\_database\_password\_secret) | ../../modules/secret | n/a |
@@ -29,7 +30,6 @@ No requirements.
 | [aws_route53_record.apex](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.api](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.api_stage](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
-| [aws_route53_record.cert_validation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_zone.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_zone) | resource |
 | [aws_s3_bucket.website](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket_policy.website](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |

@@ -14,6 +14,7 @@ No requirements.
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_certificate_stage"></a> [certificate\_stage](#module\_certificate\_stage) | ../../modules/acm-certificate | n/a |
 | <a name="module_civic_tech_jobs_cicd"></a> [civic\_tech\_jobs\_cicd](#module\_civic\_tech\_jobs\_cicd) | ../../modules/cicd_integration | n/a |
 | <a name="module_civic_tech_jobs_ecr_fullstack"></a> [civic\_tech\_jobs\_ecr\_fullstack](#module\_civic\_tech\_jobs\_ecr\_fullstack) | ../../modules/ecr | n/a |
 | <a name="module_civic_tech_jobs_fullstack_stage_dns_entry"></a> [civic\_tech\_jobs\_fullstack\_stage\_dns\_entry](#module\_civic\_tech\_jobs\_fullstack\_stage\_dns\_entry) | ../../modules/dns-entry | n/a |
@@ -25,8 +26,6 @@ No requirements.
 | Name | Type |
 |------|------|
 | [aws_route53_record.apex](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
-| [aws_route53_record.cert_validation_apex](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
-| [aws_route53_record.cert_validation_stage](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.www](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_zone.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_zone) | resource |
 | [random_password.cookie_key](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |

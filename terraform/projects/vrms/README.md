@@ -15,6 +15,7 @@ No requirements.
 |------|--------|---------|
 | <a name="module_backend_dev_service"></a> [backend\_dev\_service](#module\_backend\_dev\_service) | ../../modules/container | n/a |
 | <a name="module_backend_prod_service"></a> [backend\_prod\_service](#module\_backend\_prod\_service) | ../../modules/container | n/a |
+| <a name="module_certificate"></a> [certificate](#module\_certificate) | ../../modules/acm-certificate | n/a |
 | <a name="module_cicd"></a> [cicd](#module\_cicd) | ../../modules/cicd_integration | n/a |
 | <a name="module_custom_request_header_secret"></a> [custom\_request\_header\_secret](#module\_custom\_request\_header\_secret) | ../../modules/secret | n/a |
 | <a name="module_dev_database_url_secret"></a> [dev\_database\_url\_secret](#module\_dev\_database\_url\_secret) | ../../modules/secret | n/a |
@@ -39,7 +40,6 @@ No requirements.
 | Name | Type |
 |------|------|
 | [aws_route53_record.apex](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
-| [aws_route53_record.cert_validation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.www](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_zone.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_zone) | resource |
 
