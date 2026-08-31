@@ -60,13 +60,7 @@ resource "aws_route53_record" "qa" {
   records = ["incubator-prod-lb-569274394.us-west-2.elb.amazonaws.com"]
 }
 
-// DNS validation for the ACM certificate homeunite.us
-// (arn:...:certificate/f7e0693a-4110-41d9-baa5-284ddef95dd4), attached to
-// incubator-prod-lb. Moves to the certificate resource when ACM comes into Terraform.
-resource "aws_route53_record" "cert_validation" {
-  zone_id = aws_route53_zone.this.zone_id
-  name    = "_5bb55cc568d53bab04232d9f9e534189.homeunite.us"
-  type    = "CNAME"
-  ttl     = 60
-  records = ["_b364adf29acc28331d5a45a7c9a40fad.fsdcfjjflr.acm-validations.aws."]
-}
+// The DNS validation record for the homeunite.us certificate used to be declared here. It
+// moved to the acm-certificate module in certificate.tf, which owns the certificate, its
+// validation records and its load balancer attachment together.
+// See hackforla/incubator#185.

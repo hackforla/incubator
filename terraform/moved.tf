@@ -157,3 +157,31 @@ moved {
     from = module.people-depot.module.people_depot_backend_dev_api_secret.aws_ssm_parameter.this
     to = module.people-depot.module.backend_dev_api_secret.aws_ssm_parameter.this
 }
+# The ACM validation records were declared standalone in each project's dns.tf by
+# hackforla/incubator#183, because the certificates themselves were not in Terraform. They
+# now belong to the acm-certificate module. Moving rather than replacing matters: deleting a
+# validation record does not break TLS today, it stops the certificate renewing, and that
+# only surfaces as an expiry up to a year later. See hackforla/incubator#185.
+#
+# The keys are the validation record names as ACM reports them, trailing dot included.
+moved {
+    from = module.vrms.aws_route53_record.cert_validation
+    to   = module.vrms.module.certificate.aws_route53_record.validation["_ae6574e1afa9e171d1634c7d7df55699.vrms.io."]
+}
+
+moved {
+    from = module.home-unite-us.aws_route53_record.cert_validation
+    to   = module.home-unite-us.module.certificate.aws_route53_record.validation["_5bb55cc568d53bab04232d9f9e534189.homeunite.us."]
+}
+
+moved {
+    from = module.civic-tech-index.aws_route53_record.cert_validation
+    to   = module.civic-tech-index.module.certificate.aws_route53_record.validation["_9aed66007870880679080f7176758008.civictechindex.org."]
+}
+
+# Only the stage certificate moves. The apex certificate is deleted, so its validation
+# record is destroyed rather than moved -- see projects/civic-tech-jobs/dns.tf.
+moved {
+    from = module.civic-tech-jobs.aws_route53_record.cert_validation_stage
+    to   = module.civic-tech-jobs.module.certificate_stage.aws_route53_record.validation["_1ca49dd660678abe9478619c13875864.stage.civictechjobs.org."]
+}

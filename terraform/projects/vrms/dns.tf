@@ -60,14 +60,7 @@ resource "aws_route53_record" "www" {
   records = ["incubator-prod-lb-569274394.us-west-2.elb.amazonaws.com"]
 }
 
-// DNS validation for the ACM certificate *.vrms.io
-// (arn:...:certificate/5f0bd3ee-a6d3-4836-ac82-060756603785), which is attached to
-// incubator-prod-lb as its default certificate. Moves to the certificate resource
-// when ACM comes into Terraform.
-resource "aws_route53_record" "cert_validation" {
-  zone_id = aws_route53_zone.this.zone_id
-  name    = "_ae6574e1afa9e171d1634c7d7df55699.vrms.io"
-  type    = "CNAME"
-  ttl     = 300
-  records = ["_75a716975d76b9c6a4e2d61c0b489e29.bwlshdtstt.acm-validations.aws."]
-}
+// The DNS validation record for the *.vrms.io certificate used to be declared here. It
+// moved to the acm-certificate module in certificate.tf, which owns the certificate, its
+// validation records and its load balancer attachment together.
+// See hackforla/incubator#185.

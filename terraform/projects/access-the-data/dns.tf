@@ -48,16 +48,8 @@ resource "aws_route53_record" "apex_ipv6" {
   ]
 }
 
-// DNS validation for the ACM certificate accessthedata.org
-// (arn:...:certificate/b92e46ff-9296-464b-b39d-e61f48b90fb0). Deleting this stops
-// the certificate renewing. It is declared standalone here because the certificate
-// itself is not yet in Terraform; when it is imported this record should move to a
-// for_each over the certificate's domain_validation_options and this resource
-// removed. See hackforla/incubator#183.
-resource "aws_route53_record" "cert_validation" {
-  zone_id = aws_route53_zone.this.zone_id
-  name    = "_0cf1f0f2546b74cb244e41df3c73afe6.accessthedata.org"
-  type    = "CNAME"
-  ttl     = 60
-  records = ["_f6e79d0bd5ddcd952dae00479b8d4a1c.cmqshkkvmc.acm-validations.aws."]
-}
+// The validation record for the accessthedata.org certificate used to be declared here.
+// The project's compute was removed in hackforla/incubator#163 and the domain now serves
+// from GitHub Pages, so no request can reach the load balancer with that SNI -- the
+// certificate's attachment to the HTTPS listener was a leftover. It was detached and
+// deleted in hackforla/incubator#185, and this record goes with it.
