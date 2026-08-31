@@ -56,7 +56,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_attach_to_load_balancer"></a> [attach\_to\_load\_balancer](#input\_attach\_to\_load\_balancer) | attach the certificate to the incubator-prod-lb HTTPS listener. Set false for a certificate the load balancer does not serve | `bool` | `true` | no |
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | the certificate's primary domain, for example `homeunite.us` or `*.vrms.io` | `string` | n/a | yes |
-| <a name="input_subject_alternative_names"></a> [subject\_alternative\_names](#input\_subject\_alternative\_names) | additional domains the certificate covers. Do not repeat `domain_name` here -- ACM returns it in the list but the provider strips it, so repeating it plans a change | `list(string)` | `[]` | no |
+| <a name="input_subject_alternative_names"></a> [subject\_alternative\_names](#input\_subject\_alternative\_names) | additional domains the certificate covers. Do not repeat `domain_name` here -- ACM returns it in the list and the provider suppresses the difference, so listing it is redundant rather than wrong | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | tags for the certificate, on top of the provider's default tags | `map(string)` | `{}` | no |
 | <a name="input_validation_record_ttl"></a> [validation\_record\_ttl](#input\_validation\_record\_ttl) | TTL for the validation records. Only worth setting when adopting a certificate whose live records use something else | `number` | `300` | no |
 | <a name="input_zone_id"></a> [zone\_id](#input\_zone\_id) | the Route 53 hosted zone id to write the DNS validation records into | `string` | n/a | yes |
