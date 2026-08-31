@@ -92,3 +92,25 @@ import {
   to = module.home-unite-us.aws_ecr_repository.homeuniteus_prod
   id = "homeuniteus"
 }
+
+# Adopts the ballotnav.org hosted zone and its five records. Importing a zone does
+# not import its records, and a record that already exists cannot be created --
+# allow_overwrite defaults to false -- so each record needs its own import.
+# See hackforla/incubator#183.
+import {
+  to = module.ballotnav.aws_route53_zone.this
+  id = "Z07523651NOVLWMBAS3IL"
+}
+
+import {
+  to = module.ballotnav.aws_route53_record.apex
+  id = "Z07523651NOVLWMBAS3IL_ballotnav.org_A"
+}
+
+# One block per resource address, not per instance -- four static blocks would
+# import one and plan the other three as creates.
+import {
+  for_each = toset(["about", "admin", "demo", "www"])
+  to       = module.ballotnav.aws_route53_record.pages[each.key]
+  id       = "Z07523651NOVLWMBAS3IL_${each.key}.ballotnav.org_CNAME"
+}

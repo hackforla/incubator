@@ -18,6 +18,10 @@ module "civic-tech-index" {
     source = "./projects/civic-tech-index"
 }
 
+module "ballotnav" {
+    source = "./projects/ballotnav"
+}
+
 
 
 
