@@ -114,3 +114,21 @@ import {
   to       = module.ballotnav.aws_route53_record.pages[each.key]
   id       = "Z07523651NOVLWMBAS3IL_${each.key}.ballotnav.org_CNAME"
 }
+
+# Adopts the 311-data.org hosted zone and its two records. The www record is
+# imported at its current (broken) value and then changed by the apply; see the
+# comment in projects/311-data/dns.tf. See hackforla/incubator#183.
+import {
+  to = module.three-eleven-data.aws_route53_zone.this
+  id = "Z10404141P7IPBA313E5M"
+}
+
+import {
+  to = module.three-eleven-data.aws_route53_record.apex
+  id = "Z10404141P7IPBA313E5M_311-data.org_A"
+}
+
+import {
+  to = module.three-eleven-data.aws_route53_record.www
+  id = "Z10404141P7IPBA313E5M_www.311-data.org_CNAME"
+}
