@@ -21,6 +21,18 @@ wildcard certificate emits an identical validation record for `*.example.org` an
 `example.org`, so keying by domain name produces two resources writing one name and the
 plan fails.
 
+Removing a certificate: the destroy order is correct without help. Terraform destroys in
+reverse dependency order, so it detaches from the listener first and deletes the
+certificate last, which is what ACM requires -- and the provider retries DeleteCertificate
+on ResourceInUseException for 20 minutes, which covers the lag between a detach and ACM
+noticing it. The hazard is a partial failure: the validation records are destroyed before
+the certificate, so if the delete fails anyway -- most plausibly because the certificate is
+also attached to something outside Terraform, another listener or a CloudFront
+distribution -- you are left with a live certificate whose validation records are gone. It
+keeps serving and silently stops renewing. If a destroy fails here, check
+`aws acm describe-certificate --query Certificate.InUseBy` and fix the real attachment
+rather than re-running.
+
 Known limitation: for a certificate that already exists and is adopted with an `import`
 block, the validation record names are read during the plan and everything applies in one
 pass. For a brand new certificate they are hashes ACM has not issued yet, so `for_each`
