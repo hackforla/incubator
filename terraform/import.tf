@@ -154,3 +154,30 @@ import {
   to = module.access-the-data.aws_route53_record.cert_validation
   id = "Z099349812ZUUFQEPL51Q__0cf1f0f2546b74cb244e41df3c73afe6.accessthedata.org_CNAME"
 }
+
+# Adopts the civictechjobs.org hosted zone and the four records not already declared
+# by the dns-entry module in environment-stage.tf. See hackforla/incubator#183.
+import {
+  to = module.civic-tech-jobs.aws_route53_zone.this
+  id = "Z06949943QJY32WRKG577"
+}
+
+import {
+  to = module.civic-tech-jobs.aws_route53_record.apex
+  id = "Z06949943QJY32WRKG577_civictechjobs.org_A"
+}
+
+import {
+  to = module.civic-tech-jobs.aws_route53_record.www
+  id = "Z06949943QJY32WRKG577_www.civictechjobs.org_CNAME"
+}
+
+import {
+  to = module.civic-tech-jobs.aws_route53_record.cert_validation_apex
+  id = "Z06949943QJY32WRKG577__a57d306f01d9b44fbca0d00a608ea608.civictechjobs.org_CNAME"
+}
+
+import {
+  to = module.civic-tech-jobs.aws_route53_record.cert_validation_stage
+  id = "Z06949943QJY32WRKG577__1ca49dd660678abe9478619c13875864.stage.civictechjobs.org_CNAME"
+}
