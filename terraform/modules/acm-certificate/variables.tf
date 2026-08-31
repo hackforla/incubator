@@ -6,7 +6,7 @@ variable "domain_name" {
 variable "subject_alternative_names" {
   type        = list(string)
   default     = []
-  description = "additional domains the certificate covers. Do not repeat `domain_name` here -- ACM returns it in the list but the provider strips it, so repeating it plans a change"
+  description = "additional domains the certificate covers. Do not repeat `domain_name` here -- ACM returns it in the list and the provider suppresses the difference, so listing it is redundant rather than wrong"
 }
 
 variable "zone_id" {
