@@ -1,5 +1,8 @@
 module "people-depot" {
     source = "./projects/people-depot"
+
+    // peopledepot-dev.vrms.io sits in a zone the vrms project owns.
+    vrms_zone_id = module.vrms.zone_id
 }
 
 module "civic-tech-jobs" {

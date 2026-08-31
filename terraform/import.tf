@@ -181,3 +181,27 @@ import {
   to = module.civic-tech-jobs.aws_route53_record.cert_validation_stage
   id = "Z06949943QJY32WRKG577__1ca49dd660678abe9478619c13875864.stage.civictechjobs.org_CNAME"
 }
+
+# Adopts the vrms.io hosted zone and the three records not already declared by the
+# dns-entry modules in this project and in people-depot. The wildcard *.vrms.io and
+# prod.vrms.io are deliberately not adopted -- both are deleted, see the comment in
+# projects/vrms/dns.tf. See hackforla/incubator#183.
+import {
+  to = module.vrms.aws_route53_zone.this
+  id = "Z0420800PGQ9JP6DM9EX"
+}
+
+import {
+  to = module.vrms.aws_route53_record.apex
+  id = "Z0420800PGQ9JP6DM9EX_vrms.io_A"
+}
+
+import {
+  to = module.vrms.aws_route53_record.www
+  id = "Z0420800PGQ9JP6DM9EX_www.vrms.io_CNAME"
+}
+
+import {
+  to = module.vrms.aws_route53_record.cert_validation
+  id = "Z0420800PGQ9JP6DM9EX__ae6574e1afa9e171d1634c7d7df55699.vrms.io_CNAME"
+}

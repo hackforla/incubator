@@ -1,7 +1,7 @@
 module "dev_dns_entry" {
    source = "../../modules/dns-entry"
    subdomain = "dev"
-   zone_id = "Z0420800PGQ9JP6DM9EX"
+   zone_id = aws_route53_zone.this.zone_id
 }
 
 module "dev_database_url_secret" {
