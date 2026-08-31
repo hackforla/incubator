@@ -28,7 +28,9 @@ No requirements.
 
 ## Inputs
 
-No inputs.
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_vrms_zone_id"></a> [vrms\_zone\_id](#input\_vrms\_zone\_id) | the vrms.io hosted zone id, owned by the vrms project | `string` | n/a | yes |
 
 ## Outputs
 
