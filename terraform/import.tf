@@ -132,3 +132,25 @@ import {
   to = module.three-eleven-data.aws_route53_record.www
   id = "Z10404141P7IPBA313E5M_www.311-data.org_CNAME"
 }
+
+# Adopts the accessthedata.org hosted zone and its three records. The project has no
+# compute left; this module is DNS only. See hackforla/incubator#183.
+import {
+  to = module.access-the-data.aws_route53_zone.this
+  id = "Z099349812ZUUFQEPL51Q"
+}
+
+import {
+  to = module.access-the-data.aws_route53_record.apex
+  id = "Z099349812ZUUFQEPL51Q_accessthedata.org_A"
+}
+
+import {
+  to = module.access-the-data.aws_route53_record.apex_ipv6
+  id = "Z099349812ZUUFQEPL51Q_accessthedata.org_AAAA"
+}
+
+import {
+  to = module.access-the-data.aws_route53_record.cert_validation
+  id = "Z099349812ZUUFQEPL51Q__0cf1f0f2546b74cb244e41df3c73afe6.accessthedata.org_CNAME"
+}

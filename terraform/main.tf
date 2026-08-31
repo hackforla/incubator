@@ -26,6 +26,10 @@ module "three-eleven-data" {
     source = "./projects/311-data"
 }
 
+module "access-the-data" {
+    source = "./projects/access-the-data"
+}
+
 
 
 
