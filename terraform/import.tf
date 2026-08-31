@@ -92,3 +92,176 @@ import {
   to = module.home-unite-us.aws_ecr_repository.homeuniteus_prod
   id = "homeuniteus"
 }
+
+# Adopts the ballotnav.org hosted zone and its five records. Importing a zone does
+# not import its records, and a record that already exists cannot be created --
+# allow_overwrite defaults to false -- so each record needs its own import.
+# See hackforla/incubator#183.
+import {
+  to = module.ballotnav.aws_route53_zone.this
+  id = "Z07523651NOVLWMBAS3IL"
+}
+
+import {
+  to = module.ballotnav.aws_route53_record.apex
+  id = "Z07523651NOVLWMBAS3IL_ballotnav.org_A"
+}
+
+# One block per resource address, not per instance -- four static blocks would
+# import one and plan the other three as creates.
+import {
+  for_each = toset(["about", "admin", "demo", "www"])
+  to       = module.ballotnav.aws_route53_record.pages[each.key]
+  id       = "Z07523651NOVLWMBAS3IL_${each.key}.ballotnav.org_CNAME"
+}
+
+# Adopts the 311-data.org hosted zone and its two records. The www record is
+# imported at its current (broken) value and then changed by the apply; see the
+# comment in projects/311-data/dns.tf. See hackforla/incubator#183.
+import {
+  to = module.three-eleven-data.aws_route53_zone.this
+  id = "Z10404141P7IPBA313E5M"
+}
+
+import {
+  to = module.three-eleven-data.aws_route53_record.apex
+  id = "Z10404141P7IPBA313E5M_311-data.org_A"
+}
+
+import {
+  to = module.three-eleven-data.aws_route53_record.www
+  id = "Z10404141P7IPBA313E5M_www.311-data.org_CNAME"
+}
+
+# Adopts the accessthedata.org hosted zone and its three records. The project has no
+# compute left; this module is DNS only. See hackforla/incubator#183.
+import {
+  to = module.access-the-data.aws_route53_zone.this
+  id = "Z099349812ZUUFQEPL51Q"
+}
+
+import {
+  to = module.access-the-data.aws_route53_record.apex
+  id = "Z099349812ZUUFQEPL51Q_accessthedata.org_A"
+}
+
+import {
+  to = module.access-the-data.aws_route53_record.apex_ipv6
+  id = "Z099349812ZUUFQEPL51Q_accessthedata.org_AAAA"
+}
+
+import {
+  to = module.access-the-data.aws_route53_record.cert_validation
+  id = "Z099349812ZUUFQEPL51Q__0cf1f0f2546b74cb244e41df3c73afe6.accessthedata.org_CNAME"
+}
+
+# Adopts the civictechjobs.org hosted zone and the four records not already declared
+# by the dns-entry module in environment-stage.tf. See hackforla/incubator#183.
+import {
+  to = module.civic-tech-jobs.aws_route53_zone.this
+  id = "Z06949943QJY32WRKG577"
+}
+
+import {
+  to = module.civic-tech-jobs.aws_route53_record.apex
+  id = "Z06949943QJY32WRKG577_civictechjobs.org_A"
+}
+
+import {
+  to = module.civic-tech-jobs.aws_route53_record.www
+  id = "Z06949943QJY32WRKG577_www.civictechjobs.org_CNAME"
+}
+
+import {
+  to = module.civic-tech-jobs.aws_route53_record.cert_validation_apex
+  id = "Z06949943QJY32WRKG577__a57d306f01d9b44fbca0d00a608ea608.civictechjobs.org_CNAME"
+}
+
+import {
+  to = module.civic-tech-jobs.aws_route53_record.cert_validation_stage
+  id = "Z06949943QJY32WRKG577__1ca49dd660678abe9478619c13875864.stage.civictechjobs.org_CNAME"
+}
+
+# Adopts the vrms.io hosted zone and the three records not already declared by the
+# dns-entry modules in this project and in people-depot. The wildcard *.vrms.io and
+# prod.vrms.io are deliberately not adopted -- both are deleted, see the comment in
+# projects/vrms/dns.tf. See hackforla/incubator#183.
+import {
+  to = module.vrms.aws_route53_zone.this
+  id = "Z0420800PGQ9JP6DM9EX"
+}
+
+import {
+  to = module.vrms.aws_route53_record.apex
+  id = "Z0420800PGQ9JP6DM9EX_vrms.io_A"
+}
+
+import {
+  to = module.vrms.aws_route53_record.www
+  id = "Z0420800PGQ9JP6DM9EX_www.vrms.io_CNAME"
+}
+
+import {
+  to = module.vrms.aws_route53_record.cert_validation
+  id = "Z0420800PGQ9JP6DM9EX__ae6574e1afa9e171d1634c7d7df55699.vrms.io_CNAME"
+}
+
+# Adopts the homeunite.us hosted zone and the four records not already declared by the
+# dns-entry module in environment-qa.tf. The apex is imported at its current dead value
+# (18.223.160.58) and repointed at the load balancer by the apply; dev.homeunite.us held
+# the same dead address and is deleted rather than adopted. See the comment in
+# projects/home-unite-us/dns.tf and hackforla/incubator#183.
+import {
+  to = module.home-unite-us.aws_route53_zone.this
+  id = "Z03829196Z0VAL9Q8CZ"
+}
+
+import {
+  to = module.home-unite-us.aws_route53_record.apex
+  id = "Z03829196Z0VAL9Q8CZ_homeunite.us_A"
+}
+
+import {
+  to = module.home-unite-us.aws_route53_record.www
+  id = "Z03829196Z0VAL9Q8CZ_www.homeunite.us_CNAME"
+}
+
+import {
+  to = module.home-unite-us.aws_route53_record.qa
+  id = "Z03829196Z0VAL9Q8CZ_qa.homeunite.us_CNAME"
+}
+
+import {
+  to = module.home-unite-us.aws_route53_record.cert_validation
+  id = "Z03829196Z0VAL9Q8CZ__5bb55cc568d53bab04232d9f9e534189.homeunite.us_CNAME"
+}
+
+# Adopts the civictechindex.org hosted zone and four of its records. This project uses
+# no dns-entry module, so nothing in the zone was previously managed.
+# stage.api.civictechindex.org and test.civictechindex.org are deliberately not
+# adopted -- both are deleted, see the comment in projects/civic-tech-index/dns.tf.
+# See hackforla/incubator#183.
+import {
+  to = module.civic-tech-index.aws_route53_zone.this
+  id = "Z06388811ED8NRSEUZU7A"
+}
+
+import {
+  to = module.civic-tech-index.aws_route53_record.apex
+  id = "Z06388811ED8NRSEUZU7A_civictechindex.org_A"
+}
+
+import {
+  to = module.civic-tech-index.aws_route53_record.api
+  id = "Z06388811ED8NRSEUZU7A_api.civictechindex.org_CNAME"
+}
+
+import {
+  to = module.civic-tech-index.aws_route53_record.api_stage
+  id = "Z06388811ED8NRSEUZU7A_api-stage.civictechindex.org_CNAME"
+}
+
+import {
+  to = module.civic-tech-index.aws_route53_record.cert_validation
+  id = "Z06388811ED8NRSEUZU7A__9aed66007870880679080f7176758008.civictechindex.org_CNAME"
+}

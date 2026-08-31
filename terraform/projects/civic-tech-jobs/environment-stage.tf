@@ -2,7 +2,7 @@
 module "civic_tech_jobs_fullstack_stage_dns_entry" {
   source    = "../../modules/dns-entry"
   subdomain = "stage"
-  zone_id   = "Z06949943QJY32WRKG577"
+  zone_id   = aws_route53_zone.this.zone_id
 }
 
 module "civic_tech_jobs_stage_database" {

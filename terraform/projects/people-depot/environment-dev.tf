@@ -2,7 +2,7 @@
 module "dev_dns_entry" {
    source = "../../modules/dns-entry"
    subdomain = "peopledepot-dev"
-   zone_id = "Z0420800PGQ9JP6DM9EX"
+   zone_id = var.vrms_zone_id
 }
 
 module "dev_database" {

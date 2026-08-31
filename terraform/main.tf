@@ -1,5 +1,8 @@
 module "people-depot" {
     source = "./projects/people-depot"
+
+    // peopledepot-dev.vrms.io sits in a zone the vrms project owns.
+    vrms_zone_id = module.vrms.zone_id
 }
 
 module "civic-tech-jobs" {
@@ -16,6 +19,18 @@ module "vrms" {
 
 module "civic-tech-index" {
     source = "./projects/civic-tech-index"
+}
+
+module "ballotnav" {
+    source = "./projects/ballotnav"
+}
+
+module "three-eleven-data" {
+    source = "./projects/311-data"
+}
+
+module "access-the-data" {
+    source = "./projects/access-the-data"
 }
 
 

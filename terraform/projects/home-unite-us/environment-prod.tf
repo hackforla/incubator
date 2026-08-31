@@ -67,11 +67,14 @@ module "prod_service" {
     { "name" : "ROOT_URL", "value" : "https://qa.homeunite.us" }
   ]
 
-  // Both hostnames are served by one rule, matching the unmanaged rule at priority 16.
-  // www is the public name; qa is what the image's baked URLs point at, so the auth
-  // flow needs it until a rebuilt image moves them to www.
+  // All three hostnames are served by this one rule. www is the public name; qa is what
+  // the image's baked URLs point at, so the auth flow needs it until a rebuilt image
+  // moves them to www. The apex was added in hackforla/incubator#183: it had pointed at
+  // a dead Terragrunt-era address for years, and repointing it at the load balancer
+  // without listing it here would have left it hitting the listener's default redirect
+  // to www.hackforla.org rather than reaching this service.
   hostname             = "qa.homeunite.us"
-  additional_host_urls = ["www.homeunite.us"]
+  additional_host_urls = ["www.homeunite.us", "homeunite.us"]
   path                 = "/*"
 
   // Checks the API rather than "/". The container runs nginx in the foreground and the
