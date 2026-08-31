@@ -235,3 +235,33 @@ import {
   to = module.home-unite-us.aws_route53_record.cert_validation
   id = "Z03829196Z0VAL9Q8CZ__5bb55cc568d53bab04232d9f9e534189.homeunite.us_CNAME"
 }
+
+# Adopts the civictechindex.org hosted zone and four of its records. This project uses
+# no dns-entry module, so nothing in the zone was previously managed.
+# stage.api.civictechindex.org and test.civictechindex.org are deliberately not
+# adopted -- both are deleted, see the comment in projects/civic-tech-index/dns.tf.
+# See hackforla/incubator#183.
+import {
+  to = module.civic-tech-index.aws_route53_zone.this
+  id = "Z06388811ED8NRSEUZU7A"
+}
+
+import {
+  to = module.civic-tech-index.aws_route53_record.apex
+  id = "Z06388811ED8NRSEUZU7A_civictechindex.org_A"
+}
+
+import {
+  to = module.civic-tech-index.aws_route53_record.api
+  id = "Z06388811ED8NRSEUZU7A_api.civictechindex.org_CNAME"
+}
+
+import {
+  to = module.civic-tech-index.aws_route53_record.api_stage
+  id = "Z06388811ED8NRSEUZU7A_api-stage.civictechindex.org_CNAME"
+}
+
+import {
+  to = module.civic-tech-index.aws_route53_record.cert_validation
+  id = "Z06388811ED8NRSEUZU7A__9aed66007870880679080f7176758008.civictechindex.org_CNAME"
+}

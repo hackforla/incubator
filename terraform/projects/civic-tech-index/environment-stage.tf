@@ -38,8 +38,12 @@ module "backend_stage_service" {
       { "name": "POSTGRES_PASSWORD", "valueFrom": module.stage_database_password_secret.arn},
    ]
    
-   hostname = "stage.api.civictechindex.org"
-   additional_host_urls = ["api-stage.civictechindex.org"]
+   // stage.api.civictechindex.org was the hostname until hackforla/incubator#183. It
+   // never worked over HTTPS: the certificate on the listener is *.civictechindex.org,
+   // a single-label wildcard that does not cover a three-label name, so TLS failed
+   // before any request was made. api-stage is the same service by a spelling the
+   // certificate covers. The DNS record for stage.api was deleted at the same time.
+   hostname = "api-stage.civictechindex.org"
    path = "/*"
    health_check_path = "/status/"
 
