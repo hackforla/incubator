@@ -205,3 +205,33 @@ import {
   to = module.vrms.aws_route53_record.cert_validation
   id = "Z0420800PGQ9JP6DM9EX__ae6574e1afa9e171d1634c7d7df55699.vrms.io_CNAME"
 }
+
+# Adopts the homeunite.us hosted zone and the four records not already declared by the
+# dns-entry module in environment-qa.tf. The apex is imported at its current dead value
+# (18.223.160.58) and repointed at the load balancer by the apply; dev.homeunite.us held
+# the same dead address and is deleted rather than adopted. See the comment in
+# projects/home-unite-us/dns.tf and hackforla/incubator#183.
+import {
+  to = module.home-unite-us.aws_route53_zone.this
+  id = "Z03829196Z0VAL9Q8CZ"
+}
+
+import {
+  to = module.home-unite-us.aws_route53_record.apex
+  id = "Z03829196Z0VAL9Q8CZ_homeunite.us_A"
+}
+
+import {
+  to = module.home-unite-us.aws_route53_record.www
+  id = "Z03829196Z0VAL9Q8CZ_www.homeunite.us_CNAME"
+}
+
+import {
+  to = module.home-unite-us.aws_route53_record.qa
+  id = "Z03829196Z0VAL9Q8CZ_qa.homeunite.us_CNAME"
+}
+
+import {
+  to = module.home-unite-us.aws_route53_record.cert_validation
+  id = "Z03829196Z0VAL9Q8CZ__5bb55cc568d53bab04232d9f9e534189.homeunite.us_CNAME"
+}

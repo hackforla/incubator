@@ -2,7 +2,7 @@
 module "qa_dns_entry" {
    source = "../../modules/dns-entry"
    subdomain = "qa1"
-   zone_id = "Z03829196Z0VAL9Q8CZ"
+   zone_id = aws_route53_zone.this.zone_id
 }
 
 module "database_dev" {
