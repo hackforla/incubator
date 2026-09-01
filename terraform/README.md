@@ -22,6 +22,7 @@
 | <a name="module_civic-tech-jobs"></a> [civic-tech-jobs](#module\_civic-tech-jobs) | ./projects/civic-tech-jobs | n/a |
 | <a name="module_home-unite-us"></a> [home-unite-us](#module\_home-unite-us) | ./projects/home-unite-us | n/a |
 | <a name="module_people-depot"></a> [people-depot](#module\_people-depot) | ./projects/people-depot | n/a |
+| <a name="module_platform"></a> [platform](#module\_platform) | ./platform | n/a |
 | <a name="module_three-eleven-data"></a> [three-eleven-data](#module\_three-eleven-data) | ./projects/311-data | n/a |
 | <a name="module_vrms"></a> [vrms](#module\_vrms) | ./projects/vrms | n/a |
 
