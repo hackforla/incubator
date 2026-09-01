@@ -316,3 +316,217 @@ import {
   to = module.civic-tech-jobs.module.certificate_stage.aws_lb_listener_certificate.this[0]
   id = "arn:aws:elasticloadbalancing:us-west-2:035866691871:listener/app/incubator-prod-lb/7451adf77133ef36/390a225766a4daf3_arn:aws:acm:us-west-2:035866691871:certificate/af0b30d5-0d64-4065-905b-eaced30fe8ba"
 }
+
+# Adopts the shared platform -- VPC, ECS cluster and its EC2 capacity, load balancer,
+# security groups and IAM. All of it carries live production traffic, so the bar is 0 to add,
+# 0 to destroy, no replacements, and only the `managed-by` tag changing.
+# See hackforla/incubator#184 and terraform/platform/.
+
+import {
+  to = module.platform.aws_vpc.this
+  id = "vpc-0bec93a4d80243845"
+}
+
+# One block per address, not per instance -- static blocks would import one and create the rest.
+import {
+  for_each = {
+    "us-west-2a" = "subnet-03202f3bf9a24c1a5"
+    "us-west-2b" = "subnet-08c26edd1afc2b9d7"
+  }
+  to = module.platform.aws_subnet.public[each.key]
+  id = each.value
+}
+
+import {
+  for_each = {
+    "us-west-2a" = "subnet-089e80a53e1522e28"
+    "us-west-2b" = "subnet-03ed55f60a6c28e72"
+  }
+  to = module.platform.aws_subnet.private[each.key]
+  id = each.value
+}
+
+import {
+  to = module.platform.aws_internet_gateway.this
+  id = "igw-08a3f5ac4b9b95fe6"
+}
+
+# An elastic IP imports by allocation id.
+import {
+  to = module.platform.aws_eip.nat
+  id = "eipalloc-06bfab9d37e03e354"
+}
+
+import {
+  to = module.platform.aws_nat_gateway.this
+  id = "nat-08bd5eb6d8b6bdcb7"
+}
+
+import {
+  to = module.platform.aws_route_table.public
+  id = "rtb-025f1f7a71186c7db"
+}
+
+import {
+  for_each = {
+    "us-west-2a" = "rtb-0ea3b47efe34847f0"
+    "us-west-2b" = "rtb-0a61d387aacfe12ca"
+  }
+  to = module.platform.aws_route_table.private[each.key]
+  id = each.value
+}
+
+# `aws_default_route_table`, not `aws_route_table`, but the import id is the same.
+import {
+  to = module.platform.aws_default_route_table.main
+  id = "rtb-0d31f54d4ef4ee74c"
+}
+
+# A route table association imports by subnet_id/route_table_id.
+import {
+  for_each = {
+    "us-west-2a" = "subnet-03202f3bf9a24c1a5/rtb-025f1f7a71186c7db"
+    "us-west-2b" = "subnet-08c26edd1afc2b9d7/rtb-025f1f7a71186c7db"
+  }
+  to = module.platform.aws_route_table_association.public[each.key]
+  id = each.value
+}
+
+import {
+  for_each = {
+    "us-west-2a" = "subnet-089e80a53e1522e28/rtb-0ea3b47efe34847f0"
+    "us-west-2b" = "subnet-03ed55f60a6c28e72/rtb-0a61d387aacfe12ca"
+  }
+  to = module.platform.aws_route_table_association.private[each.key]
+  id = each.value
+}
+
+# The cluster and the capacity provider both import by name; the `proc` typo is real.
+import {
+  to = module.platform.aws_ecs_cluster.this
+  id = "incubator-prod"
+}
+
+import {
+  to = module.platform.aws_ecs_capacity_provider.ec2
+  id = "incubator-proc-ec2"
+}
+
+# Its own resource, imported by cluster name.
+import {
+  to = module.platform.aws_ecs_cluster_capacity_providers.this
+  id = "incubator-prod"
+}
+
+# Imports at latest (8) while default_version is 1. The plan must show no new version.
+import {
+  to = module.platform.aws_launch_template.ecs
+  id = "lt-0093b22d4b048e101"
+}
+
+import {
+  to = module.platform.aws_autoscaling_group.ecs
+  id = "ecs-incubator-prod"
+}
+
+import {
+  to = module.platform.aws_lb.this
+  id = "arn:aws:elasticloadbalancing:us-west-2:035866691871:loadbalancer/app/incubator-prod-lb/7451adf77133ef36"
+}
+
+import {
+  to = module.platform.aws_lb_listener.https
+  id = "arn:aws:elasticloadbalancing:us-west-2:035866691871:listener/app/incubator-prod-lb/7451adf77133ef36/390a225766a4daf3"
+}
+
+import {
+  to = module.platform.aws_lb_listener.http
+  id = "arn:aws:elasticloadbalancing:us-west-2:035866691871:listener/app/incubator-prod-lb/7451adf77133ef36/e3a9e215566b0279"
+}
+
+import {
+  to = module.platform.aws_security_group.alb
+  id = "sg-07dd18f4255a5a5aa"
+}
+
+import {
+  to = module.platform.aws_vpc_security_group_ingress_rule.alb_http
+  id = "sgr-098420814e30df071"
+}
+
+import {
+  to = module.platform.aws_vpc_security_group_ingress_rule.alb_https
+  id = "sgr-01fb2cd6278861ebd"
+}
+
+import {
+  to = module.platform.aws_vpc_security_group_egress_rule.alb_all
+  id = "sgr-0cbc5e41abd60efa4"
+}
+
+import {
+  to = module.platform.aws_security_group.database
+  id = "sg-0ab8947eeb3d705ac"
+}
+
+import {
+  to = module.platform.aws_vpc_security_group_ingress_rule.database_postgres
+  id = "sgr-041beca36c70ef68d"
+}
+
+import {
+  to = module.platform.aws_vpc_security_group_egress_rule.database_all
+  id = "sgr-0aeab91b2988a2025"
+}
+
+# Its two rules are not imported separately -- `aws_default_security_group` holds them inline.
+import {
+  to = module.platform.aws_default_security_group.this
+  id = "sg-00bafa5c73e255acd"
+}
+
+# Roles and instance profiles import by name, policies by arn, attachments by role/policy-arn.
+import {
+  to = module.platform.aws_iam_role.ecs_instance
+  id = "ecs-ec2-role"
+}
+
+import {
+  to = module.platform.aws_iam_instance_profile.ecs_instance
+  id = "ecs-ec2-role"
+}
+
+import {
+  to = module.platform.aws_iam_policy.ecs_put_account_settings
+  id = "arn:aws:iam::035866691871:policy/ecs-put-account-settings"
+}
+
+import {
+  to = module.platform.aws_iam_role_policy_attachment.ecs_instance_put_account_settings
+  id = "ecs-ec2-role/arn:aws:iam::035866691871:policy/ecs-put-account-settings"
+}
+
+import {
+  to = module.platform.aws_iam_role_policy_attachment.ecs_instance_ssm_core
+  id = "ecs-ec2-role/arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+import {
+  to = module.platform.aws_iam_role_policy_attachment.ecs_instance_ecs
+  id = "ecs-ec2-role/arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+}
+
+import {
+  to = module.platform.aws_iam_role.ecs_task_execution
+  id = "incubator-prod-ecs-task-role"
+}
+
+import {
+  to = module.platform.aws_iam_role_policy_attachment.ecs_task_execution_ecs
+  id = "incubator-prod-ecs-task-role/arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+import {
+  to = module.platform.aws_iam_role_policy_attachment.ecs_task_execution_ssm
+  id = "incubator-prod-ecs-task-role/arn:aws:iam::aws:policy/AmazonSSMFullAccess"
+}
