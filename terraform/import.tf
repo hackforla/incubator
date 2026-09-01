@@ -376,10 +376,11 @@ import {
   id = each.value
 }
 
-# `aws_default_route_table`, not `aws_route_table`, but the import id is the same.
+# Imports by VPC id, not route table id -- the provider looks the main table up by filter.
+# rtb-0d31f54d4ef4ee74c is the table this resolves to.
 import {
   to = module.platform.aws_default_route_table.main
-  id = "rtb-0d31f54d4ef4ee74c"
+  id = "vpc-0bec93a4d80243845"
 }
 
 # A route table association imports by subnet_id/route_table_id.
@@ -401,7 +402,7 @@ import {
   id = each.value
 }
 
-# The cluster and the capacity provider both import by name; the `proc` typo is real.
+# The cluster imports by name; the capacity provider needs its full arn.
 import {
   to = module.platform.aws_ecs_cluster.this
   id = "incubator-prod"
@@ -409,7 +410,7 @@ import {
 
 import {
   to = module.platform.aws_ecs_capacity_provider.ec2
-  id = "incubator-proc-ec2"
+  id = "arn:aws:ecs:us-west-2:035866691871:capacity-provider/incubator-proc-ec2"
 }
 
 # Its own resource, imported by cluster name.
