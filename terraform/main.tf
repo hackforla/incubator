@@ -1,3 +1,9 @@
+// The shared platform every project module below runs on. Adopted in hackforla/incubator#184;
+// nothing consumes its outputs yet.
+module "platform" {
+    source = "./platform"
+}
+
 module "people-depot" {
     source = "./projects/people-depot"
 
