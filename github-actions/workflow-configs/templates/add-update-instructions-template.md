@@ -1,7 +1,7 @@
 <!-- Message template used with the "Add Update Label Weekly" workflow -->
 <!-- This file to be installed at: `github-actions/workflow-configs/templates/add-update-instructions-template.md` -->
 
-Hello ${assignees}-
+Hello ${assignees} -
 
 Please add an update using the below template (even if you have a pull request). Afterwards, remove
 the `${label}` label and add the `${statusUpdated}` label.
