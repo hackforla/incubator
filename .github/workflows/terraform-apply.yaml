@@ -45,5 +45,5 @@ jobs:
       uses: dflook/terraform-apply@v1
       with:
         path: terraform
-        auto_approve: true
+        auto_approve: ${{ github.event_name == 'workflow_dispatch' }}
         backend_config_file: terraform/prod.backend.tfvars
