@@ -63,17 +63,6 @@ resource "aws_vpc_security_group_ingress_rule" "database_postgres" {
   ip_protocol       = "tcp"
 }
 
-# A database does not initiate connections, and a range starting at 22 looks copied from a
-# bastion rule. Reproduced as deployed; fixing it is separate work.
-resource "aws_vpc_security_group_egress_rule" "database_all" {
-  security_group_id = aws_security_group.database.id
-  description       = "global egress"
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 22
-  to_port           = 65535
-  ip_protocol       = "tcp"
-}
-
 # Where the ECS container instances actually run. Rules must stay inline: this resource type
 # revokes anything not declared, so splitting them out would strip what the instances need.
 resource "aws_default_security_group" "this" {

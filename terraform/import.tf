@@ -475,11 +475,6 @@ import {
   id = "sgr-041beca36c70ef68d"
 }
 
-import {
-  to = module.platform.aws_vpc_security_group_egress_rule.database_all
-  id = "sgr-0aeab91b2988a2025"
-}
-
 # Its two rules are not imported separately -- `aws_default_security_group` holds them inline.
 import {
   to = module.platform.aws_default_security_group.this
