@@ -138,6 +138,10 @@ resource "aws_cognito_user_pool" "homeuniteus_prod" {
     default_email_option = "CONFIRM_WITH_CODE"
   }
 
+  tags = {
+    project = local.project_name
+  }
+
   // Destroying this pool destroys the production user accounts, which cannot be
   // recovered by recreating it. deletion_protection above is the AWS-side guard;
   // this is the Terraform-side one.

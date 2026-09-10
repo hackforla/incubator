@@ -10,6 +10,14 @@
 
 resource "aws_s3_bucket" "website" {
   bucket = "civictechindex.org"
+
+  # "civictechindex" is the project value from the tag standard, and it is written
+  # literally here for the same reason ecr.tf writes it literally: local.project_name
+  # in this directory is "civic-tech-index", which is not the standard's value. The
+  # two spellings are reconciled separately -- do not switch this to local.project_name.
+  tags = {
+    project = "civictechindex"
+  }
 }
 
 resource "aws_s3_bucket_website_configuration" "website" {

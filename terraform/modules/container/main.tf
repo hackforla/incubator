@@ -185,6 +185,7 @@ resource "aws_cloudwatch_log_group" "this" {
   name = "/ecs/${local.envappname}"
 
   tags = {
+    project = var.project_name
   }
 }
 
