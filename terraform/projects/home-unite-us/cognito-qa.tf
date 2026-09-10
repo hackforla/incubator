@@ -190,6 +190,10 @@ resource "aws_cognito_user_pool" "homeuniteus" {
   verification_message_template {
     default_email_option = "CONFIRM_WITH_CODE"
   }
+
+  tags = {
+    project = local.project_name
+  }
 }
 
 locals {
