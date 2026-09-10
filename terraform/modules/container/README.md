@@ -60,8 +60,9 @@ No modules.
 | <a name="input_hostname"></a> [hostname](#input\_hostname) | hostname for load balancer routing, ex: "www.vrms.io" | `string` | n/a | yes |
 | <a name="input_launch_type"></a> [launch\_type](#input\_launch\_type) | infrastructure type, either `ec2` or `fargate`. Always use `ec2` unless you have a good reason | `string` | `"fargate"` | no |
 | <a name="input_listener_priority"></a> [listener\_priority](#input\_listener\_priority) | rule priority for load balancer rules. Make sure that rules with a longer path, `/api/v1/*` have a LOWER priority (evaluated first) than shorter ones, `/*` | `number` | n/a | yes |
+| <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | Prefix for resource names, for containers whose names predate the project naming convention. Defaults to project\_name. | `string` | `null` | no |
 | <a name="input_path"></a> [path](#input\_path) | path for load balancer routing, for example `/api/*` | `string` | `null` | no |
-| <a name="input_project_name"></a> [project\_name](#input\_project\_name) | The overall name of the project using this infrastructure; used to group related resources by | `any` | n/a | yes |
+| <a name="input_project_name"></a> [project\_name](#input\_project\_name) | HfLA project name (vrms, home-unite-us, civictechindex, etc). This is what the `project` tag carries, so it must be the project name from the tag standard -- never an application, environment or repository name. | `any` | n/a | yes |
 
 ## Outputs
 

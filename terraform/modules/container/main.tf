@@ -15,7 +15,13 @@
 
 
 locals {
-  envappname = "${var.project_name}-${var.application_type}-${var.environment}"
+  # Resource names and the project tag are deliberately separate. project_name is the
+  # HfLA project, which is what the `project` tag must carry; name_prefix is whatever the
+  # live resources are already called. civic-tech-index is the case that forces this --
+  # its containers are named "cti-*" while its project is "civictechindex".
+  name_prefix = coalesce(var.name_prefix, var.project_name)
+
+  envappname = "${local.name_prefix}-${var.application_type}-${var.environment}"
 
   # Conditionals for container compute resources
   # 0 CPU means unlimited cpu access
@@ -149,7 +155,7 @@ resource "aws_iam_role" "instance" {
 }
 
 resource "aws_iam_policy" "container_policy" {
-  name        = "${var.project_name}-${var.application_type}-${var.environment}-task-policy"
+  name        = "${local.name_prefix}-${var.application_type}-${var.environment}-task-policy"
   description = ""
   policy = jsonencode({
     "Version" : "2012-10-17",
@@ -224,6 +230,9 @@ resource "aws_ecs_task_definition" "task" {
   memory                   = local.task_memory
   cpu                      = local.task_cpu
 
+  tags = {
+    project = var.project_name
+  }
 }
 
 
@@ -262,4 +271,16 @@ resource "aws_ecs_service" "fargate" {
     container_port = var.container_port
     target_group_arn = aws_lb_target_group.this.arn
   }
+
+  tags = {
+    project = var.project_name
+  }
+
+  # Copy the service's tags -- project included -- onto the tasks it launches.
+  # ecs:ExecuteCommand authorizes against the task ARN and supports ecs:ResourceTag, so
+  # this is what makes per-project ECS Exec scoping possible later; without it a task
+  # carries no project at all. enable_ecs_managed_tags is deliberately left at its default
+  # of false: it adds only aws:ecs:clusterName and aws:ecs:serviceName, which duplicate
+  # what is already in the ARN, and nothing reads them.
+  propagate_tags = "SERVICE"
 }
