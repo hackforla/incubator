@@ -1,6 +1,7 @@
 module "ecr_fullstack" {
    source = "../../modules/ecr"
-   project_name = "${local.project_name}-fullstack"
+   project_name = local.project_name
+   repository_name = "home-unite-us-fullstack"
 }
 
 // The production image repository, adopted as a plain resource rather than through
@@ -11,6 +12,9 @@ module "ecr_fullstack" {
 resource "aws_ecr_repository" "homeuniteus_prod" {
   name                 = "homeuniteus"
   image_tag_mutability = "MUTABLE"
+  tags = {
+    project = local.project_name
+  }
 
   image_scanning_configuration {
     scan_on_push = true
