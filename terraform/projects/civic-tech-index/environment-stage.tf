@@ -20,7 +20,11 @@ module "stage_database_password_secret" {
 
 module "backend_stage_service" {
    source = "../../modules/container"
-   project_name = "cti"
+   # The containers are named "cti-*", which predates the project naming convention.
+   # name_prefix keeps the live names, so the project tag can be the project rather than
+   # the abbreviation. Renaming would replace the service and its task definition.
+   project_name = "civictechindex"
+   name_prefix = "cti"
    environment = "stage"
    application_type = "backend"
    

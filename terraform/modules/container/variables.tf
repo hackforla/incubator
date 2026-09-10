@@ -1,5 +1,11 @@
 variable "project_name" {
-  description = "The overall name of the project using this infrastructure; used to group related resources by"
+  description = "HfLA project name (vrms, home-unite-us, civictechindex, etc). This is what the `project` tag carries, so it must be the project name from the tag standard -- never an application, environment or repository name."
+}
+
+variable "name_prefix" {
+  type        = string
+  default     = null
+  description = "Prefix for resource names, for containers whose names predate the project naming convention. Defaults to project_name."
 }
 
 variable "environment" {
