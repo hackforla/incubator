@@ -5,7 +5,8 @@ locals {
 
 module "people_depot_ecr_backend" {
    source = "../../modules/ecr"
-   project_name = "${local.project_name_people_depot}-backend"
+   project_name = local.project_name_people_depot
+   repository_name = "people-depot-backend"
 } 
 
 module "people_depot_cicd" {
