@@ -526,3 +526,20 @@ import {
   to = module.platform.aws_iam_role_policy_attachment.ecs_task_execution_ssm
   id = "incubator-prod-ecs-task-role/arn:aws:iam::aws:policy/AmazonSSMFullAccess"
 }
+
+# Adopts the RDS instance's supporting resources: the subnet group database.tf previously
+# referenced as a bare string, and the two log groups RDS creates implicitly from
+# enabled_cloudwatch_logs_exports. All three are among the unmanaged resources in the
+# 2026-09-06 coverage run. RDSOSMetrics is deliberately not adopted; see the comment in
+# database.tf and hackforla/incubator#117. See hackforla/incubator#214.
+import {
+  to = aws_db_subnet_group.incubator_prod
+  id = "incubator-prod"
+}
+
+# A log group imports by name. One block per address, not per instance.
+import {
+  for_each = toset(["postgresql", "upgrade"])
+  to       = aws_cloudwatch_log_group.database[each.key]
+  id       = "/aws/rds/instance/incubator-prod-database/${each.key}"
+}
