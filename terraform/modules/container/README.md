@@ -10,6 +10,47 @@ forwarding traffic to the service. If you have a backend that runs with the path
 and a frontend that just runs with `/`, make sure that the backend has a lower listener
 priority than the frontend, otherwise all traffic will be sent to the frontend.
 
+## How the target group name is built
+
+An ELB target group name cannot exceed 32 characters. That limit is verified against
+live AWS rather than assumed: `describe-target-groups` accepts a 32-character name and
+returns `TargetGroupNotFound`, and rejects a 33-character one with
+`ValidationError: Target group name ... cannot be longer than '32' characters`.
+
+`name_prefix` on `aws_lb_target_group` is not an alternative -- the provider rejects it
+above 6 characters, which is far too short to carry a project, an application type and
+an environment.
+
+So the module derives the name itself, from a ladder of candidates. The first one that
+fits in 32 characters wins:
+
+1. `<project>-<application_type>-<environment>-<hash>` -- the full, readable name. Every
+   target group in the account uses this today.
+2. `<initials>-<abbr>-<environment>-<hash>` -- the project reduced to the initials of its
+   hyphen-separated words and the application type to two letters. These are abbreviated
+   *together*, rather than trying the application type alone first, so that a name which
+   overflows drops to something obviously abbreviated instead of a near-miss that still
+   reads like the full name.
+3. `<initials, 14 max>-<md5 of the full name, 8>-<hash>` -- at most 27 characters, so it
+   always fits. This exists for a single-word project name too long for rung 2, and is
+   unreachable in practice. Do not drop it because no current project reaches it: without
+   it, such a name fails at apply with an AWS `ValidationError` instead of producing a
+   legal, deterministic name.
+
+Rung 3 carries two independent hashes, which looks redundant and is not. They hash
+different things for different reasons: `md5` of the full name distinguishes two projects
+whose initials collide, and `local.tg_suffix` changes whenever an attribute forces the
+target group to be replaced.
+
+Rungs 1 and 2 have no such collision resistance -- two projects whose initials, abbreviated
+application type and environment all coincide would produce the same rung-2 name, and the
+ladder does not detect that. No current pair collides. If one ever does, AWS refuses the
+duplicate at apply time.
+
+Only the target group name is abbreviated. `local.envappname` still spells the application
+type out in full, because it names the ECS service, task-definition family, log group,
+security group and IAM role, none of which is length-constrained.
+
 ## Requirements
 
 No requirements.
