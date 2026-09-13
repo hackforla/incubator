@@ -9,6 +9,47 @@
  * forwarding traffic to the service. If you have a backend that runs with the path `/api/v1`,
  * and a frontend that just runs with `/`, make sure that the backend has a lower listener
  * priority than the frontend, otherwise all traffic will be sent to the frontend.
+ *
+ * ## How the target group name is built
+ *
+ * An ELB target group name cannot exceed 32 characters. That limit is verified against
+ * live AWS rather than assumed: `describe-target-groups` accepts a 32-character name and
+ * returns `TargetGroupNotFound`, and rejects a 33-character one with
+ * `ValidationError: Target group name ... cannot be longer than '32' characters`.
+ *
+ * `name_prefix` on `aws_lb_target_group` is not an alternative -- the provider rejects it
+ * above 6 characters, which is far too short to carry a project, an application type and
+ * an environment.
+ *
+ * So the module derives the name itself, from a ladder of candidates. The first one that
+ * fits in 32 characters wins:
+ *
+ * 1. `<project>-<application_type>-<environment>-<hash>` -- the full, readable name. Every
+ *    target group in the account uses this today.
+ * 2. `<initials>-<abbr>-<environment>-<hash>` -- the project reduced to the initials of its
+ *    hyphen-separated words and the application type to two letters. These are abbreviated
+ *    *together*, rather than trying the application type alone first, so that a name which
+ *    overflows drops to something obviously abbreviated instead of a near-miss that still
+ *    reads like the full name.
+ * 3. `<initials, 14 max>-<md5 of the full name, 8>-<hash>` -- at most 27 characters, so it
+ *    always fits. This exists for a single-word project name too long for rung 2, and is
+ *    unreachable in practice. Do not drop it because no current project reaches it: without
+ *    it, such a name fails at apply with an AWS `ValidationError` instead of producing a
+ *    legal, deterministic name.
+ *
+ * Rung 3 carries two independent hashes, which looks redundant and is not. They hash
+ * different things for different reasons: `md5` of the full name distinguishes two projects
+ * whose initials collide, and `local.tg_suffix` changes whenever an attribute forces the
+ * target group to be replaced.
+ *
+ * Rungs 1 and 2 have no such collision resistance -- two projects whose initials, abbreviated
+ * application type and environment all coincide would produce the same rung-2 name, and the
+ * ladder does not detect that. No current pair collides. If one ever does, AWS refuses the
+ * duplicate at apply time.
+ *
+ * Only the target group name is abbreviated. `local.envappname` still spells the application
+ * type out in full, because it names the ECS service, task-definition family, log group,
+ * security group and IAM role, none of which is length-constrained.
  */
 
 // terraform-docs-ignore
@@ -73,6 +114,25 @@ locals {
   # home-unite-us-fullstack-prod-596 is exactly 32.
   tg_suffix = substr(sha1(jsonencode([var.container_port, local.tg_protocol, local.target_type, local.vpc_id])), 0, 3)
 
+  # Initials of the project: the first letter of each hyphen-separated word, so
+  # civic-tech-index -> cti and home-unite-us -> huu. A single-word name has no initials
+  # worth taking -- vrms would become "v" -- so it is returned whole instead.
+  tg_initials = length(split("-", local.name_prefix)) > 1 ? join("", [for w in split("-", local.name_prefix) : substr(w, 0, 1)]) : local.name_prefix
+
+  # The input is its own default, so an application_type not listed here passes through
+  # unchanged rather than disappearing.
+  tg_app_abbr = lookup({ fullstack = "fs", backend = "be", frontend = "fe" }, var.application_type, var.application_type)
+
+  # See the header comment for what each rung is for. tg_name takes the first that fits.
+  # Rung 3 is at most 27 characters, so the list is never empty and the index never fails.
+  tg_candidates = [
+    "${local.name_prefix}-${var.application_type}-${var.environment}-${local.tg_suffix}",
+    "${local.tg_initials}-${local.tg_app_abbr}-${var.environment}-${local.tg_suffix}",
+    "${substr(local.tg_initials, 0, 14)}-${substr(md5(local.envappname), 0, 8)}-${local.tg_suffix}",
+  ]
+
+  tg_name = [for c in local.tg_candidates : c if length(c) <= 32][0]
+
   hostname_array = concat([var.hostname], var.additional_host_urls)
 }
 
@@ -130,7 +190,7 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic" {
 
 
 resource "aws_lb_target_group" "this" {
-  name                 = "${local.envappname}-${local.tg_suffix}"
+  name                 = local.tg_name
   port                 = var.container_port
   deregistration_delay = 10
   protocol             = local.tg_protocol
@@ -154,6 +214,14 @@ resource "aws_lb_target_group" "this" {
   # It relies on local.tg_suffix above to guarantee the new name differs from the old.
   lifecycle {
     create_before_destroy = true
+
+    # The ladder's last rung always fits, so this cannot fire today. It is here so that a
+    # future edit to local.tg_candidates fails at plan time with a readable message naming
+    # the inputs, rather than at apply time with an AWS ValidationError.
+    precondition {
+      condition     = length(local.tg_name) <= 32
+      error_message = "No target group name candidate fits in 32 characters for name_prefix=\"${local.name_prefix}\", application_type=\"${var.application_type}\", environment=\"${var.environment}\"."
+    }
   }
 }
 
