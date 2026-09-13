@@ -18,7 +18,7 @@ variable "application_type" {
 }
 
 variable "container_image" {
-  description = "The full address of the ECR image used by the container: for example `035866691871.dkr.ecr.us-west-2.amazonaws.com/civictechindex-backend-prod:77845e0`"
+  description = "The full address of the ECR image used by the container: for example `035866691871.dkr.ecr.us-west-2.amazonaws.com/civic-tech-index-backend:77845e0`"
   type = string
 }
 
