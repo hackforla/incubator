@@ -62,9 +62,6 @@ module "frontend_dev_service" {
 
    launch_type = "ec2"
 
-   # Canary for hackforla/incubator#201 -- the first service on its own execution role.
-   use_own_execution_role = true
-
    container_port = 3000
    container_image = "${module.ecr_frontend.repository_url}:dev"
    container_environment = [
