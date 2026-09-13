@@ -433,8 +433,9 @@ resource "aws_ecs_task_definition" "task" {
     }, local.is_fargate ? {} : { memoryReservation = var.container_memory_reservation })
   ])
 
-  # use_own_execution_role is a temporary switch for the hackforla/incubator#201 rollout; the
-  # shared role goes once every service is on its own.
+  # use_own_execution_role defaults to true. false falls back to the shared
+  # incubator-prod-ecs-task-role, which is to be deleted -- along with the variable -- once
+  # nothing uses it. See hackforla/incubator#201.
   requires_compatibilities = [ var.launch_type == "fargate" ? "FARGATE" : "EC2"]
   network_mode             = local.task_network_mode
   task_role_arn            = aws_iam_role.instance.arn
