@@ -107,3 +107,9 @@ variable "container_memory_reservation" {
   type        = number
   default     = 256
 }
+
+variable "use_own_execution_role" {
+  description = "Temporary, for the hackforla/incubator#201 rollout. `true` runs the task under this container's own project-scoped execution role; `false` keeps the shared `incubator-prod-ecs-task-role`. Removed once every service is switched."
+  type        = bool
+  default     = false
+}
