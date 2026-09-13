@@ -303,6 +303,101 @@ resource "aws_cloudwatch_log_group" "this" {
   }
 }
 
+// Execution role for the container -- what the ECS agent uses to start the task: pull the
+// image, write to the log group and read the secrets in `container_environment_secrets`.
+// Distinct from aws_iam_role.instance above, which is what the running application uses.
+//
+// Naming trap: the shared role this replaces is *named* incubator-prod-ecs-task-role but is
+// an execution role. See hackforla/incubator#201.
+resource "aws_iam_role" "execution" {
+  name = "ecs-execution-${local.envappname}"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      },
+    ]
+  })
+
+  tags = {
+    project = var.project_name
+  }
+}
+
+// A project-scoped replacement for AmazonECSTaskExecutionRolePolicy, plus SSM read.
+//
+// ECR is scoped by the repository's project tag rather than by name, because repository
+// names do not follow the project name (home-unite-us's production repository is
+// `homeuniteus`). SSM is scoped by path instead: modules/secret names every parameter
+// `/<project>/...`, and the trailing slash makes that an exact match that does not depend
+// on tags staying correct. No kms:Decrypt is granted -- parameters use the AWS-managed
+// alias/aws/ssm key, whose key policy already allows decryption through SSM.
+resource "aws_iam_policy" "execution_policy" {
+  name        = "${local.envappname}-execution-policy"
+  description = "ECS execution role for ${local.envappname}: image pull, logs and secrets, scoped to project ${var.project_name}"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        # Cannot be scoped to a resource. The token grants nothing by itself.
+        Sid      = "EcrAuth"
+        Effect   = "Allow"
+        Action   = "ecr:GetAuthorizationToken"
+        Resource = "*"
+      },
+      {
+        Sid    = "EcrPullProjectImages"
+        Effect = "Allow"
+        Action = [
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:BatchGetImage",
+          "ecr:GetDownloadUrlForLayer",
+        ]
+        Resource = "arn:aws:ecr:us-west-2:035866691871:repository/*"
+        Condition = {
+          StringEquals = { "aws:ResourceTag/project" = var.project_name }
+        }
+      },
+      {
+        # Both forms: CreateLogStream authorizes against the log group, PutLogEvents against
+        # the log stream beneath it.
+        Sid    = "WriteOwnLogGroup"
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+        ]
+        Resource = [
+          aws_cloudwatch_log_group.this.arn,
+          "${aws_cloudwatch_log_group.this.arn}:*",
+        ]
+      },
+      {
+        Sid      = "ReadProjectParameters"
+        Effect   = "Allow"
+        Action   = "ssm:GetParameters"
+        Resource = "arn:aws:ssm:us-west-2:035866691871:parameter/${var.project_name}/*"
+      },
+    ]
+  })
+
+  tags = {
+    project = var.project_name
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "execution_policy" {
+  role       = aws_iam_role.execution.name
+  policy_arn = aws_iam_policy.execution_policy.arn
+}
+
 resource "aws_ecs_task_definition" "task" {
   family = local.envappname
 
@@ -338,10 +433,12 @@ resource "aws_ecs_task_definition" "task" {
     }, local.is_fargate ? {} : { memoryReservation = var.container_memory_reservation })
   ])
 
+  # use_own_execution_role is a temporary switch for the hackforla/incubator#201 rollout; the
+  # shared role goes once every service is on its own.
   requires_compatibilities = [ var.launch_type == "fargate" ? "FARGATE" : "EC2"]
   network_mode             = local.task_network_mode
   task_role_arn            = aws_iam_role.instance.arn
-  execution_role_arn       = "arn:aws:iam::035866691871:role/incubator-prod-ecs-task-role"
+  execution_role_arn       = var.use_own_execution_role ? aws_iam_role.execution.arn : "arn:aws:iam::035866691871:role/incubator-prod-ecs-task-role"
   memory                   = local.task_memory
   cpu                      = local.task_cpu
 
