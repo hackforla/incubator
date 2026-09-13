@@ -25,7 +25,8 @@
  * fits in 32 characters wins:
  *
  * 1. `<project>-<application_type>-<environment>-<hash>` -- the full, readable name. Every
- *    target group in the account uses this today.
+ *    target group in the account uses this today except civic-tech-index's, which fall to
+ *    rung 2.
  * 2. `<initials>-<abbr>-<environment>-<hash>` -- the project reduced to the initials of its
  *    hyphen-separated words and the application type to two letters. These are abbreviated
  *    *together*, rather than trying the application type alone first, so that a name which
@@ -56,13 +57,7 @@
 
 
 locals {
-  # Resource names and the project tag are deliberately separate. project_name is the
-  # HfLA project, which is what the `project` tag must carry; name_prefix is whatever the
-  # live resources are already called. civic-tech-index is the case that forces this --
-  # its containers are named "cti-*" while its project is "civictechindex".
-  name_prefix = coalesce(var.name_prefix, var.project_name)
-
-  envappname = "${local.name_prefix}-${var.application_type}-${var.environment}"
+  envappname = "${var.project_name}-${var.application_type}-${var.environment}"
 
   # Conditionals for container compute resources
   # 0 CPU means unlimited cpu access
@@ -117,7 +112,7 @@ locals {
   # Initials of the project: the first letter of each hyphen-separated word, so
   # civic-tech-index -> cti and home-unite-us -> huu. A single-word name has no initials
   # worth taking -- vrms would become "v" -- so it is returned whole instead.
-  tg_initials = length(split("-", local.name_prefix)) > 1 ? join("", [for w in split("-", local.name_prefix) : substr(w, 0, 1)]) : local.name_prefix
+  tg_initials = length(split("-", var.project_name)) > 1 ? join("", [for w in split("-", var.project_name) : substr(w, 0, 1)]) : var.project_name
 
   # The input is its own default, so an application_type not listed here passes through
   # unchanged rather than disappearing.
@@ -126,7 +121,7 @@ locals {
   # See the header comment for what each rung is for. tg_name takes the first that fits.
   # Rung 3 is at most 27 characters, so the list is never empty and the index never fails.
   tg_candidates = [
-    "${local.name_prefix}-${var.application_type}-${var.environment}-${local.tg_suffix}",
+    "${var.project_name}-${var.application_type}-${var.environment}-${local.tg_suffix}",
     "${local.tg_initials}-${local.tg_app_abbr}-${var.environment}-${local.tg_suffix}",
     "${substr(local.tg_initials, 0, 14)}-${substr(md5(local.envappname), 0, 8)}-${local.tg_suffix}",
   ]
@@ -220,7 +215,7 @@ resource "aws_lb_target_group" "this" {
     # the inputs, rather than at apply time with an AWS ValidationError.
     precondition {
       condition     = length(local.tg_name) <= 32
-      error_message = "No target group name candidate fits in 32 characters for name_prefix=\"${local.name_prefix}\", application_type=\"${var.application_type}\", environment=\"${var.environment}\"."
+      error_message = "No target group name candidate fits in 32 characters for project_name=\"${var.project_name}\", application_type=\"${var.application_type}\", environment=\"${var.environment}\"."
     }
   }
 }
@@ -274,7 +269,7 @@ resource "aws_iam_role" "instance" {
 }
 
 resource "aws_iam_policy" "container_policy" {
-  name        = "${local.name_prefix}-${var.application_type}-${var.environment}-task-policy"
+  name        = "${var.project_name}-${var.application_type}-${var.environment}-task-policy"
   description = ""
   policy = jsonencode({
     "Version" : "2012-10-17",
