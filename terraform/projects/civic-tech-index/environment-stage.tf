@@ -31,7 +31,9 @@ module "backend_stage_service" {
    launch_type = "ec2"
    
    container_port = 8000
-   container_image = "${module.ecr_backend_stage.repository_url}:77845e0"
+   # 77845e0 is the commit the image was built from. Tags in this repository are mutable,
+   # so pushing a different image under this tag changes what the next deployment runs.
+   container_image = "${module.ecr_backend.repository_url}:77845e0"
    container_environment = [
       { "name": "POSTGRES_DATABASE", "value": "cti_stage"},
       { "name": "POSTGRES_HOST", "value": "incubator-prod-database.cewewwrvdqjn.us-west-2.rds.amazonaws.com"},
