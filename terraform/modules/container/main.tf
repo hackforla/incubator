@@ -264,7 +264,7 @@ resource "aws_iam_role" "instance" {
   })
 
   tags = {
-    tag-key = "tag-value"
+    project = var.project_name
   }
 }
 
