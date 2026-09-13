@@ -74,7 +74,10 @@ No modules.
 | [aws_ecs_service.fargate](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_service) | resource |
 | [aws_ecs_task_definition.task](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ecs_task_definition) | resource |
 | [aws_iam_policy.container_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.execution_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_role.execution](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.instance](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy_attachment.execution_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.task_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_lb_listener_rule.static](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener_rule) | resource |
 | [aws_lb_target_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group) | resource |
@@ -104,11 +107,14 @@ No modules.
 | <a name="input_listener_priority"></a> [listener\_priority](#input\_listener\_priority) | rule priority for load balancer rules. Make sure that rules with a longer path, `/api/v1/*` have a LOWER priority (evaluated first) than shorter ones, `/*` | `number` | n/a | yes |
 | <a name="input_path"></a> [path](#input\_path) | path for load balancer routing, for example `/api/*` | `string` | `null` | no |
 | <a name="input_project_name"></a> [project\_name](#input\_project\_name) | HfLA project name (vrms, home-unite-us, civic-tech-index, etc). This is what the `project` tag carries, so it must be the project name from the tag standard -- never an application, environment or repository name. | `any` | n/a | yes |
+| <a name="input_use_own_execution_role"></a> [use\_own\_execution\_role](#input\_use\_own\_execution\_role) | Temporary, for the hackforla/incubator#201 rollout. `true` runs the task under this container's own project-scoped execution role; `false` keeps the shared `incubator-prod-ecs-task-role`. Removed once every service is switched. | `bool` | `false` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
+| <a name="output_execution_role_arn"></a> [execution\_role\_arn](#output\_execution\_role\_arn) | ARN of the execution role generated for this container. It pulls the image, writes logs and reads secrets, scoped to this container's project. |
+| <a name="output_execution_role_name"></a> [execution\_role\_name](#output\_execution\_role\_name) | IAM role name of the execution role generated for this container. |
 | <a name="output_task_role_arn"></a> [task\_role\_arn](#output\_task\_role\_arn) | ARN of the task role that this container uses. Good for setting up permissions like s3 access |
 | <a name="output_task_role_name"></a> [task\_role\_name](#output\_task\_role\_name) | IAM role name of the task role that this container uses. |
 <!-- END_TF_DOCS -->
