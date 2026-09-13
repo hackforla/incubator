@@ -1,8 +1,16 @@
-# The repository names predate the project naming convention and do not follow it:
-# local.project_name is "civic-tech-index" and the container modules use "cti".
-# repository_name keeps the live names, so the project tag can be the project rather
-# than the repository. Renaming an ECR repository replaces it, which would destroy
-# every image it holds.
+# One repository per application codebase, shared by every environment, as vrms-backend
+# and people-depot-backend are. repository_name is still needed: without it the module
+# would name the repository after the project alone.
+module "ecr_backend" {
+   source = "../../modules/ecr"
+   project_name = local.project_name
+   repository_name = "civic-tech-index-backend"
+}
+
+# The two per-environment repositories below predate that pattern and are being retired
+# by hackforla/incubator#225. They stay until both services pull from ecr_backend by
+# digest, then are deleted. An ECR repository cannot be renamed or merged in place --
+# renaming replaces it, which would destroy every image it holds.
 module "ecr_backend_prod" {
    source = "../../modules/ecr"
    project_name = "civictechindex"
