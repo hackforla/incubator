@@ -25,8 +25,8 @@
  * fits in 32 characters wins:
  *
  * 1. `<project>-<application_type>-<environment>-<hash>` -- the full, readable name. Every
- *    target group in the account uses this today except civic-tech-index's, which fall to
- *    rung 2.
+ *    target group in the account uses this today except civic-tech-index's and
+ *    civic-tech-jobs', which fall to rung 2.
  * 2. `<initials>-<abbr>-<environment>-<hash>` -- the project reduced to the initials of its
  *    hyphen-separated words and the application type to two letters. These are abbreviated
  *    *together*, rather than trying the application type alone first, so that a name which

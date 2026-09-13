@@ -22,7 +22,7 @@ module "civic_tech_jobs_fullstack_stage_service" {
   source           = "../../modules/container"
   project_name     = local.project_name_civic_tech_jobs
   environment      = "stage"
-  application_type = "fs"
+  application_type = "fullstack"
 
   launch_type = "ec2"
 
