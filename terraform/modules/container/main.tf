@@ -54,7 +54,24 @@ locals {
   ]
 
   task_network_mode = "awsvpc"
-  target_type       = "ip"
+
+  # vpc_id, tg_protocol and target_type are referenced both by the resources below and by
+  # tg_suffix, so they live here to keep the two from drifting apart.
+  vpc_id      = "vpc-0bec93a4d80243845"
+  tg_protocol = "HTTP"
+  target_type = "ip"
+
+  # A target group name is capped at 32 characters and name_prefix is rejected above 6, so
+  # neither Terraform's own prefix mechanism nor a longer suffix fits. This is a 3-character
+  # hash of exactly the attributes that force a replacement, so anything that replaces the
+  # target group also changes its name -- which is what lets create_before_destroy stand the
+  # new group up beside the old one instead of failing with DuplicateTargetGroupName.
+  #
+  # KEEP IN SYNC: every ForceNew attribute this module sets on aws_lb_target_group must
+  # appear in this list. Adding one without adding it here silently reintroduces the
+  # duplicate-name failure. Three characters is the maximum that fits --
+  # home-unite-us-fullstack-prod-596 is exactly 32.
+  tg_suffix = substr(sha1(jsonencode([var.container_port, local.tg_protocol, local.target_type, local.vpc_id])), 0, 3)
 
   hostname_array = concat([var.hostname], var.additional_host_urls)
 }
@@ -64,10 +81,23 @@ locals {
 resource "aws_security_group" "container" {
   name        = "ecs-container-${local.envappname}"
   description = "Container ${local.envappname}"
-  vpc_id      = "vpc-0bec93a4d80243845"
+  vpc_id      = local.vpc_id
 
   tags = {
     Name = "ecs-container-${local.envappname}"
+  }
+
+  # Create the replacement before destroying the old group: the old one cannot be deleted
+  # while a draining task's ENI is still attached, which surfaces as DependencyViolation.
+  # Creating first gives the service somewhere to move to before the old group goes away.
+  #
+  # Known limitation: this works for a *rename*, where the old and new names differ. A
+  # replacement forced by something that leaves the name alone -- description or vpc_id --
+  # would try to create a second group with the same name and fail on InvalidGroup.Duplicate.
+  # There is no hash suffix here, unlike the target group below, because a security group
+  # name has no 32-character cap and nothing reads it.
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -77,23 +107,35 @@ resource "aws_vpc_security_group_ingress_rule" "container_ingress_port" {
   from_port         = var.container_port
   ip_protocol       = "tcp"
   to_port           = var.container_port
+
+  # security_group_id is ForceNew, so this rule is replaced whenever the group above is.
+  # Without this it would plan -/+ against the group's +/-, tearing the ingress rule down
+  # while the old tasks are still serving.
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_all_traffic" {
   security_group_id = aws_security_group.container.id
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1" # semantically equivalent to all ports
+
+  # Replaced with the group above, for the same reason as the ingress rule.
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 
 
 resource "aws_lb_target_group" "this" {
-  name        = "${local.envappname}-tg"
-  port        = var.container_port
+  name                 = "${local.envappname}-${local.tg_suffix}"
+  port                 = var.container_port
   deregistration_delay = 10
-  protocol    = "HTTP"
-  target_type = "ip"
-  vpc_id      = "vpc-0bec93a4d80243845"
+  protocol             = local.tg_protocol
+  target_type          = local.target_type
+  vpc_id               = local.vpc_id
 
   target_health_state {
     enable_unhealthy_connection_termination = false
@@ -101,9 +143,18 @@ resource "aws_lb_target_group" "this" {
 
   health_check {
     matcher = "200,400,404"
-    path = var.health_check_path == "" ? "" : var.health_check_path
+    path    = var.health_check_path == "" ? "" : var.health_check_path
   }
 
+  # Create the replacement before destroying the old group. DeleteTargetGroup fails with
+  # ResourceInUse while any listener rule still forwards to it, and aws_lb_listener_rule
+  # below is only ever an in-place update -- so the default destroy-then-create order fails
+  # half-way through. This is what makes renaming anything in this module safe.
+  #
+  # It relies on local.tg_suffix above to guarantee the new name differs from the old.
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_lb_listener_rule" "static" {
@@ -263,6 +314,11 @@ resource "aws_ecs_service" "fargate" {
   }
 
 
+  # Deliberately no create_before_destroy here, unlike the target group and security group
+  # above. Two services can coexist, but each task consumes an ENI, and the cluster's two
+  # m5.large instances already hold 12 ENI attachments for 10 running tasks. Standing a full
+  # duplicate service up alongside the original risks exhausting ENI slots, which ECS cannot
+  # binpack on. See hackforla/incubator#184.
   lifecycle {
     ignore_changes = [desired_count]
   }
