@@ -107,7 +107,7 @@ No modules.
 | <a name="input_listener_priority"></a> [listener\_priority](#input\_listener\_priority) | rule priority for load balancer rules. Make sure that rules with a longer path, `/api/v1/*` have a LOWER priority (evaluated first) than shorter ones, `/*` | `number` | n/a | yes |
 | <a name="input_path"></a> [path](#input\_path) | path for load balancer routing, for example `/api/*` | `string` | `null` | no |
 | <a name="input_project_name"></a> [project\_name](#input\_project\_name) | HfLA project name (vrms, home-unite-us, civic-tech-index, etc). This is what the `project` tag carries, so it must be the project name from the tag standard -- never an application, environment or repository name. | `any` | n/a | yes |
-| <a name="input_use_own_execution_role"></a> [use\_own\_execution\_role](#input\_use\_own\_execution\_role) | Temporary, for the hackforla/incubator#201 rollout. `true` runs the task under this container's own project-scoped execution role; `false` keeps the shared `incubator-prod-ecs-task-role`. Removed once every service is switched. | `bool` | `false` | no |
+| <a name="input_use_own_execution_role"></a> [use\_own\_execution\_role](#input\_use\_own\_execution\_role) | `true` (the default) runs the task under this container's own project-scoped execution role. `false` falls back to the shared `incubator-prod-ecs-task-role`, which is to be deleted once nothing uses it; this variable goes with it. See hackforla/incubator#201. | `bool` | `true` | no |
 
 ## Outputs
 
