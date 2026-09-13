@@ -27,6 +27,7 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_force_delete"></a> [force\_delete](#input\_force\_delete) | Allow Terraform to destroy the repository while it still holds images, destroying them with it. Without it the destroy fails with RepositoryNotEmptyException. Set it only on a repository about to be removed, and apply that before removing the module call. | `bool` | `false` | no |
 | <a name="input_project_name"></a> [project\_name](#input\_project\_name) | HfLA project name (vrms, home-unite-us, etc) | `string` | n/a | yes |
 | <a name="input_repository_name"></a> [repository\_name](#input\_repository\_name) | Repository name, for repositories whose name predates the project naming convention. Defaults to project\_name. | `string` | `null` | no |
 
