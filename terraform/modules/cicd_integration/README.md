@@ -2,10 +2,13 @@
 # cicd-integration
 
 This module sets up permissions for GitHub actions to perform actions within
-AWS, without the use of an IAM access key. With this module set up on a project,
+AWS, without the use of an IAM access key.
 
 Once this module is set up in a project, jobs can use the `aws-actions/configure-aws-credentials`
 step with `role-to-assume` as `arn:aws:iam::035866691871:role/incubator-cicd-(project name)`
+
+The role can push images to, and redeploy, only the ECR repositories and ECS services
+whose `project` tag matches the project name.
 
 ## Requirements
 
@@ -25,6 +28,7 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [aws_iam_policy.builder](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role.builder](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 
