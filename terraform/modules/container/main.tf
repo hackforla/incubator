@@ -51,6 +51,46 @@
  * Only the target group name is abbreviated. `local.envappname` still spells the application
  * type out in full, because it names the ECS service, task-definition family, log group,
  * security group and IAM role, none of which is length-constrained.
+ *
+ * ## Giving a project an S3 bucket its container can reach
+ *
+ * The task role already allows `s3:ListBucket`, `s3:GetObject`, `s3:PutObject` and
+ * `s3:DeleteObject` on any bucket tagged with this project's name, so a new bucket needs no
+ * change to this module and no change to the policy. It needs three things of its own, in
+ * the project's own directory:
+ *
+ * 1. `aws_s3_bucket` -- the bucket itself.
+ * 2. `tags = { project = local.project_name }` on it. The value is the HfLA project name,
+ *    never an application or repository name; see the `project` tag standard in
+ *    DR-Machine-to-machine-IAM-scoping.
+ * 3. `aws_s3_bucket_abac` with `status = "Enabled"`. **Without this the bucket is
+ *    unreachable**, because S3 does not evaluate tag conditions against a bucket that has
+ *    not opted in to attribute-based access control. The failure is silent: the policy
+ *    looks correct and the container gets AccessDenied.
+ *
+ * Enabling ABAC also changes how that bucket's tags are managed -- `PutBucketTagging` and
+ * `DeleteBucketTagging` stop working in favour of `TagResource` and `UntagResource`. The
+ * provider handles this on its own, using the S3 Control tagging APIs when the caller holds
+ * `s3:TagResource`, `s3:UntagResource` and `s3:ListTagsForResource`. `incubator-tf-apply`
+ * and `incubator-tf-plan` both do, so there is nothing to grant; a future CI role scoped
+ * more tightly than either would need those three actions added.
+ *
+ * A bucket belonging to no single project -- the Terraform state buckets, the CloudTrail log
+ * buckets -- correctly carries no `project` tag and wants no ABAC opt-in. Leaving ABAC
+ * disabled is what keeps it out of reach of every task role.
+ *
+ * ## Cognito
+ *
+ * The task role allows `AdminGetUser`, `AdminCreateUser`, `AdminAddUserToGroup` and
+ * `AdminDeleteUser` on any user pool tagged with this project's name. Cognito needs no
+ * per-resource opt-in, so tagging the pool is the whole of it.
+ *
+ * Those four are the only Cognito operations that need IAM at all. An application's other
+ * calls -- `SignUp`, `ConfirmSignUp`, `ResendConfirmationCode`, `InitiateAuth`,
+ * `RespondToAuthChallenge`, `GetUser`, `GlobalSignOut`, `ForgotPassword`,
+ * `ConfirmForgotPassword` -- are unauthenticated APIs that authorize against the end user's
+ * own credentials. They work with no role permissions and cannot be restricted by adding
+ * any, so an application failing on one of those has a different problem.
  */
 
 // terraform-docs-ignore
@@ -272,18 +312,72 @@ resource "aws_iam_policy" "container_policy" {
   name        = "${var.project_name}-${var.application_type}-${var.environment}-task-policy"
   description = ""
   policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
+    Version = "2012-10-17"
+    Statement = [
       {
-        "Effect" : "Allow",
-        "Action" : [
+        Sid    = "EcsExecuteCommand"
+        Effect = "Allow"
+        Action = [
           "ssmmessages:CreateControlChannel",
           "ssmmessages:CreateDataChannel",
           "ssmmessages:OpenControlChannel",
-          "ssmmessages:OpenDataChannel"
-        ],
-        "Resource" : "*"
-      }
+          "ssmmessages:OpenDataChannel",
+        ]
+        Resource = "*"
+      },
+      {
+        # The project's own buckets, authorized by the bucket's `project` tag rather than
+        # by name, so a project that gains a bucket later needs no policy change here.
+        #
+        # One condition covers both ARNs: on an object ARN, aws:ResourceTag reads the tags
+        # of the *bucket* the object is in, not of the object. aws:ResourceTag is used over
+        # the equivalent s3:BucketTag to match DR-Machine-to-machine-IAM-scoping decision 5
+        # and the EcrPullProjectImages statement below; the two differ only when access
+        # points are involved, and this account has none.
+        #
+        # This statement grants nothing until ABAC is enabled on a bucket with
+        # aws_s3_bucket_abac -- S3 does not evaluate tag conditions against a bucket that
+        # has not opted in, so an un-opted-in bucket matches nothing and stays unreachable.
+        # The Null condition restates that fail-closed intent rather than adding to it.
+        Sid    = "ProjectBucketAccess"
+        Effect = "Allow"
+        Action = [
+          "s3:ListBucket",
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject",
+        ]
+        Resource = [
+          "arn:aws:s3:::*",
+          "arn:aws:s3:::*/*",
+        ]
+        Condition = {
+          StringEquals = { "aws:ResourceTag/project" = var.project_name }
+          Null         = { "aws:ResourceTag/project" = "false" }
+        }
+      },
+      {
+        # The project's own Cognito user pools. Unlike S3, Cognito evaluates tag conditions
+        # with no per-resource opt-in.
+        #
+        # Only these four operations need IAM. The rest of the Cognito surface an
+        # application calls -- SignUp, ConfirmSignUp, ResendConfirmationCode, InitiateAuth,
+        # RespondToAuthChallenge, GetUser, GlobalSignOut, ForgotPassword and
+        # ConfirmForgotPassword -- are unauthenticated APIs that authorize against the
+        # end user's own credentials, so granting them to the role would buy nothing.
+        Sid    = "ProjectCognitoAdmin"
+        Effect = "Allow"
+        Action = [
+          "cognito-idp:AdminGetUser",
+          "cognito-idp:AdminCreateUser",
+          "cognito-idp:AdminAddUserToGroup",
+          "cognito-idp:AdminDeleteUser",
+        ]
+        Resource = "arn:aws:cognito-idp:us-west-2:035866691871:userpool/*"
+        Condition = {
+          StringEquals = { "aws:ResourceTag/project" = var.project_name }
+        }
+      },
     ]
   })
 }
