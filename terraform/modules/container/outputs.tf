@@ -1,5 +1,5 @@
 output "task_role_arn" {
-  description = "ARN of the task role that this container uses. Good for setting up permissions like s3 access"
+  description = "ARN of the task role that this container uses. This is the role application code runs as, and the place project-specific AWS permissions go. See [Container Permissions](https://github.com/hackforla/incubator/wiki/Container-Permissions) on the incubator wiki for what it already grants and how to add to it."
   value = aws_iam_role.instance.arn
 }
 

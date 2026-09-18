@@ -155,6 +155,6 @@ No modules.
 |------|-------------|
 | <a name="output_execution_role_arn"></a> [execution\_role\_arn](#output\_execution\_role\_arn) | ARN of the execution role generated for this container. It pulls the image, writes logs and reads secrets, scoped to this container's project. |
 | <a name="output_execution_role_name"></a> [execution\_role\_name](#output\_execution\_role\_name) | IAM role name of the execution role generated for this container. |
-| <a name="output_task_role_arn"></a> [task\_role\_arn](#output\_task\_role\_arn) | ARN of the task role that this container uses. Good for setting up permissions like s3 access |
+| <a name="output_task_role_arn"></a> [task\_role\_arn](#output\_task\_role\_arn) | ARN of the task role that this container uses. This is the role application code runs as, and the place project-specific AWS permissions go. See [Container Permissions](https://github.com/hackforla/incubator/wiki/Container-Permissions) on the incubator wiki for what it already grants and how to add to it. |
 | <a name="output_task_role_name"></a> [task\_role\_name](#output\_task\_role\_name) | IAM role name of the task role that this container uses. |
 <!-- END_TF_DOCS -->
