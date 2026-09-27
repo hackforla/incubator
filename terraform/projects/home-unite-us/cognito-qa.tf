@@ -44,6 +44,9 @@ resource "aws_lambda_function" "cognito_custom_message" {
   source_code_hash = data.archive_file.cognito_custom_message.output_base64sha256
 
   runtime = "nodejs18.x"
+  tags = {
+    project = local.project_name
+  }
   lifecycle {
     ignore_changes = [ source_code_hash ]
   }
@@ -66,6 +69,9 @@ resource "aws_lambda_function" "cognito_merge_users" {
   source_code_hash = data.archive_file.cognito_merge_users.output_base64sha256
 
   runtime = "python3.12"
+  tags = {
+    project = local.project_name
+  }
   lifecycle {
     ignore_changes = [ source_code_hash ]
   }
@@ -378,4 +384,18 @@ resource "aws_secretsmanager_secret" "google_secret" {
 
 data "aws_secretsmanager_secret_version" "google_secret" {
   secret_id     = aws_secretsmanager_secret.google_secret.id
+}
+
+// Lambda creates its log group on first invoke, so these existed without ever being
+// declared and had no retention at all. 180 days matches the RDS log groups in
+// ../../database.tf. See hackforla/incubator#17.
+resource "aws_cloudwatch_log_group" "lambda" {
+  for_each = toset(["customMessage", "mergeUsers"])
+
+  name              = "/aws/lambda/${local.project_name}-${each.key}"
+  retention_in_days = 180
+
+  tags = {
+    project = local.project_name
+  }
 }
