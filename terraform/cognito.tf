@@ -35,8 +35,18 @@ resource "aws_cognito_user_pool" "shared" {
     }
   }
 
+  // Cognito's default wording, but it is stored on the pool and the provider does not
+  // fill it in when the attribute is omitted, so leaving these out plans to clear them.
+  sms_authentication_message = "Your authentication code is {####}. "
+
   admin_create_user_config {
     allow_admin_create_user_only = false
+
+    invite_message_template {
+      email_message = "Your username is {username} and temporary password is {####}. "
+      email_subject = "Your temporary password"
+      sms_message   = "Your username is {username} and temporary password is {####}. "
+    }
   }
 
   email_configuration {
