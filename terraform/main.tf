@@ -9,6 +9,9 @@ module "people-depot" {
 
     // peopledepot-dev.vrms.io sits in a zone the vrms project owns.
     vrms_zone_id = module.vrms.zone_id
+
+    shared_user_pool_id  = aws_cognito_user_pool.shared.id
+    shared_user_pool_arn = aws_cognito_user_pool.shared.arn
 }
 
 module "civic-tech-jobs" {
@@ -21,6 +24,9 @@ module "home-unite-us" {
 
 module "vrms" {
     source = "./projects/vrms"
+
+    shared_user_pool_id  = aws_cognito_user_pool.shared.id
+    shared_user_pool_arn = aws_cognito_user_pool.shared.arn
 }
 
 module "civic-tech-index" {

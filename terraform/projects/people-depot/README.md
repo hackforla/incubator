@@ -19,6 +19,7 @@ No requirements.
 | <a name="module_dev_dns_entry"></a> [dev\_dns\_entry](#module\_dev\_dns\_entry) | ../../modules/dns-entry | n/a |
 | <a name="module_people_depot_cicd"></a> [people\_depot\_cicd](#module\_people\_depot\_cicd) | ../../modules/cicd_integration | n/a |
 | <a name="module_people_depot_ecr_backend"></a> [people\_depot\_ecr\_backend](#module\_people\_depot\_ecr\_backend) | ../../modules/ecr | n/a |
+| <a name="module_shared_user_pool_access"></a> [shared\_user\_pool\_access](#module\_shared\_user\_pool\_access) | ../../modules/shared-user-pool-access | n/a |
 
 ## Resources
 
@@ -30,6 +31,8 @@ No requirements.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_shared_user_pool_arn"></a> [shared\_user\_pool\_arn](#input\_shared\_user\_pool\_arn) | ARN of the shared Cognito user pool | `string` | n/a | yes |
+| <a name="input_shared_user_pool_id"></a> [shared\_user\_pool\_id](#input\_shared\_user\_pool\_id) | id of the shared Cognito user pool | `string` | n/a | yes |
 | <a name="input_vrms_zone_id"></a> [vrms\_zone\_id](#input\_vrms\_zone\_id) | the vrms.io hosted zone id, owned by the vrms project | `string` | n/a | yes |
 
 ## Outputs

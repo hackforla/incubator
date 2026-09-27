@@ -53,7 +53,7 @@ module "backend_dev_service" {
       { "name": "SQL_PORT", "value": module.dev_database.port},
       { "name": "COGNITO_DOMAIN", "value": "peopledepot"},
       { "name": "COGNITO_AWS_REGION", "value": "us-west-2"},
-      { "name": "COGNITO_USER_POOL", "value": "us-west-2_Fn4rkZpuB"},
+      { "name": "COGNITO_USER_POOL", "value": var.shared_user_pool_id},
    ]
    container_environment_secrets = [
       { "name": "SQL_PASSWORD", "valueFrom": module.dev_database.owner_password_arn},
