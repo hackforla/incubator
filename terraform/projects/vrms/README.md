@@ -30,6 +30,7 @@ No requirements.
 | <a name="module_mailhog_password_secret"></a> [mailhog\_password\_secret](#module\_mailhog\_password\_secret) | ../../modules/secret | n/a |
 | <a name="module_mailhog_user_secret"></a> [mailhog\_user\_secret](#module\_mailhog\_user\_secret) | ../../modules/secret | n/a |
 | <a name="module_prod_database_url_secret"></a> [prod\_database\_url\_secret](#module\_prod\_database\_url\_secret) | ../../modules/secret | n/a |
+| <a name="module_shared_user_pool_access"></a> [shared\_user\_pool\_access](#module\_shared\_user\_pool\_access) | ../../modules/shared-user-pool-access | n/a |
 | <a name="module_slack_bot_token_secret"></a> [slack\_bot\_token\_secret](#module\_slack\_bot\_token\_secret) | ../../modules/secret | n/a |
 | <a name="module_slack_client_secret_secret"></a> [slack\_client\_secret\_secret](#module\_slack\_client\_secret\_secret) | ../../modules/secret | n/a |
 | <a name="module_slack_oauth_token_secret"></a> [slack\_oauth\_token\_secret](#module\_slack\_oauth\_token\_secret) | ../../modules/secret | n/a |
@@ -45,7 +46,10 @@ No requirements.
 
 ## Inputs
 
-No inputs.
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_shared_user_pool_arn"></a> [shared\_user\_pool\_arn](#input\_shared\_user\_pool\_arn) | ARN of the shared Cognito user pool | `string` | n/a | yes |
+| <a name="input_shared_user_pool_id"></a> [shared\_user\_pool\_id](#input\_shared\_user\_pool\_id) | id of the shared Cognito user pool | `string` | n/a | yes |
 
 ## Outputs
 

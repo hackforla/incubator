@@ -582,3 +582,31 @@ import {
   to       = module.home-unite-us.aws_cloudwatch_log_group.lambda[each.key]
   id       = "/aws/lambda/home-unite-us-${each.key}"
 }
+
+# Adopts the shared Cognito user pool -- created by hand in 2022 as `vrms-dev` -- its
+# domain, and its four app clients: three people-depot's, one VRMS's. See
+# hackforla/incubator#17.
+import {
+  to = aws_cognito_user_pool.shared
+  id = "us-west-2_Fn4rkZpuB"
+}
+
+import {
+  to = aws_cognito_user_pool_domain.shared
+  id = "hackforla-vrms-dev"
+}
+
+import {
+  for_each = {
+    peopledepot = "52n88hbq9kn00utcjk2hg0e8nl"
+    pd-2        = "2pn3qa717ae8lq8u801v8t9hps"
+    backend     = "3e3bi1ct2ks9rcktrde8v60v3u"
+  }
+  to = module.people-depot.module.shared_user_pool_access.aws_cognito_user_pool_client.this[each.key]
+  id = "us-west-2_Fn4rkZpuB/${each.value}"
+}
+
+import {
+  to = module.vrms.module.shared_user_pool_access.aws_cognito_user_pool_client.this["vrms"]
+  id = "us-west-2_Fn4rkZpuB/5u7s2nj55mp9v5qmt9scja4hnr"
+}
