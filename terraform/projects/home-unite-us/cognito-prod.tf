@@ -89,14 +89,12 @@ resource "aws_cognito_user_pool" "homeuniteus_prod" {
     email_sending_account = "COGNITO_DEFAULT"
   }
 
-  // Points at the legacy customMessage/mergeUsers pair by literal ARN. Those two
-  // functions are not managed by Terraform. This is deliberate: re-pointing the pool
-  // at the already-managed home-unite-us-* pair is a live change to production
-  // sign-up, and folding it in here would stop this import from planning clean.
-  // Tracked as follow-on work -- see hackforla/incubator#166.
+  // The production triggers are customMessage/mergeUsers, declared below -- NOT the
+  // home-unite-us-* pair in cognito-qa.tf, despite the naming. The two pairs run
+  // different packages, so re-pointing this pool would change production sign-up.
   lambda_config {
-    custom_message = "arn:aws:lambda:us-west-2:035866691871:function:customMessage"
-    pre_sign_up    = "arn:aws:lambda:us-west-2:035866691871:function:mergeUsers"
+    custom_message = aws_lambda_function.cognito_custom_message_prod.arn
+    pre_sign_up    = aws_lambda_function.cognito_merge_users_prod.arn
   }
 
   password_policy {
@@ -329,4 +327,101 @@ resource "aws_cognito_user_pool_client" "homeuniteus_prod" {
 // .client_secret directly rather than this secret.
 resource "aws_secretsmanager_secret" "cognito_client_prod" {
   name = "homeuniteus-cognito-client"
+}
+
+// The two Lambda triggers on the production pool, adopted in place. See
+// hackforla/incubator#17.
+//
+// Each function points at the package that was deployed when it was imported,
+// downloaded with `aws lambda get-function` and committed under lambda/prod/. Its hash
+// matches the live CodeSha256, so the plan does not propose a code change. Do not point
+// these at lambda/customMessage.js or lambda/merge_users.py instead: the source is the
+// same today, but rebuilding the zip here would produce a different hash and upload
+// new code to production sign-up.
+resource "aws_iam_role" "lambda_prod" {
+  name               = "lambda"
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role.json
+
+  tags = {
+    project = local.project_name
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_execution_prod" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  role       = aws_iam_role.lambda_prod.name
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_cognito_prod" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
+  role       = aws_iam_role.lambda_prod.name
+}
+
+resource "aws_lambda_function" "cognito_custom_message_prod" {
+  filename         = "${path.module}/lambda/prod/customMessage.zip"
+  source_code_hash = filebase64sha256("${path.module}/lambda/prod/customMessage.zip")
+  function_name    = "customMessage"
+  role             = aws_iam_role.lambda_prod.arn
+  handler          = "customMessage.handler"
+  architectures    = ["x86_64"]
+
+  // nodejs18.x is a deprecated Lambda runtime. Upgrading it is a separate change, not
+  // part of adopting the function.
+  runtime = "nodejs18.x"
+
+  tags = {
+    project = local.project_name
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_lambda_function" "cognito_merge_users_prod" {
+  filename         = "${path.module}/lambda/prod/merge_users.zip"
+  source_code_hash = filebase64sha256("${path.module}/lambda/prod/merge_users.zip")
+  function_name    = "mergeUsers"
+  role             = aws_iam_role.lambda_prod.arn
+  handler          = "merge_users.lambda_handler"
+  architectures    = ["x86_64"]
+  runtime          = "python3.12"
+
+  tags = {
+    project = local.project_name
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_lambda_permission" "allow_message_execution_from_user_pool_prod" {
+  statement_id  = "AllowMessageExecutionFromUserPool"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.cognito_custom_message_prod.function_name
+  principal     = "cognito-idp.amazonaws.com"
+  source_arn    = aws_cognito_user_pool.homeuniteus_prod.arn
+}
+
+resource "aws_lambda_permission" "allow_merge_execution_from_user_pool_prod" {
+  statement_id  = "AllowMergeExecutionFromUserPool"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.cognito_merge_users_prod.function_name
+  principal     = "cognito-idp.amazonaws.com"
+  source_arn    = aws_cognito_user_pool.homeuniteus_prod.arn
+}
+
+// Lambda creates its log group on first invoke, so these existed without ever being
+// declared and had no retention at all. 180 days matches the RDS log groups in
+// ../../database.tf; applying it deletes everything older.
+resource "aws_cloudwatch_log_group" "lambda_prod" {
+  for_each = toset(["customMessage", "mergeUsers"])
+
+  name              = "/aws/lambda/${each.key}"
+  retention_in_days = 180
+
+  tags = {
+    project = local.project_name
+  }
 }

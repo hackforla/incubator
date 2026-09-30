@@ -532,6 +532,57 @@ import {
   id       = "/aws/rds/instance/incubator-prod-database/${each.key}"
 }
 
+# Adopts the two Lambda triggers on the production home-unite-us pool, the role they
+# run as, and the four /aws/lambda/* log groups. customMessage and mergeUsers are the
+# LIVE production functions despite the naming -- the home-unite-us-* pair is QA's.
+# See hackforla/incubator#17.
+import {
+  to = module.home-unite-us.aws_iam_role.lambda_prod
+  id = "lambda"
+}
+
+import {
+  to = module.home-unite-us.aws_iam_role_policy_attachment.lambda_execution_prod
+  id = "lambda/arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+import {
+  to = module.home-unite-us.aws_iam_role_policy_attachment.lambda_cognito_prod
+  id = "lambda/arn:aws:iam::aws:policy/AmazonCognitoPowerUser"
+}
+
+import {
+  to = module.home-unite-us.aws_lambda_function.cognito_custom_message_prod
+  id = "customMessage"
+}
+
+import {
+  to = module.home-unite-us.aws_lambda_function.cognito_merge_users_prod
+  id = "mergeUsers"
+}
+
+import {
+  to = module.home-unite-us.aws_lambda_permission.allow_message_execution_from_user_pool_prod
+  id = "customMessage/AllowMessageExecutionFromUserPool"
+}
+
+import {
+  to = module.home-unite-us.aws_lambda_permission.allow_merge_execution_from_user_pool_prod
+  id = "mergeUsers/AllowMergeExecutionFromUserPool"
+}
+
+import {
+  for_each = toset(["customMessage", "mergeUsers"])
+  to       = module.home-unite-us.aws_cloudwatch_log_group.lambda_prod[each.key]
+  id       = "/aws/lambda/${each.key}"
+}
+
+import {
+  for_each = toset(["customMessage", "mergeUsers"])
+  to       = module.home-unite-us.aws_cloudwatch_log_group.lambda[each.key]
+  id       = "/aws/lambda/home-unite-us-${each.key}"
+}
+
 # Adopts the shared Cognito user pool -- created by hand in 2022 as `vrms-dev` -- its
 # domain, and its four app clients: three people-depot's, one VRMS's. See
 # hackforla/incubator#17.
