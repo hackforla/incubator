@@ -1,0 +1,138 @@
+# Template: build a project's Docker image, push it to the Incubator's ECR, and redeploy
+# its ECS service.
+#
+# Copy this file into your project's repository as .github/workflows/deploy-to-aws.yml and
+# fill in every line marked YOU MUST FILL THIS OUT. Everything else is derived from those.
+#
+# Before it will work, the Incubator's Terraform must already declare, for your project:
+#   - an ECR repository named <PROJECT>-<APPLICATION_TYPE>            (modules/ecr)
+#   - for each environment, an ECS service named
+#     <PROJECT>-<APPLICATION_TYPE>-<environment>                      (modules/container),
+#     whose container_image ends in :<environment>
+#   - a CI/CD role named incubator-cicd-<PROJECT>                     (modules/cicd_integration),
+#     whose repository_name is this GitHub repository
+#
+# The image is pushed under a mutable tag equal to the environment, and the service is forced
+# to redeploy so it pulls whatever that tag now points at.
+#
+# Running it: Actions tab -> "deploy to aws" -> "Run workflow", then pick the branch to build
+# from and the environment to deploy to. Any branch can be deployed to any listed environment.
+#
+# Deploying a branch automatically on every push:
+#   Make a second copy of this file per branch you want tied to an environment, e.g.
+#   .github/workflows/deploy-to-aws-stage.yml for a `stage` branch, and in that copy:
+#     1. Change `name:` so the two workflows can be told apart, e.g. `deploy to aws (stage)`.
+#     2. Replace the whole `on:` block with:
+#          on:
+#            push:
+#              branches:
+#                - stage
+#     3. Replace the ENVIRONMENT line under `env:` with the environment itself, e.g.
+#          ENVIRONMENT: stage
+#   Keep the manual copy as well; it is still how you deploy any other branch on demand.
+
+name: deploy to aws
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to deploy to
+        required: true
+        type: choice
+        # YOU MUST FILL THIS OUT: one entry per environment your project has in the
+        # Incubator, e.g. dev, stage, qa, prod.
+        options:
+          - YOU MUST FILL THIS OUT
+
+env:
+  # --- Project settings ------------------------------------------------------------------
+  # YOU MUST FILL THIS OUT: the HfLA project name, exactly as the Incubator's Terraform
+  # spells it in project_name, e.g. people-depot.
+  PROJECT: YOU MUST FILL THIS OUT
+  # YOU MUST FILL THIS OUT: the kind of application this image runs: backend, frontend or
+  # fullstack.
+  APPLICATION_TYPE: YOU MUST FILL THIS OUT
+  # Path to the Dockerfile and the build context, relative to the repository root. Change
+  # these if yours differ. Other `docker build` options go in the "Build and push the
+  # image" step below.
+  DOCKERFILE: Dockerfile
+  BUILD_CONTEXT: .
+
+  # Set by the "Run workflow" form. In a copy tied to a branch, replace this line with the
+  # environment itself (see the instructions at the top).
+  ENVIRONMENT: ${{ inputs.environment }}
+
+  # --- Incubator platform: the same for every project, leave these alone -----------------
+  AWS_ACCOUNT_ID: "035866691871"
+  AWS_REGION: us-west-2
+  ECS_CLUSTER: incubator-prod
+
+# Queue deploys to the same environment rather than letting two race each other. `env` is
+# not available here, so a run started from the form keys on the environment picked, and a
+# copy tied to a branch keys on the branch name. Name the branch after its environment and
+# the two share a queue.
+concurrency:
+  group: deploy-to-aws-${{ github.event.inputs.environment || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # to request the OIDC token that assumes the AWS role
+      contents: read   # to check out the code
+    steps:
+      - name: Check the template has been filled out
+        run: |
+          for value in "$PROJECT" "$APPLICATION_TYPE" "$ENVIRONMENT"; do
+            if [ -z "$value" ] || [ "$value" = "YOU MUST FILL THIS OUT" ]; then
+              echo "::error::deploy-to-aws.yml still has a setting marked YOU MUST FILL THIS OUT."
+              exit 1
+            fi
+          done
+
+      - uses: actions/checkout@v5
+
+      - name: Derive resource names
+        run: |
+          echo "ECR_REPOSITORY=${PROJECT}-${APPLICATION_TYPE}" >> "$GITHUB_ENV"
+          echo "ECS_SERVICE=${PROJECT}-${APPLICATION_TYPE}-${ENVIRONMENT}" >> "$GITHUB_ENV"
+          echo "IMAGE_TAG=${ENVIRONMENT}" >> "$GITHUB_ENV"
+          echo "AWS_ROLE_NAME=incubator-cicd-${PROJECT}" >> "$GITHUB_ENV"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.AWS_ROLE_NAME }}
+          role-session-name: ${{ env.AWS_ROLE_NAME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # If your build needs extra options, add them to the `docker build` line below,
+      # before the final "$BUILD_CONTEXT". For example, to pass the environment into the
+      # Dockerfile as a build argument (read it there with `ARG ENVIRONMENT`):
+      #   docker build -f "$DOCKERFILE" -t "$IMAGE" --build-arg ENVIRONMENT="$ENVIRONMENT" "$BUILD_CONTEXT"
+      # Pass secrets with --secret rather than --build-arg, which leaves values in the image.
+      - name: Build and push the image
+        env:
+          IMAGE: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+        run: |
+          docker build -f "$DOCKERFILE" -t "$IMAGE" "$BUILD_CONTEXT"
+          docker push "$IMAGE"
+
+      - name: Redeploy the ECS service
+        run: |
+          aws ecs update-service \
+            --cluster "$ECS_CLUSTER" \
+            --service "$ECS_SERVICE" \
+            --force-new-deployment
+
+      - name: Wait for the service to become stable
+        run: |
+          aws ecs wait services-stable \
+            --cluster "$ECS_CLUSTER" \
+            --services "$ECS_SERVICE"
