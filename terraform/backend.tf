@@ -4,6 +4,7 @@ terraform {
   # 1.12 to 1.16 unnoticed. The dflook plan/apply actions resolve this to the
   # latest matching release, so this line alone chooses the CI Terraform version.
   required_version = "~> 1.16.0"
+  # Locking config lives in terraform/prod.backend.tfvars (use_lockfile).
   backend "s3" {
   }
   required_providers {
