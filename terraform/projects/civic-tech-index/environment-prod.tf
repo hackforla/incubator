@@ -25,6 +25,7 @@ module "backend_prod_service" {
    application_type = "backend"
    
    launch_type = "ec2"
+   network_mode = "bridge"
    
    container_port = 8000
    # 77845e0 is the commit the image was built from. Tags in this repository are mutable,

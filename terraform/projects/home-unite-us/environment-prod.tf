@@ -12,7 +12,8 @@ module "prod_service" {
   environment      = "prod"
   application_type = "fullstack"
 
-  launch_type = "ec2"
+  launch_type  = "ec2"
+  network_mode = "bridge"
 
   container_port = 80
 
