@@ -29,6 +29,7 @@ module "qa_service" {
    application_type = "fullstack"
 
    launch_type = "ec2"
+   network_mode = "bridge"
    
    container_port = 80
    container_image = "${module.ecr_fullstack.repository_url}:qa"
