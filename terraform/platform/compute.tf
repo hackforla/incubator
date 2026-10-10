@@ -41,7 +41,7 @@ resource "aws_ecs_cluster_capacity_providers" "this" {
 resource "aws_launch_template" "ecs" {
   name          = "ecs-incubator-prod"
   image_id      = "ami-036428f37186903ce"
-  instance_type = "m5.large"
+  instance_type = "t3a.medium"
   key_name      = "ecs-incubator-prod"
 
   # The VPC default group, not a purpose-built one. The group that looked like the container
@@ -55,6 +55,9 @@ resource "aws_launch_template" "ecs" {
   # Enables awsvpcTrunking, installs the SSM agent, sets ECS_CLUSTER. Kept as literal base64
   # because the script has a trailing space a heredoc would drop, changing what instances boot
   # with. Unchanged since version 8; version 9 (#251) changed only metadata_options.
+  #
+  # The awsvpcTrunking line is now a no-op: t3a.medium does not support trunking, and every
+  # task uses bridge networking (#257), so nothing needs an ENI.
   user_data = "IyEvYmluL2Jhc2gKYXdzIGVjcyBwdXQtYWNjb3VudC1zZXR0aW5nIC0tbmFtZSBhd3N2cGNUcnVua2luZyAtLXZhbHVlIGVuYWJsZWQgLS1yZWdpb24gdXMtd2VzdC0yIApjZCAvdG1wCnN1ZG8gZG5mIGluc3RhbGwgLXkgaHR0cHM6Ly9zMy5hbWF6b25hd3MuY29tL2VjMi1kb3dubG9hZHMtd2luZG93cy9TU01BZ2VudC9sYXRlc3QvbGludXhfYW1kNjQvYW1hem9uLXNzbS1hZ2VudC5ycG0Kc3VkbyBzeXN0ZW1jdGwgZW5hYmxlIGFtYXpvbi1zc20tYWdlbnQKc3VkbyBzeXN0ZW1jdGwgc3RhcnQgYW1hem9uLXNzbS1hZ2VudAplY2hvICJFQ1NfQ0xVU1RFUj1pbmN1YmF0b3ItcHJvZCIgPj4gL2V0Yy9lY3MvZWNzLmNvbmZpZwo="
 
   # Hop limit 1 keeps containers on Docker's bridge network from reaching the host's
@@ -71,10 +74,12 @@ resource "aws_launch_template" "ecs" {
 }
 
 resource "aws_autoscaling_group" "ecs" {
+  # One host runs everything. max_size keeps a second slot so an instance can be replaced --
+  # a new AMI, say -- by launching its successor before draining it, without an outage.
   name                      = "ecs-incubator-prod"
   min_size                  = 1
   max_size                  = 2
-  desired_capacity          = 2
+  desired_capacity          = 1
   default_cooldown          = 300
   health_check_type         = "EC2"
   health_check_grace_period = 300

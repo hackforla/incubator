@@ -33,8 +33,7 @@
  * because the hosts set an instance metadata hop limit of 1 (hackforla/incubator#251).
  *
  * Switching a service changes `target_type`, which is part of `local.tg_suffix`, so it gets
- * a new target group stood up beside the old one. Comments elsewhere in this module about
- * ENI slots apply to `awsvpc` services only.
+ * a new target group stood up beside the old one.
  *
  * ## How the target group name is built
  *
@@ -139,20 +138,20 @@ locals {
 
   is_fargate = var.launch_type == "fargate"
 
-  # prod must keep a task serving throughout a deploy, so it always needs a spare ENI
-  # slot. Non-prod may drop to zero, which lets a deploy proceed even when the cluster
-  # has no free slot left.
+  # prod must keep a task serving throughout a deploy, so the host always needs room for a
+  # second copy of the task's memory reservation. Non-prod may drop to zero, which lets a
+  # deploy proceed even when the host has no memory to spare.
   deployment_min = var.deployment_minimum_healthy_percent != null ? var.deployment_minimum_healthy_percent : (var.environment == "prod" ? 100 : 0)
   # max stays 200 everywhere: ECS Availability Zone Rebalancing rejects maximumPercent <= 100,
   # so a non-prod 0/100 is refused at UpdateService. 0/200 still lets a deploy fall back to
-  # stop-then-start when no spare ENI slot is free, rather than deadlocking on placement.
+  # stop-then-start when the host has no spare memory, rather than deadlocking on placement.
   deployment_max = var.deployment_maximum_percent != null ? var.deployment_maximum_percent : 200
 
-  # ENI slots (10 per m5.large) are the scarce resource and ECS cannot binpack on ENIs,
-  # so spread -- binpacking memory would fill one host's slots while the other sat idle.
+  # Memory is the scarce resource on the single host. Binpacking on it keeps tasks on as few
+  # hosts as possible, so when the group briefly runs two -- while an instance is replaced --
+  # tasks consolidate onto one instead of spreading across both.
   placement_strategies = local.is_fargate ? [] : [
-    { type = "spread", field = "attribute:ecs.availability-zone" },
-    { type = "spread", field = "instanceId" },
+    { type = "binpack", field = "memory" },
   ]
 
   is_bridge         = var.network_mode == "bridge"

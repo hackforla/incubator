@@ -32,7 +32,8 @@ resource "aws_iam_instance_profile" "ecs_instance" {
 }
 
 # Customer-managed and itself unmanaged, so adopted alongside the role. Lets the instance
-# user_data turn on awsvpcTrunking, which raises the ENI limit per instance.
+# user_data turn on awsvpcTrunking, which raises the ENI limit per instance. Nothing has needed
+# that since every task moved to bridge networking (#257), but the user_data still makes the call.
 resource "aws_iam_policy" "ecs_put_account_settings" {
   name = "ecs-put-account-settings"
 
