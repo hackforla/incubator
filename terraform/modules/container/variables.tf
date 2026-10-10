@@ -90,6 +90,24 @@ variable "launch_type" {
   }
 }
 
+variable "network_mode" {
+  description = "Task networking, either `awsvpc` (the default) or `bridge`. `bridge` shares the host's interface and uses no ENI, which is how many services fit on one small instance; see \"Network modes\" at the top of this page. Fargate supports only `awsvpc`."
+  type        = string
+  default     = "awsvpc"
+
+  validation {
+    condition     = contains(["awsvpc", "bridge"], var.network_mode)
+    error_message = "Must be either \"awsvpc\" or \"bridge\"."
+  }
+
+  # launch_type defaults to "fargate", so this also catches a caller who sets bridge but
+  # forgets launch_type = "ec2".
+  validation {
+    condition     = !(var.network_mode == "bridge" && var.launch_type == "fargate")
+    error_message = "Fargate supports only awsvpc. Set launch_type = \"ec2\" to use bridge."
+  }
+}
+
 variable "deployment_minimum_healthy_percent" {
   description = "Percent of the desired count that must stay running during a deploy. Leave null to derive from `environment`: 100 for prod, 0 everywhere else."
   type        = number

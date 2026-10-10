@@ -10,6 +10,32 @@ forwarding traffic to the service. If you have a backend that runs with the path
 and a frontend that just runs with `/`, make sure that the backend has a lower listener
 priority than the frontend, otherwise all traffic will be sent to the frontend.
 
+## Network modes
+
+`network_mode` is `awsvpc` by default. Each task then gets its own ENI, its own private
+IP and its own security group, and the target group registers that IP. ENI slots per
+instance are limited and ECS cannot binpack on them, which is what caps how many tasks a
+host can hold. Fargate supports only `awsvpc`.
+
+`bridge` puts the task on Docker's bridge network on the host instead, and changes four
+things:
+
+1. No ENI. The task shares the host's interface, so it does not use an ENI slot.
+2. A random host port. `hostPort` is `0`, so Docker picks a free one. A fixed host port
+   would collide, because several services listen on the same container port.
+3. `instance` targets. The target group registers the host and that random port, and
+   health checks follow it on `traffic-port`.
+4. No security group of its own. The module creates none, and the task sits behind the
+   host's security group, the VPC default group, which allows all inbound traffic. The
+   hosts are in private subnets, so that is not reachable from the internet.
+
+Containers on the bridge network cannot reach the host's instance credentials only
+because the hosts set an instance metadata hop limit of 1 (hackforla/incubator#251).
+
+Switching a service changes `target_type`, which is part of `local.tg_suffix`, so it gets
+a new target group stood up beside the old one. Comments elsewhere in this module about
+ENI slots apply to `awsvpc` services only.
+
 ## How the target group name is built
 
 An ELB target group name cannot exceed 32 characters. That limit is verified against
@@ -145,6 +171,7 @@ No modules.
 | <a name="input_hostname"></a> [hostname](#input\_hostname) | hostname for load balancer routing, ex: "www.vrms.io" | `string` | n/a | yes |
 | <a name="input_launch_type"></a> [launch\_type](#input\_launch\_type) | infrastructure type, either `ec2` or `fargate`. Always use `ec2` unless you have a good reason | `string` | `"fargate"` | no |
 | <a name="input_listener_priority"></a> [listener\_priority](#input\_listener\_priority) | rule priority for load balancer rules. Make sure that rules with a longer path, `/api/v1/*` have a LOWER priority (evaluated first) than shorter ones, `/*` | `number` | n/a | yes |
+| <a name="input_network_mode"></a> [network\_mode](#input\_network\_mode) | Task networking, either `awsvpc` (the default) or `bridge`. `bridge` shares the host's interface and uses no ENI, which is how many services fit on one small instance; see "Network modes" at the top of this page. Fargate supports only `awsvpc`. | `string` | `"awsvpc"` | no |
 | <a name="input_path"></a> [path](#input\_path) | path for load balancer routing, for example `/api/*` | `string` | `null` | no |
 | <a name="input_project_name"></a> [project\_name](#input\_project\_name) | HfLA project name (vrms, home-unite-us, civic-tech-index, etc). This is what the `project` tag carries, so it must be the project name from the tag standard -- never an application, environment or repository name. | `any` | n/a | yes |
 | <a name="input_use_own_execution_role"></a> [use\_own\_execution\_role](#input\_use\_own\_execution\_role) | `true` (the default) runs the task under this container's own project-scoped execution role. `false` falls back to the shared `incubator-prod-ecs-task-role`, which is to be deleted once nothing uses it; this variable goes with it. See hackforla/incubator#201. | `bool` | `true` | no |
