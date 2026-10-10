@@ -25,6 +25,7 @@ module "civic_tech_jobs_fullstack_stage_service" {
   application_type = "fullstack"
 
   launch_type = "ec2"
+  network_mode = "bridge"
 
   container_port  = 8000
   container_image = "${module.civic_tech_jobs_ecr_fullstack.repository_url}:stage"

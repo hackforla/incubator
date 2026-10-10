@@ -20,6 +20,7 @@ module "backend_dev_service" {
    application_type = "backend"
    
    launch_type = "ec2"
+   network_mode = "bridge"
    
    container_port = 4000
    container_image = "${module.ecr_backend.repository_url}:dev"
@@ -61,6 +62,7 @@ module "frontend_dev_service" {
    application_type = "frontend"
 
    launch_type = "ec2"
+   network_mode = "bridge"
 
    container_port = 3000
    container_image = "${module.ecr_frontend.repository_url}:dev"
