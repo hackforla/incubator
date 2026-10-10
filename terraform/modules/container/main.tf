@@ -617,10 +617,9 @@ resource "aws_ecs_service" "fargate" {
 
 
   # Deliberately no create_before_destroy here, unlike the target group and security group
-  # above. Two services can coexist, but each task consumes an ENI, and the cluster's two
-  # m5.large instances already hold 12 ENI attachments for 10 running tasks. Standing a full
-  # duplicate service up alongside the original risks exhausting ENI slots, which ECS cannot
-  # binpack on. See hackforla/incubator#184.
+  # above. Two services can coexist, but the cluster is one host with about 1 GB of memory to
+  # spare. Standing a full duplicate service up alongside the original doubles its memory
+  # reservation and risks leaving tasks unplaceable. See hackforla/incubator#184.
   lifecycle {
     ignore_changes = [desired_count]
   }
