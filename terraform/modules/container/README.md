@@ -33,8 +33,7 @@ Containers on the bridge network cannot reach the host's instance credentials on
 because the hosts set an instance metadata hop limit of 1 (hackforla/incubator#251).
 
 Switching a service changes `target_type`, which is part of `local.tg_suffix`, so it gets
-a new target group stood up beside the old one. Comments elsewhere in this module about
-ENI slots apply to `awsvpc` services only.
+a new target group stood up beside the old one.
 
 ## How the target group name is built
 
