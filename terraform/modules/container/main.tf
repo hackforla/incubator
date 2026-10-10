@@ -10,6 +10,32 @@
  * and a frontend that just runs with `/`, make sure that the backend has a lower listener
  * priority than the frontend, otherwise all traffic will be sent to the frontend.
  *
+ * ## Network modes
+ *
+ * `network_mode` is `awsvpc` by default. Each task then gets its own ENI, its own private
+ * IP and its own security group, and the target group registers that IP. ENI slots per
+ * instance are limited and ECS cannot binpack on them, which is what caps how many tasks a
+ * host can hold. Fargate supports only `awsvpc`.
+ *
+ * `bridge` puts the task on Docker's bridge network on the host instead, and changes four
+ * things:
+ *
+ * 1. No ENI. The task shares the host's interface, so it does not use an ENI slot.
+ * 2. A random host port. `hostPort` is `0`, so Docker picks a free one. A fixed host port
+ *    would collide, because several services listen on the same container port.
+ * 3. `instance` targets. The target group registers the host and that random port, and
+ *    health checks follow it on `traffic-port`.
+ * 4. No security group of its own. The module creates none, and the task sits behind the
+ *    host's security group, the VPC default group, which allows all inbound traffic. The
+ *    hosts are in private subnets, so that is not reachable from the internet.
+ *
+ * Containers on the bridge network cannot reach the host's instance credentials only
+ * because the hosts set an instance metadata hop limit of 1 (hackforla/incubator#251).
+ *
+ * Switching a service changes `target_type`, which is part of `local.tg_suffix`, so it gets
+ * a new target group stood up beside the old one. Comments elsewhere in this module about
+ * ENI slots apply to `awsvpc` services only.
+ *
  * ## How the target group name is built
  *
  * An ELB target group name cannot exceed 32 characters. That limit is verified against
@@ -129,13 +155,15 @@ locals {
     { type = "spread", field = "instanceId" },
   ]
 
-  task_network_mode = "awsvpc"
+  is_bridge         = var.network_mode == "bridge"
+  task_network_mode = var.network_mode
 
   # vpc_id, tg_protocol and target_type are referenced both by the resources below and by
   # tg_suffix, so they live here to keep the two from drifting apart.
   vpc_id      = "vpc-0bec93a4d80243845"
   tg_protocol = "HTTP"
-  target_type = "ip"
+  # A bridge task has no IP of its own, so the target group registers the host instead.
+  target_type = local.is_bridge ? "instance" : "ip"
 
   # A target group name is capped at 32 characters and name_prefix is rejected above 6, so
   # neither Terraform's own prefix mechanism nor a longer suffix fits. This is a 3-character
@@ -173,7 +201,12 @@ locals {
 
 // security group for the container
 // ingress of the provided port, unlimited egress
+//
+// awsvpc only. A bridge task has no interface of its own to attach a group to; the host's
+// security group applies instead. The [0] addresses are mapped in moved.tf.
 resource "aws_security_group" "container" {
+  count = local.is_bridge ? 0 : 1
+
   name        = "ecs-container-${local.envappname}"
   description = "Container ${local.envappname}"
   vpc_id      = local.vpc_id
@@ -197,7 +230,9 @@ resource "aws_security_group" "container" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "container_ingress_port" {
-  security_group_id = aws_security_group.container.id
+  count = local.is_bridge ? 0 : 1
+
+  security_group_id = aws_security_group.container[0].id
   cidr_ipv4         = "10.10.0.0/16"
   from_port         = var.container_port
   ip_protocol       = "tcp"
@@ -212,7 +247,9 @@ resource "aws_vpc_security_group_ingress_rule" "container_ingress_port" {
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_all_traffic" {
-  security_group_id = aws_security_group.container.id
+  count = local.is_bridge ? 0 : 1
+
+  security_group_id = aws_security_group.container[0].id
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1" # semantically equivalent to all ports
 
@@ -509,7 +546,9 @@ resource "aws_ecs_task_definition" "task" {
       portMappings = [
         {
           containerPort = var.container_port
-          hostPort      = var.container_port
+          # 0 in bridge mode lets Docker pick a free host port. A fixed one would collide:
+          # several services share a container port (8000, 80, 4000, 3000) on one host.
+          hostPort = local.is_bridge ? 0 : var.container_port
         }
       ]
       logConfiguration = {
@@ -563,9 +602,13 @@ resource "aws_ecs_service" "fargate" {
     }
   }
 
-  network_configuration {
-    subnets          = ["subnet-089e80a53e1522e28", "subnet-03ed55f60a6c28e72"]
-    security_groups  = [aws_security_group.container.id]
+  # awsvpc only; ECS rejects network_configuration for a bridge task.
+  dynamic "network_configuration" {
+    for_each = local.is_bridge ? [] : [1]
+    content {
+      subnets         = ["subnet-089e80a53e1522e28", "subnet-03ed55f60a6c28e72"]
+      security_groups = [aws_security_group.container[0].id]
+    }
   }
 
 
