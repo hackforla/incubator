@@ -53,10 +53,21 @@ resource "aws_launch_template" "ecs" {
   }
 
   # Enables awsvpcTrunking, installs the SSM agent, sets ECS_CLUSTER. Kept as literal base64
-  # because version 8 has a trailing space a heredoc would drop, minting a version 9.
+  # because the script has a trailing space a heredoc would drop, changing what instances boot
+  # with. Unchanged since version 8; version 9 (#251) changed only metadata_options.
   user_data = "IyEvYmluL2Jhc2gKYXdzIGVjcyBwdXQtYWNjb3VudC1zZXR0aW5nIC0tbmFtZSBhd3N2cGNUcnVua2luZyAtLXZhbHVlIGVuYWJsZWQgLS1yZWdpb24gdXMtd2VzdC0yIApjZCAvdG1wCnN1ZG8gZG5mIGluc3RhbGwgLXkgaHR0cHM6Ly9zMy5hbWF6b25hd3MuY29tL2VjMi1kb3dubG9hZHMtd2luZG93cy9TU01BZ2VudC9sYXRlc3QvbGludXhfYW1kNjQvYW1hem9uLXNzbS1hZ2VudC5ycG0Kc3VkbyBzeXN0ZW1jdGwgZW5hYmxlIGFtYXpvbi1zc20tYWdlbnQKc3VkbyBzeXN0ZW1jdGwgc3RhcnQgYW1hem9uLXNzbS1hZ2VudAplY2hvICJFQ1NfQ0xVU1RFUj1pbmN1YmF0b3ItcHJvZCIgPj4gL2V0Yy9lY3MvZWNzLmNvbmZpZwo="
 
-  default_version = 1 # live default is 1 even though version 8 is what runs
+  # Hop limit 1 keeps containers on Docker's bridge network from reaching the host's
+  # instance credentials (ecs-ec2-role): their token PUT is one hop further than the host,
+  # so it times out. It does not cover awsvpc tasks, which reach IMDS through their own ENI.
+  # Applying this does not change running instances; see #251.
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_tokens                 = "required"
+    http_put_response_hop_limit = 1
+  }
+
+  default_version = 1 # live default is 1 even though the ASG launches from $Latest
 }
 
 resource "aws_autoscaling_group" "ecs" {
