@@ -142,9 +142,9 @@ locals {
   # second copy of the task's memory reservation. Non-prod may drop to zero, which lets a
   # deploy proceed even when the host has no memory to spare.
   deployment_min = var.deployment_minimum_healthy_percent != null ? var.deployment_minimum_healthy_percent : (var.environment == "prod" ? 100 : 0)
-  # max stays 200 everywhere: ECS Availability Zone Rebalancing rejects maximumPercent <= 100,
-  # so a non-prod 0/100 is refused at UpdateService. 0/200 still lets a deploy fall back to
-  # stop-then-start when the host has no spare memory, rather than deadlocking on placement.
+  # max stays 200 everywhere: prod needs it to start the new task before stopping the old,
+  # and non-prod's 0/200 still lets a deploy fall back to stop-then-start when the host has
+  # no spare memory, rather than deadlocking on placement.
   deployment_max = var.deployment_maximum_percent != null ? var.deployment_maximum_percent : 200
 
   # Memory is the scarce resource on the single host. Binpacking on it keeps tasks on as few
@@ -592,6 +592,11 @@ resource "aws_ecs_service" "fargate" {
 
   deployment_minimum_healthy_percent = local.deployment_min
   deployment_maximum_percent         = local.deployment_max
+
+  # Off because the cluster is one host in one Availability Zone, so there is nothing to
+  # rebalance across. While it was on, ECS accepted only placement strategies that spread
+  # by Availability Zone and rejected the binpack below at UpdateService (#255).
+  availability_zone_rebalancing = "DISABLED"
 
   dynamic "ordered_placement_strategy" {
     for_each = local.placement_strategies

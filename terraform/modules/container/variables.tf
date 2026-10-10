@@ -115,7 +115,7 @@ variable "deployment_minimum_healthy_percent" {
 }
 
 variable "deployment_maximum_percent" {
-  description = "Ceiling on running tasks during a deploy. Defaults to 200. Values <= 100 are rejected by ECS when Availability Zone Rebalancing is enabled, which it is on this cluster."
+  description = "Ceiling on running tasks during a deploy. Defaults to 200, which lets a deploy start the new task before stopping the old one."
   type        = number
   default     = null
 }

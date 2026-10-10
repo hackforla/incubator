@@ -46,7 +46,7 @@ module "prod_service" {
     // run on -- the RDS instance is not involved despite what the abandoned Terragrunt
     // state suggests. The task definition declares no volume and no mount, so this file
     // is created empty on every task start and destroyed with the task. Application
-    // data therefore does not survive a deploy, a host drain or an AZ rebalance; the
+    // data therefore does not survive a deploy or a host drain; the
     // log group shows 743 task generations. Reproduced here deliberately so the cutover
     // changes nothing, and recorded so the next reader does not mistake it for working
     // persistence. The absolute form is used because a relative URL would depend on the
