@@ -29,11 +29,6 @@ resource "aws_vpc" "this" {
 
   tags = {
     Name = "incubator-prod-vpc"
-
-    # Terragrunt-era, from a state file that no longer exists. Adopted, not believed.
-    terraform_managed  = "true"
-    terraform_user_arn = "arn:aws:iam::035866691871:user/DarrenP"
-    last_changed       = "Sat 2021-May-08 20:09:31"
   }
 
   # Everything in the account lives in this VPC; a replacement is not recoverable.

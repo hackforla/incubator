@@ -86,12 +86,6 @@ resource "aws_iam_role" "ecs_task_execution" {
       },
     ]
   })
-
-  tags = {
-    # Terragrunt-era, from a state file that no longer exists. Adopted, not believed.
-    terraform_managed = "true"
-    last_changed      = "Sat 2021-May-08 21:10:10"
-  }
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_ecs" {
