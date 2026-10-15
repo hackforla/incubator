@@ -5,10 +5,6 @@ resource "aws_security_group" "alb" {
 
   tags = {
     Name = "incubator-prod-alb"
-
-    # Terragrunt-era, from a state file that no longer exists. Adopted, not believed.
-    terraform_managed = "true"
-    last_changed      = "Thu 2023-Sep-28 06:13:14"
   }
 }
 
@@ -45,10 +41,6 @@ resource "aws_security_group" "database" {
 
   tags = {
     Name = "incubator-prod-database"
-
-    # Terragrunt-era, from a state file that no longer exists. Adopted, not believed.
-    terraform_managed = "true"
-    last_changed      = "Sat 2021-May-08 20:09:49"
   }
 }
 

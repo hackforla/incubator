@@ -26,10 +26,6 @@ resource "aws_lb" "this" {
 
   tags = {
     Name = "incubator" # live value, not the load balancer's own name
-
-    # Terragrunt-era, from a state file that no longer exists. Adopted, not believed.
-    terraform_managed = "true"
-    last_changed      = "Thu 2023-Sep-28 06:13:14"
   }
 
   # Every project's DNS points here; a replacement would mint a new name and break all of it.
