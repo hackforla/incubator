@@ -42,58 +42,22 @@ resource "aws_db_subnet_group" "incubator_prod" {
   }
 }
 
-# option_group_name is deliberately absent. Option groups do nothing for
-# PostgreSQL, and AWS creates the default ones lazily -- naming
-# "default:postgres-15" before it exists fails the apply with
-# OptionGroupNotFoundFault. Leaving the attribute out lets RDS assign the
-# family default itself during the major upgrade. Do not add it back.
-resource "aws_db_instance" "default" {
-  allocated_storage                     = 100
-  allow_major_version_upgrade           = true
-  apply_immediately                     = true
-  auto_minor_version_upgrade            = true
-  availability_zone                     = "us-west-2a"
-  backup_retention_period               = 4
-  backup_target                         = "region"
-  backup_window                         = "03:00-06:00"
-  ca_cert_identifier                    = "rds-ca-rsa2048-g1"
-  copy_tags_to_snapshot                 = true
-  customer_owned_ip_enabled             = false
-  db_subnet_group_name                  = aws_db_subnet_group.incubator_prod.name
-  deletion_protection                   = false
-  enabled_cloudwatch_logs_exports       = ["postgresql", "upgrade"]
-  engine                                = "postgres"
-  engine_lifecycle_support              = "open-source-rds-extended-support"
-  engine_version                        = "15"
-  iam_database_authentication_enabled   = false
-  identifier                            = "incubator-prod-database"
-  instance_class                        = "db.t3.small"
-  multi_az                              = false
-  network_type                          = "IPV4"
-  parameter_group_name                  = aws_db_parameter_group.postgres15.name
-  port                                  = 5432
-  publicly_accessible                   = true
-  skip_final_snapshot                   = true
-  storage_encrypted                     = false
-  storage_type                          = "gp2"
+# The original 100 GiB instance. hackforla/incubator#267 swapped it out by identifier
+# for the 20 GiB instance below, so it is now "incubator-prod-database-old". destroy =
+# false stops managing it without deleting it; it is deleted by hand, with a final
+# snapshot, once the new instance has run cleanly for a few days.
+removed {
+  from = aws_db_instance.default
 
-  tags = {
-    Name = "incubator-prod-database"
+  lifecycle {
+    destroy = false
   }
-
-  username               = "postgres"
-
-  vpc_security_group_ids = ["sg-0ab8947eeb3d705ac"]
 }
 
-# Replacement for aws_db_instance.default on a 20 GiB volume. RDS cannot shrink
-# allocated storage, so the data moves by pg_dump/pg_restore and the two instances
-# then swap identifiers, which keeps the endpoint hostname -- and every connection
-# URL -- unchanged. See hackforla/incubator#267.
-#
-# Until that swap this is "incubator-prod-database-new"; a follow-up PR renames it
-# here and removes the old block. Every attribute matches the old instance except
-# identifier, allocated_storage, storage_type and max_allocated_storage.
+# The shared instance, on a 20 GiB volume since hackforla/incubator#267. RDS cannot
+# shrink allocated storage, so it was created as "incubator-prod-database-new", filled
+# by pg_dump/pg_restore, and then swapped identifiers with the original 100 GiB
+# instance. That kept the endpoint hostname -- and every connection URL -- unchanged.
 #
 # gp3 rather than gp2: gp2 baseline IOPS scale with size (3 per GiB, minimum 100),
 # so 20 GiB of gp2 would drop from 300 to 100 IOPS. gp3 is a flat 3,000 at the
@@ -102,6 +66,12 @@ resource "aws_db_instance" "default" {
 #
 # The master password reuses var.pgpassword, so TF_VAR_PGPASSWORD stays valid.
 # password_wo keeps it out of state; bump password_wo_version to push a new one.
+#
+# option_group_name is deliberately absent. Option groups do nothing for
+# PostgreSQL, and AWS creates the default ones lazily -- naming
+# "default:postgres-15" before it exists fails the apply with
+# OptionGroupNotFoundFault. Leaving the attribute out lets RDS assign the
+# family default itself. Do not add it back.
 resource "aws_db_instance" "incubator_prod" {
   allocated_storage                   = 20
   allow_major_version_upgrade         = true
@@ -121,7 +91,7 @@ resource "aws_db_instance" "incubator_prod" {
   engine_lifecycle_support            = "open-source-rds-extended-support"
   engine_version                      = "15"
   iam_database_authentication_enabled = false
-  identifier                          = "incubator-prod-database-new"
+  identifier                          = "incubator-prod-database"
   instance_class                      = "db.t3.small"
   max_allocated_storage               = 50
   multi_az                            = false
