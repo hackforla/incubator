@@ -38,7 +38,7 @@ jobs:
         aws-region: us-west-2
 
     - name: Terraform Plan
-      uses: dflook/terraform-plan@v1
+      uses: dflook/terraform-plan@v3
       with:
         path: terraform
         backend_config_file: terraform/prod.backend.tfvars
