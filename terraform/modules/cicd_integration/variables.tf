@@ -12,3 +12,8 @@ output "role_name" {
   value       = aws_iam_role.builder.name
   description = "IAM role name that will be assumed by GitHub actions when running"
 }
+
+output "role_arn" {
+  value       = aws_iam_role.builder.arn
+  description = "IAM role ARN, for the `role-to-assume` input of `aws-actions/configure-aws-credentials`"
+}

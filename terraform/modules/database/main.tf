@@ -142,3 +142,27 @@ resource "postgresql_database" "db" {
   name  = "${var.project_name}_${var.application_type}_${var.environment}"
   owner = postgresql_role.db_owner.name
 }
+
+
+/*
+* Postgres extensions
+*
+* Created by Terraform's provider login rather than by the project's own logins, because
+* some extensions (postgis among them) need rds_superuser, which the project logins lack.
+*
+* create_cascade installs an extension's dependencies with it. Those dependencies are not
+* tracked in Terraform state, and should not be listed in var.extensions as well: Terraform
+* would then create the same extension twice at once, and the apply can fail. For example,
+* earthdistance depends on cube, so a project lists earthdistance and gets both.
+*
+* drop_cascade is left at its default of false, so removing an extension that objects in
+* the database still depend on fails rather than dropping those objects.
+*/
+
+resource "postgresql_extension" "this" {
+  for_each = var.extensions
+
+  name           = each.value
+  database       = postgresql_database.db.name
+  create_cascade = true
+}

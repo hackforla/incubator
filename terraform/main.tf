@@ -45,6 +45,10 @@ module "access-the-data" {
     source = "./projects/access-the-data"
 }
 
+module "food-oasis" {
+    source = "./projects/food-oasis"
+}
+
 
 
 

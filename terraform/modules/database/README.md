@@ -42,6 +42,7 @@ parameters are output variables, listed below
 | Name | Type |
 |------|------|
 | [postgresql_database.db](https://registry.terraform.io/providers/cyrilgdn/postgresql/1.25.0/docs/resources/database) | resource |
+| [postgresql_extension.this](https://registry.terraform.io/providers/cyrilgdn/postgresql/1.25.0/docs/resources/extension) | resource |
 | [postgresql_grant.user](https://registry.terraform.io/providers/cyrilgdn/postgresql/1.25.0/docs/resources/grant) | resource |
 | [postgresql_grant.viewer](https://registry.terraform.io/providers/cyrilgdn/postgresql/1.25.0/docs/resources/grant) | resource |
 | [postgresql_role.db_owner](https://registry.terraform.io/providers/cyrilgdn/postgresql/1.25.0/docs/resources/role) | resource |
@@ -54,6 +55,7 @@ parameters are output variables, listed below
 |------|-------------|------|---------|:--------:|
 | <a name="input_application_type"></a> [application\_type](#input\_application\_type) | frontend, backend, or fullstack | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | what environment this is for - staging, production, etc | `string` | n/a | yes |
+| <a name="input_extensions"></a> [extensions](#input\_extensions) | PostgreSQL extensions to create in the database, for example `["postgis"]`. Extensions they depend on are installed with them by CASCADE, so list only the ones the application uses. | `set(string)` | `[]` | no |
 | <a name="input_project_name"></a> [project\_name](#input\_project\_name) | HfLA project name (vrms, home-unite-us, etc) | `string` | n/a | yes |
 
 ## Outputs
