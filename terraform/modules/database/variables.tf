@@ -13,6 +13,12 @@ variable "environment" {
   description = "what environment this is for - staging, production, etc"
 }
 
+variable "extensions" {
+  type        = set(string)
+  default     = []
+  description = "PostgreSQL extensions to create in the database, for example `[\"postgis\"]`. Extensions they depend on are installed with them by CASCADE, so list only the ones the application uses."
+}
+
 
 
 
