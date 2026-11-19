@@ -43,5 +43,6 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_role_arn"></a> [role\_arn](#output\_role\_arn) | IAM role ARN, for the `role-to-assume` input of `aws-actions/configure-aws-credentials` |
 | <a name="output_role_name"></a> [role\_name](#output\_role\_name) | IAM role name that will be assumed by GitHub actions when running |
 <!-- END_TF_DOCS -->
