@@ -13,3 +13,14 @@ output "dkim_records" {
   ] : []
   description = "the domain's three DKIM records as a list of `name`, `type` and `value`, whether or not the module wrote them. Empty for an email address"
 }
+
+output "mail_from_records" {
+  value = [
+    for record in values(local.mail_from_records) : {
+      name  = local.mail_from_domain
+      type  = record.type
+      value = record.value
+    }
+  ]
+  description = "the custom MAIL FROM domain's MX and SPF records as a list of `name`, `type` and `value`, whether or not the module wrote them. Empty when `mail_from_subdomain` is unset"
+}

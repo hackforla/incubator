@@ -25,14 +25,35 @@
  * with "Invalid count argument". Apply the zone first, or leave `zone_id` unset and add the
  * records later.
  *
+ * Custom MAIL FROM: set `mail_from_subdomain` to send with an envelope sender (Return-Path)
+ * of `<subdomain>.<domain>` instead of SES's own `amazonses.com`. Without it, SPF passes for
+ * amazonses.com, which does not match the From domain, and the SES console warns "MAIL FROM
+ * record is not aligned". DMARC still passes through DKIM, which is aligned, so the subdomain
+ * adds a second aligned path rather than fixing a delivery failure. It needs an MX record
+ * pointing bounces back at SES's feedback endpoint and an SPF record; with `zone_id` set the
+ * module writes both, otherwise they appear only in the `mail_from_records` output. If the MX
+ * record is missing, SES falls back to its own domain rather than rejecting mail.
+ *
  * New accounts start in the SES sandbox. Until AWS approves production access for the
  * account and region, SES only sends to verified addresses and domains, at most 200
  * messages a day. Requesting production access is a manual step in the SES console and is
  * not done here.
  */
 
+// terraform-docs-ignore
+data "aws_region" "current" {}
+
 locals {
   is_domain = !strcontains(var.identity, "@")
+
+  mail_from_domain = var.mail_from_subdomain == null ? null : "${var.mail_from_subdomain}.${var.identity}"
+
+  // The two records a custom MAIL FROM domain needs. The MX target is per region, not per
+  // account, so the same records serve an identity for this domain in any account.
+  mail_from_records = local.mail_from_domain == null ? {} : {
+    mx  = { type = "MX", value = "10 feedback-smtp.${data.aws_region.current.region}.amazonses.com" }
+    spf = { type = "TXT", value = "v=spf1 include:amazonses.com ~all" }
+  }
 }
 
 resource "aws_sesv2_email_identity" "this" {
@@ -57,4 +78,26 @@ resource "aws_route53_record" "dkim" {
   type    = "CNAME"
   ttl     = 1800
   records = ["${aws_sesv2_email_identity.this.dkim_signing_attributes[0].tokens[count.index]}.dkim.amazonses.com"]
+}
+
+resource "aws_sesv2_email_identity_mail_from_attributes" "this" {
+  count = local.mail_from_domain == null ? 0 : 1
+
+  email_identity   = aws_sesv2_email_identity.this.email_identity
+  mail_from_domain = local.mail_from_domain
+
+  // USE_DEFAULT_VALUE sends with amazonses.com while the MX record is missing; REJECT_MESSAGE
+  // would stop all mail instead.
+  behavior_on_mx_failure = "USE_DEFAULT_VALUE"
+}
+
+resource "aws_route53_record" "mail_from" {
+  for_each = var.zone_id == null ? {} : local.mail_from_records
+
+  zone_id = var.zone_id
+  name    = local.mail_from_domain
+  type    = each.value.type
+  ttl     = 1800
+  // Route 53 needs a TXT value in quotes; an MX value is written as is.
+  records = [each.value.type == "TXT" ? "\"${each.value.value}\"" : each.value.value]
 }

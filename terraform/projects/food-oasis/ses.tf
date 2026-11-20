@@ -14,11 +14,16 @@
 // Bounces and complaints are handled by the account-level suppression list, on for both
 // (hackforla/incubator#279). No notification topic is set, so SES's feedback emails go to
 // donotreply@foodoasis.net, which has no mailbox.
+//
+// bounce.foodoasis.net is the custom MAIL FROM domain, so SPF aligns with the From domain as
+// well as DKIM. Its MX and SPF records were copied into the Food Oasis zone too. The Food
+// Oasis account's identity was deliberately left on SES's default MAIL FROM.
 module "ses_foodoasis_net" {
   source = "../../modules/ses"
 
-  identity = "foodoasis.net"
-  zone_id  = aws_route53_zone.this.zone_id
+  identity            = "foodoasis.net"
+  zone_id             = aws_route53_zone.this.zone_id
+  mail_from_subdomain = "bounce"
 
   tags = {
     project = local.project_name_food_oasis
