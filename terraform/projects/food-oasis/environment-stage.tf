@@ -37,6 +37,14 @@ module "food_oasis_fullstack_stage_service" {
   health_check_path = "/health"
   container_image   = "${module.food_oasis_ecr_fullstack.repository_url}:stage"
 
+  // With NODE_ENV=production the app redirects every request without
+  // X-Forwarded-Proto: https to HTTPS, /health included, and the load balancer's health
+  // check sends plain HTTP without that header. So /health answers 302 to the check.
+  // Accepting 302 only proves the process answers, but without it ECS replaces the task
+  // every few minutes. Moving /health above the redirect in hackforla/food-oasis
+  // server/server.ts would let this go back to the default.
+  health_check_matcher = "200,302"
+
   // Do not set DATABASE_URL, which overrides POSTGRES_*. Do not set AWS_ACCESS_KEY_ID,
   // AWS_SECRET_ACCESS_KEY, AWS_PROFILE or IDENTITY_POOL_ID: the SDK's default credential
   // chain checks keys and profile before the task role, and IDENTITY_POOL_ID switches
