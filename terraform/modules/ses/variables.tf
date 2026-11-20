@@ -14,6 +14,22 @@ variable "zone_id" {
   }
 }
 
+variable "mail_from_subdomain" {
+  type        = string
+  default     = null
+  description = "label for a custom MAIL FROM domain under a domain identity, for example `bounce` for `bounce.foodoasis.net`. Leave unset to send with SES's default `amazonses.com` envelope sender. Must be unset for an email address"
+
+  validation {
+    condition     = var.mail_from_subdomain == null || !strcontains(var.identity, "@")
+    error_message = "mail_from_subdomain applies only to a domain identity."
+  }
+
+  validation {
+    condition     = var.mail_from_subdomain == null || can(regex("^[a-z0-9]([a-z0-9-]*[a-z0-9])?$", var.mail_from_subdomain))
+    error_message = "mail_from_subdomain is a single DNS label, such as `bounce`, not a full domain name."
+  }
+}
+
 variable "tags" {
   type        = map(string)
   default     = {}
