@@ -1,8 +1,10 @@
 // foodoasis.net. This zone starts as a copy of the live zone Z05347102APWJD0S0P604 in the
 // Food Oasis account (470363915259), so moving the domain's nameservers here changes
-// nothing anyone can see. Today every web name is served by Heroku or Amplify, not by this
-// account. Records that exist only for the old hosting are removed by later tickets in the
-// hackforla/incubator#284 epic, not here. What each record is: hackforla/devops#236.
+// nothing anyone can see. Every web name is served by Heroku or Amplify, not by this
+// account, except the staging names devla, devhi, devmck and devsb, which
+// hackforla/devops#237 pointed at the load balancer (environment-stage.tf). Records that
+// exist only for the old hosting are removed by later tickets in the hackforla/incubator#284
+// epic, not here. What each record is: hackforla/devops#236.
 //
 // bastion.foodoasis.net was deliberately not copied. It pointed at an address that none of
 // our accounts holds and served nothing. See hackforla/incubator#283.
@@ -61,7 +63,8 @@ resource "aws_route53_record" "acm_validation_expired" {
 
 // The Heroku apps' custom domains. Every domain added to Heroku gets its own
 // *.herokudns.com target. devmckinney's target no longer resolves, so it is attached to no
-// app. All of these are removed in hackforla/devops#239.
+// app. All of these are removed in hackforla/devops#239. The four staging names that were
+// here moved to environment-stage.tf in hackforla/devops#237.
 locals {
   foodoasis_net_heroku = {
     "www"         = { target = "sinuous-coconut-r2v76m5vueay0acc354d4kow.herokudns.com", ttl = 500 }
@@ -72,11 +75,7 @@ locals {
     "mck"         = { target = "mammalian-rodent-f6df5bywowexay5evz30n698.herokudns.com", ttl = 300 }
     "mckinney"    = { target = "defined-mistletoe-015ugnwcpefs9c04ve6wcpea.herokudns.com", ttl = 300 }
     "sb"          = { target = "radiant-cabbage-qck9719gjvqw7cvnfi54daoj.herokudns.com", ttl = 300 }
-    "devla"       = { target = "behavioral-quail-00sf9qf2m46k5j562jvbi3pk.herokudns.com", ttl = 300 }
-    "devhi"       = { target = "developmental-cherimoya-ccmf9hv7g9ml0yc9h4g0pcz7.herokudns.com", ttl = 300 }
-    "devmck"      = { target = "flat-ape-48sda8flnlf9sxyzc20kf08s.herokudns.com", ttl = 300 }
     "devmckinney" = { target = "vascular-crayfish-aj27rkpig2e49kvhsw1c4x2x.herokudns.com", ttl = 300 }
-    "devsb"       = { target = "spherical-crane-1baqenbwyh6wtvm01a77u9vw.herokudns.com", ttl = 300 }
     "vitela"      = { target = "genetic-beet-t67ml71w9czsmnaf6n76jijs.herokudns.com", ttl = 300 }
   }
 

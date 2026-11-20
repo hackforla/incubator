@@ -1,3 +1,50 @@
+// The staging hostnames, under both domains, pointed at the load balancer, which sends them
+// to the staging service below by its dev* host rule. hackforla/devops#237.
+//
+// Until foodoasis.net's nameservers switch (hackforla/incubator#294), the Food Oasis
+// account's zone is the live one, so the .net records here take effect only once they are
+// copied into it by hand (hackforla/incubator#284).
+locals {
+  food_oasis_stage_subdomains = toset(["devla", "devhi", "devmck", "devsb"])
+}
+
+module "food_oasis_stage_dns_net" {
+  for_each  = local.food_oasis_stage_subdomains
+  source    = "../../modules/dns-entry"
+  subdomain = each.key
+  zone_id   = aws_route53_zone.this.zone_id
+}
+
+module "food_oasis_stage_dns_la" {
+  for_each  = local.food_oasis_stage_subdomains
+  source    = "../../modules/dns-entry"
+  subdomain = each.key
+  zone_id   = aws_route53_zone.foodoasis_la.zone_id
+}
+
+// The .net names were Heroku CNAMEs in dns.tf. Moving them updates each record in place.
+// Without this, Terraform would delete the old record and create the new one in no fixed
+// order, and Route 53 refuses a create while a record with the same name still exists.
+moved {
+  from = aws_route53_record.heroku["devla"]
+  to   = module.food_oasis_stage_dns_net["devla"].aws_route53_record.www
+}
+
+moved {
+  from = aws_route53_record.heroku["devhi"]
+  to   = module.food_oasis_stage_dns_net["devhi"].aws_route53_record.www
+}
+
+moved {
+  from = aws_route53_record.heroku["devmck"]
+  to   = module.food_oasis_stage_dns_net["devmck"].aws_route53_record.www
+}
+
+moved {
+  from = aws_route53_record.heroku["devsb"]
+  to   = module.food_oasis_stage_dns_net["devsb"].aws_route53_record.www
+}
+
 // postgis for neighborhood lookups (ST_* functions); earthdistance for location search,
 // which uses its point <@> point operator. earthdistance brings cube with it, so cube is
 // not listed. No Food Oasis migration creates either of the last two.

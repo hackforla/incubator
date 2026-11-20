@@ -20,6 +20,8 @@ No requirements.
 | <a name="module_food_oasis_fullstack_stage_service"></a> [food\_oasis\_fullstack\_stage\_service](#module\_food\_oasis\_fullstack\_stage\_service) | ../../modules/container | n/a |
 | <a name="module_food_oasis_prod_database"></a> [food\_oasis\_prod\_database](#module\_food\_oasis\_prod\_database) | ../../modules/database | n/a |
 | <a name="module_food_oasis_stage_database"></a> [food\_oasis\_stage\_database](#module\_food\_oasis\_stage\_database) | ../../modules/database | n/a |
+| <a name="module_food_oasis_stage_dns_la"></a> [food\_oasis\_stage\_dns\_la](#module\_food\_oasis\_stage\_dns\_la) | ../../modules/dns-entry | n/a |
+| <a name="module_food_oasis_stage_dns_net"></a> [food\_oasis\_stage\_dns\_net](#module\_food\_oasis\_stage\_dns\_net) | ../../modules/dns-entry | n/a |
 | <a name="module_food_oasis_stage_jwt_secret"></a> [food\_oasis\_stage\_jwt\_secret](#module\_food\_oasis\_stage\_jwt\_secret) | ../../modules/secret | n/a |
 | <a name="module_food_oasis_stage_ses"></a> [food\_oasis\_stage\_ses](#module\_food\_oasis\_stage\_ses) | ../../modules/ses-container-permissions | n/a |
 | <a name="module_ses_foodoasis_net"></a> [ses\_foodoasis\_net](#module\_ses\_foodoasis\_net) | ../../modules/ses | n/a |
