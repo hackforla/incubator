@@ -19,6 +19,7 @@ No requirements.
 | <a name="module_food_oasis_ecr_fullstack"></a> [food\_oasis\_ecr\_fullstack](#module\_food\_oasis\_ecr\_fullstack) | ../../modules/ecr | n/a |
 | <a name="module_food_oasis_prod_database"></a> [food\_oasis\_prod\_database](#module\_food\_oasis\_prod\_database) | ../../modules/database | n/a |
 | <a name="module_food_oasis_stage_database"></a> [food\_oasis\_stage\_database](#module\_food\_oasis\_stage\_database) | ../../modules/database | n/a |
+| <a name="module_ses_foodoasis_net"></a> [ses\_foodoasis\_net](#module\_ses\_foodoasis\_net) | ../../modules/ses | n/a |
 
 ## Resources
 
@@ -56,4 +57,5 @@ No inputs.
 | <a name="output_ecr_repository_url"></a> [ecr\_repository\_url](#output\_ecr\_repository\_url) | URL of the image repository both environments pull from |
 | <a name="output_location_search_policy_arns"></a> [location\_search\_policy\_arns](#output\_location\_search\_policy\_arns) | IAM policy per environment allowing address search on that environment's place index, for the service's task role |
 | <a name="output_place_index_names"></a> [place\_index\_names](#output\_place\_index\_names) | Amazon Location place index name per environment, for the service's PLACE\_INDEX\_NAME |
+| <a name="output_ses_identity_arn"></a> [ses\_identity\_arn](#output\_ses\_identity\_arn) | SES identity for foodoasis.net, for each service's ses-container-permissions identity\_arns |
 <!-- END_TF_DOCS -->
