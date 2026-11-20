@@ -14,6 +14,7 @@ No requirements.
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_certificate_foodoasis_la"></a> [certificate\_foodoasis\_la](#module\_certificate\_foodoasis\_la) | ../../modules/acm-certificate | n/a |
+| <a name="module_certificate_foodoasis_net"></a> [certificate\_foodoasis\_net](#module\_certificate\_foodoasis\_net) | ../../modules/acm-certificate | n/a |
 | <a name="module_food_oasis_cicd"></a> [food\_oasis\_cicd](#module\_food\_oasis\_cicd) | ../../modules/cicd_integration | n/a |
 | <a name="module_food_oasis_ecr_fullstack"></a> [food\_oasis\_ecr\_fullstack](#module\_food\_oasis\_ecr\_fullstack) | ../../modules/ecr | n/a |
 | <a name="module_food_oasis_prod_database"></a> [food\_oasis\_prod\_database](#module\_food\_oasis\_prod\_database) | ../../modules/database | n/a |
