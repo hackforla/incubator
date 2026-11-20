@@ -164,6 +164,9 @@ moved {
 # only surfaces as an expiry up to a year later. See hackforla/incubator#185.
 #
 # The keys are the validation record names as ACM reports them, trailing dot included.
+# The module has since moved to keying them by domain, so each of these lands on an old
+# key and the move to the new one is in that project's certificate.tf. Terraform follows
+# the chain. See hackforla/incubator#285.
 moved {
     from = module.vrms.aws_route53_record.cert_validation
     to   = module.vrms.module.certificate.aws_route53_record.validation["_ae6574e1afa9e171d1634c7d7df55699.vrms.io."]

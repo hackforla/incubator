@@ -160,7 +160,7 @@ import {
 }
 
 import {
-  to = module.civic-tech-jobs.module.certificate_stage.aws_route53_record.validation["_1ca49dd660678abe9478619c13875864.stage.civictechjobs.org."]
+  to = module.civic-tech-jobs.module.certificate_stage.aws_route53_record.validation["stage.civictechjobs.org"]
   id = "Z06949943QJY32WRKG577__1ca49dd660678abe9478619c13875864.stage.civictechjobs.org_CNAME"
 }
 
@@ -185,7 +185,7 @@ import {
 }
 
 import {
-  to = module.vrms.module.certificate.aws_route53_record.validation["_ae6574e1afa9e171d1634c7d7df55699.vrms.io."]
+  to = module.vrms.module.certificate.aws_route53_record.validation["vrms.io"]
   id = "Z0420800PGQ9JP6DM9EX__ae6574e1afa9e171d1634c7d7df55699.vrms.io_CNAME"
 }
 
@@ -215,7 +215,7 @@ import {
 }
 
 import {
-  to = module.home-unite-us.module.certificate.aws_route53_record.validation["_5bb55cc568d53bab04232d9f9e534189.homeunite.us."]
+  to = module.home-unite-us.module.certificate.aws_route53_record.validation["homeunite.us"]
   id = "Z03829196Z0VAL9Q8CZ__5bb55cc568d53bab04232d9f9e534189.homeunite.us_CNAME"
 }
 
@@ -245,7 +245,7 @@ import {
 }
 
 import {
-  to = module.civic-tech-index.module.certificate.aws_route53_record.validation["_9aed66007870880679080f7176758008.civictechindex.org."]
+  to = module.civic-tech-index.module.certificate.aws_route53_record.validation["civictechindex.org"]
   id = "Z06388811ED8NRSEUZU7A__9aed66007870880679080f7176758008.civictechindex.org_CNAME"
 }
 
