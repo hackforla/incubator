@@ -15,3 +15,11 @@ module "certificate" {
   subject_alternative_names = ["vrms.io"]
   zone_id                   = aws_route53_zone.this.zone_id
 }
+
+// The module used to key its validation records by record name and now keys them by
+// domain, so a new certificate can plan. This carries the existing record across
+// without recreating it. See hackforla/incubator#285.
+moved {
+  from = module.certificate.aws_route53_record.validation["_ae6574e1afa9e171d1634c7d7df55699.vrms.io."]
+  to   = module.certificate.aws_route53_record.validation["vrms.io"]
+}

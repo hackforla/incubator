@@ -16,3 +16,11 @@ module "certificate" {
     Name = "wildcard.civictechindex.org"
   }
 }
+
+// The module used to key its validation records by record name and now keys them by
+// domain, so a new certificate can plan. This carries the existing record across
+// without recreating it. See hackforla/incubator#285.
+moved {
+  from = module.certificate.aws_route53_record.validation["_9aed66007870880679080f7176758008.civictechindex.org."]
+  to   = module.certificate.aws_route53_record.validation["civictechindex.org"]
+}

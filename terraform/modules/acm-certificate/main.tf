@@ -16,10 +16,13 @@
  * created by hand with a mix of 60 and 300. Pass the live value when adopting an existing
  * certificate, otherwise the first plan rewrites a working validation record for no reason.
  *
- * 2. The validation records are keyed by record name rather than by domain name. A
- * wildcard certificate emits an identical validation record for `*.example.org` and
- * `example.org`, so keying by domain name produces two resources writing one name and the
- * plan fails.
+ * 2. The validation records are keyed by domain, with a wildcard folded into its base
+ * domain. Two reasons. The record names are hashes ACM only issues once the certificate
+ * exists, so keying by them made any new certificate fail to plan with
+ * `Invalid for_each argument`. And ACM gives `*.example.org` and `example.org` the same
+ * record, so keying the two separately would produce two resources writing one name.
+ * The keys used to be the record names; the callers that existed then carry `moved` blocks
+ * for the change (hackforla/incubator#285).
  *
  * Removing a certificate: the destroy order is correct without help. Terraform destroys in
  * reverse dependency order, so it detaches from the listener first and deletes the
@@ -33,11 +36,13 @@
  * `aws acm describe-certificate --query Certificate.InUseBy` and fix the real attachment
  * rather than re-running.
  *
- * Known limitation: for a certificate that already exists and is adopted with an `import`
- * block, the validation record names are read during the plan and everything applies in one
- * pass. For a brand new certificate they are hashes ACM has not issued yet, so `for_each`
- * cannot be resolved and the first apply may need a second run. Nothing in #185 creates a
- * certificate, so this has not been worked around.
+ * Creating a new certificate plans and applies in one pass. The apply then waits until ACM
+ * sees the validation record in public DNS. If the domain's nameservers do not point at
+ * `zone_id` yet -- a zone being moved here from another DNS host -- ACM cannot see the
+ * record Terraform wrote, so add the same record at the current DNS host while the apply
+ * waits. `aws acm describe-certificate --query
+ * 'Certificate.DomainValidationOptions[].ResourceRecord'` shows it. If the wait times out,
+ * the certificate and its records already exist, and re-running the apply resumes it.
  */
 
 // terraform-docs-ignore
@@ -67,12 +72,20 @@ resource "aws_acm_certificate" "this" {
 }
 
 locals {
-  // Grouping mode: several domains on one certificate can share a validation record, and
-  // a plain map comprehension errors on the duplicate key. Each group's entries are
-  // identical, so taking the first below is safe.
+  // One validation record per domain, with a wildcard folded into its base domain. Built
+  // from the variables, so the keys are known at plan time even for a certificate that
+  // does not exist yet.
+  validation_domains = toset([
+    for domain in concat([var.domain_name], var.subject_alternative_names) : trimprefix(domain, "*.")
+  ])
+
+  // The record each domain needs, known only once ACM has the certificate request.
+  // Grouping mode, because a wildcard and its base domain land on one key; their entries
+  // are identical, so taking the first below is safe.
   validation_records = {
     for dvo in aws_acm_certificate.this.domain_validation_options :
-    dvo.resource_record_name => {
+    trimprefix(dvo.domain_name, "*.") => {
+      name   = dvo.resource_record_name
       type   = dvo.resource_record_type
       record = dvo.resource_record_value
     }...
@@ -82,13 +95,13 @@ locals {
 // Deleting one of these does not break TLS today -- it stops the certificate renewing, and
 // the failure surfaces up to a year later as an expiry.
 resource "aws_route53_record" "validation" {
-  for_each = { for name, records in local.validation_records : name => records[0] }
+  for_each = local.validation_domains
 
   zone_id = var.zone_id
-  name    = each.key
-  type    = each.value.type
+  name    = local.validation_records[each.key][0].name
+  type    = local.validation_records[each.key][0].type
   ttl     = var.validation_record_ttl
-  records = [each.value.record]
+  records = [local.validation_records[each.key][0].record]
 }
 
 // Creates nothing in AWS. It blocks until ACM reports the certificate ISSUED, which is what
