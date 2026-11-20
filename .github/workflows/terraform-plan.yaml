@@ -16,17 +16,35 @@ jobs:
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
+    # Runs after terraform-docs so it knows whether docs pushed a commit.
+    # !cancelled() keeps a docs failure from skipping the plan.
+    needs: terraform-docs
+    if: ${{ !cancelled() }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TF_VAR_pgpassword: ${{ secrets.TF_VAR_PGPASSWORD }}
       TF_VAR_pghost: ${{ secrets.TF_VAR_PGHOST }}
+      DOCS_SHA: ${{ needs.terraform-docs.outputs.docs_sha }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
     permissions:
       id-token: write
       contents: read
       pull-requests: write
+      statuses: write
 
     steps:
+    # Check runs attach to the commit that triggered the workflow. When
+    # terraform-docs pushes its [skip ci] commit, that commit becomes the PR head
+    # and has no checks, so the PR page shows none. Mirror the plan's result onto
+    # it as a commit status.
+    - name: Mark plan pending on the docs commit
+      if: ${{ needs.terraform-docs.outputs.docs_sha != '' }}
+      run: |
+        gh api "repos/${{ github.repository }}/statuses/$DOCS_SHA" \
+          -f state=pending -f context="Terraform Plan" \
+          -f description="Plan running" -f target_url="$RUN_URL"
+
     - name: Clone repo
       uses: actions/checkout@v4
 
@@ -43,6 +61,16 @@ jobs:
         path: terraform
         backend_config_file: terraform/prod.backend.tfvars
 
+    - name: Report plan result on the docs commit
+      if: ${{ always() && needs.terraform-docs.outputs.docs_sha != '' }}
+      env:
+        RESULT: ${{ job.status }}
+      run: |
+        if [ "$RESULT" = success ]; then state=success; else state=failure; fi
+        gh api "repos/${{ github.repository }}/statuses/$DOCS_SHA" \
+          -f state="$state" -f context="Terraform Plan" \
+          -f description="Plan $RESULT" -f target_url="$RUN_URL"
+
   terraform-docs:
     name: Generate Terraform Docs
     runs-on: ubuntu-latest
@@ -50,6 +78,9 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+
+    outputs:
+      docs_sha: ${{ steps.head.outputs.docs_sha }}
 
     steps:
     - uses: actions/checkout@v3
@@ -68,4 +99,17 @@ jobs:
         # first_time_contributors approval policy gates, so every PR touching .tf
         # needed a manual approval for a plan that was already green one commit earlier.
         git-commit-message: "terraform-docs: automated updates to Terraform modules README.md [skip ci]"
+
+    # Output the docs commit's SHA only if this job made it directly on top of
+    # the commit that triggered the run. Empty if docs had nothing to change, or
+    # if someone pushed to the branch in between (their push gets its own run).
+    - name: Find the docs commit
+      id: head
+      env:
+        EVENT_SHA: ${{ github.event.pull_request.head.sha }}
+      run: |
+        head=$(git rev-parse HEAD)
+        if [ "$head" != "$EVENT_SHA" ] && [ "$(git rev-parse HEAD~1 2>/dev/null)" = "$EVENT_SHA" ]; then
+          echo "docs_sha=$head" >> "$GITHUB_OUTPUT"
+        fi
 
