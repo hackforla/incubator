@@ -17,3 +17,8 @@ output "cicd_role_arn" {
   value       = module.food_oasis_cicd.role_arn
   description = "IAM role GitHub Actions in hackforla/food-oasis assumes to push images and redeploy services"
 }
+
+output "ses_identity_arn" {
+  value       = module.ses_foodoasis_net.arn
+  description = "SES identity for foodoasis.net, for each service's ses-container-permissions identity_arns"
+}
