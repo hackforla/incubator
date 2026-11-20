@@ -17,8 +17,11 @@ No requirements.
 | <a name="module_certificate_foodoasis_net"></a> [certificate\_foodoasis\_net](#module\_certificate\_foodoasis\_net) | ../../modules/acm-certificate | n/a |
 | <a name="module_food_oasis_cicd"></a> [food\_oasis\_cicd](#module\_food\_oasis\_cicd) | ../../modules/cicd_integration | n/a |
 | <a name="module_food_oasis_ecr_fullstack"></a> [food\_oasis\_ecr\_fullstack](#module\_food\_oasis\_ecr\_fullstack) | ../../modules/ecr | n/a |
+| <a name="module_food_oasis_fullstack_stage_service"></a> [food\_oasis\_fullstack\_stage\_service](#module\_food\_oasis\_fullstack\_stage\_service) | ../../modules/container | n/a |
 | <a name="module_food_oasis_prod_database"></a> [food\_oasis\_prod\_database](#module\_food\_oasis\_prod\_database) | ../../modules/database | n/a |
 | <a name="module_food_oasis_stage_database"></a> [food\_oasis\_stage\_database](#module\_food\_oasis\_stage\_database) | ../../modules/database | n/a |
+| <a name="module_food_oasis_stage_jwt_secret"></a> [food\_oasis\_stage\_jwt\_secret](#module\_food\_oasis\_stage\_jwt\_secret) | ../../modules/secret | n/a |
+| <a name="module_food_oasis_stage_ses"></a> [food\_oasis\_stage\_ses](#module\_food\_oasis\_stage\_ses) | ../../modules/ses-container-permissions | n/a |
 | <a name="module_ses_foodoasis_net"></a> [ses\_foodoasis\_net](#module\_ses\_foodoasis\_net) | ../../modules/ses | n/a |
 
 ## Resources
@@ -26,6 +29,7 @@ No requirements.
 | Name | Type |
 |------|------|
 | [aws_iam_policy.location_search](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_role_policy_attachment.food_oasis_stage_location](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_lb_listener_rule.foodoasis_la_redirect](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener_rule) | resource |
 | [aws_location_place_index.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/location_place_index) | resource |
 | [aws_route53_record.acm_validation_amplify](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
