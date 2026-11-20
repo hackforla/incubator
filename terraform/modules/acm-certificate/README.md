@@ -16,10 +16,13 @@ Two things to watch out for:
 created by hand with a mix of 60 and 300. Pass the live value when adopting an existing
 certificate, otherwise the first plan rewrites a working validation record for no reason.
 
-2. The validation records are keyed by record name rather than by domain name. A
-wildcard certificate emits an identical validation record for `*.example.org` and
-`example.org`, so keying by domain name produces two resources writing one name and the
-plan fails.
+2. The validation records are keyed by domain, with a wildcard folded into its base
+domain. Two reasons. The record names are hashes ACM only issues once the certificate
+exists, so keying by them made any new certificate fail to plan with
+`Invalid for_each argument`. And ACM gives `*.example.org` and `example.org` the same
+record, so keying the two separately would produce two resources writing one name.
+The keys used to be the record names; the callers that existed then carry `moved` blocks
+for the change (hackforla/incubator#285).
 
 Removing a certificate: the destroy order is correct without help. Terraform destroys in
 reverse dependency order, so it detaches from the listener first and deletes the
@@ -33,11 +36,13 @@ keeps serving and silently stops renewing. If a destroy fails here, check
 `aws acm describe-certificate --query Certificate.InUseBy` and fix the real attachment
 rather than re-running.
 
-Known limitation: for a certificate that already exists and is adopted with an `import`
-block, the validation record names are read during the plan and everything applies in one
-pass. For a brand new certificate they are hashes ACM has not issued yet, so `for_each`
-cannot be resolved and the first apply may need a second run. Nothing in #185 creates a
-certificate, so this has not been worked around.
+Creating a new certificate plans and applies in one pass. The apply then waits until ACM
+sees the validation record in public DNS. If the domain's nameservers do not point at
+`zone_id` yet -- a zone being moved here from another DNS host -- ACM cannot see the
+record Terraform wrote, so add the same record at the current DNS host while the apply
+waits. `aws acm describe-certificate --query
+'Certificate.DomainValidationOptions[].ResourceRecord'` shows it. If the wait times out,
+the certificate and its records already exist, and re-running the apply resumes it.
 
 ## Requirements
 

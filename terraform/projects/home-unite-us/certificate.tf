@@ -12,3 +12,11 @@ module "certificate" {
   zone_id                   = aws_route53_zone.this.zone_id
   validation_record_ttl     = 60
 }
+
+// The module used to key its validation records by record name and now keys them by
+// domain, so a new certificate can plan. This carries the existing record across
+// without recreating it. See hackforla/incubator#285.
+moved {
+  from = module.certificate.aws_route53_record.validation["_5bb55cc568d53bab04232d9f9e534189.homeunite.us."]
+  to   = module.certificate.aws_route53_record.validation["homeunite.us"]
+}
