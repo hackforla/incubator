@@ -98,6 +98,7 @@ resource "aws_route53_record" "mail_from" {
   name    = local.mail_from_domain
   type    = each.value.type
   ttl     = 1800
-  // Route 53 needs a TXT value in quotes; an MX value is written as is.
-  records = [each.value.type == "TXT" ? "\"${each.value.value}\"" : each.value.value]
+  // Unquoted: the provider adds the quotes Route 53 needs around a TXT value. Quoting it
+  // here as well sends ""v=spf1 ..."", which Route 53 rejects with InvalidCharacterString.
+  records = [each.value.value]
 }
