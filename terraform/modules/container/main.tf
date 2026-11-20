@@ -273,7 +273,7 @@ resource "aws_lb_target_group" "this" {
   }
 
   health_check {
-    matcher = "200,400,404"
+    matcher = var.health_check_matcher
     path    = var.health_check_path == "" ? "" : var.health_check_path
   }
 

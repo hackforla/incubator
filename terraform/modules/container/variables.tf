@@ -73,6 +73,12 @@ variable "health_check_path" {
     default = "/"
 }
 
+variable "health_check_matcher" {
+    description = "HTTP codes the load balancer health check accepts as healthy, comma-separated or as a range, for example `200-299`"
+    type = string
+    default = "200,400,404"
+}
+
 variable "additional_host_urls" {
     type = list(string)
     description = "if multiple hostnames route to this container. For example, both `www.vrms.io` and `vrms.io`"
