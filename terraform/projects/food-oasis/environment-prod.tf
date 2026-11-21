@@ -1,3 +1,78 @@
+// The production hostnames, under both domains, pointed at the load balancer, which sends them
+// to the production service below by its *.foodoasis.net and *.foodoasis.la host rule.
+// The bare domains are in dns.tf and dns-foodoasis-la.tf. hackforla/devops#238.
+//
+// Until foodoasis.net's nameservers switch (hackforla/incubator#294), the Food Oasis
+// account's zone is the live one, so the .net records here take effect only once they are
+// copied into it by hand (hackforla/incubator#284).
+locals {
+  food_oasis_prod_subdomains = toset(["www", "la", "losangeles", "hi", "hawaii", "mck", "mckinney", "sb"])
+}
+
+module "food_oasis_prod_dns_net" {
+  for_each  = local.food_oasis_prod_subdomains
+  source    = "../../modules/dns-entry"
+  subdomain = each.key
+  zone_id   = aws_route53_zone.this.zone_id
+}
+
+module "food_oasis_prod_dns_la" {
+  for_each  = local.food_oasis_prod_subdomains
+  source    = "../../modules/dns-entry"
+  subdomain = each.key
+  zone_id   = aws_route53_zone.foodoasis_la.zone_id
+}
+
+// These names were Heroku CNAMEs in dns.tf and dns-foodoasis-la.tf. The module writes the
+// record name without the domain, which forces a replacement even with these blocks, but
+// they make Terraform delete each old record before creating its new one. Without them the
+// two happen in no fixed order, and Route 53 refuses a create while a record with the same
+// name still exists.
+moved {
+  from = aws_route53_record.heroku["www"]
+  to   = module.food_oasis_prod_dns_net["www"].aws_route53_record.www
+}
+
+moved {
+  from = aws_route53_record.heroku["la"]
+  to   = module.food_oasis_prod_dns_net["la"].aws_route53_record.www
+}
+
+moved {
+  from = aws_route53_record.heroku["losangeles"]
+  to   = module.food_oasis_prod_dns_net["losangeles"].aws_route53_record.www
+}
+
+moved {
+  from = aws_route53_record.heroku["hi"]
+  to   = module.food_oasis_prod_dns_net["hi"].aws_route53_record.www
+}
+
+moved {
+  from = aws_route53_record.heroku["hawaii"]
+  to   = module.food_oasis_prod_dns_net["hawaii"].aws_route53_record.www
+}
+
+moved {
+  from = aws_route53_record.heroku["mck"]
+  to   = module.food_oasis_prod_dns_net["mck"].aws_route53_record.www
+}
+
+moved {
+  from = aws_route53_record.heroku["mckinney"]
+  to   = module.food_oasis_prod_dns_net["mckinney"].aws_route53_record.www
+}
+
+moved {
+  from = aws_route53_record.heroku["sb"]
+  to   = module.food_oasis_prod_dns_net["sb"].aws_route53_record.www
+}
+
+moved {
+  from = aws_route53_record.foodoasis_la_www
+  to   = module.food_oasis_prod_dns_la["www"].aws_route53_record.www
+}
+
 // postgis for neighborhood lookups (ST_* functions); earthdistance for location search,
 // which uses its point <@> point operator. earthdistance brings cube with it, so cube is
 // not listed. No Food Oasis migration creates either of the last two.
@@ -24,8 +99,6 @@ module "food_oasis_prod_jwt_secret" {
 // staging, apart from the image, place index, CORS, database and hosts.
 //
 // Priority 601 must stay higher than staging's 600, so staging's dev* names match first.
-// Until hackforla/devops#238, the bare foodoasis.la still matches rule 599's redirect to
-// www, and the bare foodoasis.net still points at Amplify.
 //
 // The image does not run migrations at startup; the Food Oasis team runs them, as _owner,
 // which is why the app connects as _owner too.
