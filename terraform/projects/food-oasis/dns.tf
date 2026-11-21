@@ -1,9 +1,9 @@
 // foodoasis.net. This zone starts as a copy of the live zone Z05347102APWJD0S0P604 in the
 // Food Oasis account (470363915259), so moving the domain's nameservers here changes
-// nothing anyone can see. Every web name is served by Heroku or Amplify, not by this
-// account, except the staging names devla, devhi, devmck and devsb, which
-// hackforla/devops#237 pointed at the load balancer (environment-stage.tf). Records that
-// exist only for the old hosting are removed by later tickets in the hackforla/incubator#284
+// nothing anyone can see. The web names point at the load balancer: the staging names from
+// environment-stage.tf (hackforla/devops#237), and the production names from
+// environment-prod.tf and the bare domain below (hackforla/devops#238). Records that exist
+// only for the old hosting are removed by later tickets in the hackforla/incubator#284
 // epic, not here. What each record is: hackforla/devops#236.
 //
 // bastion.foodoasis.net was deliberately not copied. It pointed at an address that none of
@@ -22,26 +22,25 @@ resource "aws_route53_zone" "this" {
   }
 }
 
-// The bare domain points at the CloudFront distribution of the Amplify app
-// food-oasis-client in the Food Oasis account. Its only job is redirecting
-// https://foodoasis.net to https://www.foodoasis.net. Amplify distributions do not appear
-// in the CloudFront console. hackforla/devops#238 replaces this with an alias to the load
-// balancer.
+// The bare domain is served by the production service directly, like homeunite.us. Until
+// hackforla/devops#238 it pointed at the Amplify app food-oasis-client in the Food Oasis
+// account, which only redirected it to www; hackforla/devops#239 deletes that app. The load
+// balancer is IPv4 only, so there is no AAAA alias.
 resource "aws_route53_record" "apex" {
   zone_id = aws_route53_zone.this.zone_id
   name    = "foodoasis.net"
   type    = "A"
 
   alias {
-    name                   = "d38lekrqxloj5j.cloudfront.net"
-    zone_id                = "Z2FDTNDATAQYW2" // CloudFront's fixed hosted zone
+    name                   = data.aws_lb.incubator.dns_name
+    zone_id                = data.aws_lb.incubator.zone_id
     evaluate_target_health = false
   }
 }
 
-// Validates the Amplify-managed certificate that serves https://foodoasis.net. Amplify
-// renews it through this record, so it must stay until the apex leaves Amplify in
-// hackforla/devops#238.
+// Validated the Amplify-managed certificate that served https://foodoasis.net until
+// hackforla/devops#238 moved the bare domain off Amplify. No longer needed; removed with the
+// Amplify app in hackforla/devops#239.
 resource "aws_route53_record" "acm_validation_amplify" {
   zone_id = aws_route53_zone.this.zone_id
   name    = "_2f61d85f906770417af6d5152488d87c.foodoasis.net"
@@ -61,20 +60,13 @@ resource "aws_route53_record" "acm_validation_expired" {
   records = ["_42feb58cb16fa888f9b9a178c2e627a3.bsgbmzkfwj.acm-validations.aws."]
 }
 
-// The Heroku apps' custom domains. Every domain added to Heroku gets its own
+// The Heroku apps' remaining custom domains. Every domain added to Heroku gets its own
 // *.herokudns.com target. devmckinney's target no longer resolves, so it is attached to no
-// app. All of these are removed in hackforla/devops#239. The four staging names that were
-// here moved to environment-stage.tf in hackforla/devops#237.
+// app. Both are removed in hackforla/devops#239. The staging names that were here moved to
+// environment-stage.tf in hackforla/devops#237, and the production names to
+// environment-prod.tf in hackforla/devops#238.
 locals {
   foodoasis_net_heroku = {
-    "www"         = { target = "sinuous-coconut-r2v76m5vueay0acc354d4kow.herokudns.com", ttl = 500 }
-    "la"          = { target = "animate-hamlet-jt1tl79cdenf5v75tvna2klo.herokudns.com", ttl = 500 }
-    "losangeles"  = { target = "systematic-meadow-ta4cuicgtsswfq7zt4z16b5a.herokudns.com", ttl = 300 }
-    "hi"          = { target = "rigid-magpie-mebw7vjyv8gdppum8rhkvfvm.herokudns.com", ttl = 300 }
-    "hawaii"      = { target = "hydrophobic-snapdragon-hjdkq2i0eau5lmh7ll12ls9x.herokudns.com", ttl = 300 }
-    "mck"         = { target = "mammalian-rodent-f6df5bywowexay5evz30n698.herokudns.com", ttl = 300 }
-    "mckinney"    = { target = "defined-mistletoe-015ugnwcpefs9c04ve6wcpea.herokudns.com", ttl = 300 }
-    "sb"          = { target = "radiant-cabbage-qck9719gjvqw7cvnfi54daoj.herokudns.com", ttl = 300 }
     "devmckinney" = { target = "vascular-crayfish-aj27rkpig2e49kvhsw1c4x2x.herokudns.com", ttl = 300 }
     "vitela"      = { target = "genetic-beet-t67ml71w9czsmnaf6n76jijs.herokudns.com", ttl = 300 }
   }
