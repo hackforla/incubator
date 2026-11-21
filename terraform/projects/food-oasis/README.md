@@ -20,6 +20,8 @@ No requirements.
 | <a name="module_food_oasis_fullstack_prod_service"></a> [food\_oasis\_fullstack\_prod\_service](#module\_food\_oasis\_fullstack\_prod\_service) | ../../modules/container | n/a |
 | <a name="module_food_oasis_fullstack_stage_service"></a> [food\_oasis\_fullstack\_stage\_service](#module\_food\_oasis\_fullstack\_stage\_service) | ../../modules/container | n/a |
 | <a name="module_food_oasis_prod_database"></a> [food\_oasis\_prod\_database](#module\_food\_oasis\_prod\_database) | ../../modules/database | n/a |
+| <a name="module_food_oasis_prod_dns_la"></a> [food\_oasis\_prod\_dns\_la](#module\_food\_oasis\_prod\_dns\_la) | ../../modules/dns-entry | n/a |
+| <a name="module_food_oasis_prod_dns_net"></a> [food\_oasis\_prod\_dns\_net](#module\_food\_oasis\_prod\_dns\_net) | ../../modules/dns-entry | n/a |
 | <a name="module_food_oasis_prod_jwt_secret"></a> [food\_oasis\_prod\_jwt\_secret](#module\_food\_oasis\_prod\_jwt\_secret) | ../../modules/secret | n/a |
 | <a name="module_food_oasis_prod_ses"></a> [food\_oasis\_prod\_ses](#module\_food\_oasis\_prod\_ses) | ../../modules/ses-container-permissions | n/a |
 | <a name="module_food_oasis_stage_database"></a> [food\_oasis\_stage\_database](#module\_food\_oasis\_stage\_database) | ../../modules/database | n/a |
@@ -36,7 +38,6 @@ No requirements.
 | [aws_iam_policy.location_search](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role_policy_attachment.food_oasis_prod_location](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.food_oasis_stage_location](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_lb_listener_rule.foodoasis_la_redirect](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_listener_rule) | resource |
 | [aws_location_place_index.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/location_place_index) | resource |
 | [aws_route53_record.acm_validation_amplify](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.acm_validation_expired](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
@@ -45,7 +46,6 @@ No requirements.
 | [aws_route53_record.foodoasis_la_apex](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.foodoasis_la_mx](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.foodoasis_la_txt](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
-| [aws_route53_record.foodoasis_la_www](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.foodoasis_la_zoho_dkim](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.heroku](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.sendgrid](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
@@ -53,7 +53,6 @@ No requirements.
 | [aws_route53_zone.foodoasis_la](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_zone) | resource |
 | [aws_route53_zone.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_zone) | resource |
 | [aws_lb.incubator](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/lb) | data source |
-| [aws_lb_listener.https](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/lb_listener) | data source |
 
 ## Inputs
 
