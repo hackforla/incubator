@@ -45,8 +45,9 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_pghost"></a> [pghost](#input\_pghost) | n/a | `string` | n/a | yes |
-| <a name="input_pgpassword"></a> [pgpassword](#input\_pgpassword) | n/a | `string` | n/a | yes |
+| <a name="input_pghost"></a> [pghost](#input\_pghost) | Endpoint of the shared RDS instance, incubator-prod-database. Not secret. | `string` | n/a | yes |
+| <a name="input_pgpassword"></a> [pgpassword](#input\_pgpassword) | Password for pguser. Also sets the RDS master password (password\_wo in database.tf), but only when password\_wo\_version is bumped, so a plan with another login's password changes nothing. | `string` | n/a | yes |
+| <a name="input_pguser"></a> [pguser](#input\_pguser) | Login the postgresql provider connects as. CI uses the default, the master user. Contributors running plan locally use terraform\_plan, a login that can read but not change anything. | `string` | `"postgres"` | no |
 
 ## Outputs
 
