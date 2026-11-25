@@ -1,0 +1,21 @@
+# Values for running `terraform plan` locally. See "Running terraform plan locally"
+# in the repository README.
+#
+# You normally don't fill this in by hand: download the finished terraform.tfvars
+# from the "DevOps CoP" vault in 1Password and save it in this directory. Terraform loads a
+# file with that exact name automatically. It is gitignored, so it can't be committed
+# by mistake. This example file is committed and must never hold real values.
+
+# Endpoint of the shared database, incubator-prod-database. Not secret. To look it up:
+#   aws rds describe-db-instances --db-instance-identifier incubator-prod-database \
+#     --query 'DBInstances[0].Endpoint.Address' --output text
+pghost = "incubator-prod-database.EXAMPLE.us-west-2.rds.amazonaws.com"
+
+# The login to connect as. terraform_plan can read everything a plan needs and change
+# nothing. Leaving this out falls back to "postgres", the master user, and then the
+# password below won't work.
+pguser = "terraform_plan"
+
+# Password for terraform_plan. The only secret in this file, and the reason to download
+# the file from 1Password rather than fill it in yourself.
+pgpassword = "REPLACE-ME"
