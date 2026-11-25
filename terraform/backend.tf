@@ -23,10 +23,20 @@ provider "postgresql" {
   host            = var.pghost
   port            = 5432
   database        = "postgres"
-  username        = "postgres"
+  username        = var.pguser
   password        = var.pgpassword
   sslmode         = "require"
   connect_timeout = 15
+  # Keep this false. With it, the provider takes role passwords from state instead of
+  # reading pg_shadow, which is what lets the read-only terraform_plan login refresh
+  # roles at all.
+  #
+  # terraform_plan is created by hand, not in Terraform, and has no privileges at all.
+  # Everything the provider reads during a refresh is a catalog any login can read
+  # (pg_roles, pg_database, pg_extension, and the ACLs in pg_class and pg_namespace).
+  # Grant and extension refreshes also connect to each project database, through the
+  # CONNECT privilege PostgreSQL gives PUBLIC by default; revoking that from a database
+  # breaks the login. See hackforla/incubator#209.
   superuser = false
 }
 
