@@ -2,7 +2,7 @@
 # in the repository README.
 #
 # You normally don't fill this in by hand: download the finished terraform.tfvars
-# from the DevOps 1Password vault and save it in this directory. Terraform loads a
+# from the "DevOps CoP" vault in 1Password and save it in this directory. Terraform loads a
 # file with that exact name automatically. It is gitignored, so it can't be committed
 # by mistake. This example file is committed and must never hold real values.
 

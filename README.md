@@ -11,7 +11,7 @@ A plan has to connect to the shared database, so it needs a database login as we
 
 1. Get AWS access to the incubator account (`035866691871`) through your IAM user. This README does not cover it.
 2. Install Terraform 1.16.x. `terraform/backend.tf` pins `~> 1.16.0`, and other versions won't initialise against the state.
-3. Download `terraform.tfvars` from the DevOps 1Password vault and save it in the `terraform/` directory. Terraform loads that file automatically, so there is no flag to pass and nothing to export. It is gitignored. [`terraform/terraform.tfvars.example`](terraform/terraform.tfvars.example) shows what it contains.
+3. Download `terraform.tfvars` from the `DevOps CoP` vault in 1Password and save it in the `terraform/` directory. Terraform loads that file automatically, so there is no flag to pass and nothing to export. It is gitignored. [`terraform/terraform.tfvars.example`](terraform/terraform.tfvars.example) shows what it contains.
 4. From `terraform/`, run:
 
    ```bash
